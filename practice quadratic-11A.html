@@ -1137,19 +1137,39 @@
         });
 
 
-        document.getElementById('lbl-score-obtained').innerText = tallyCorrect;
+          document.getElementById('lbl-score-obtained').innerText = tallyCorrect;
         document.getElementById('m-correct').innerText = tallyCorrect;
         document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
         document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
-        document.getElementById('report-injection-zone').innerHTML = compilationHtml;
+
+        // FIXED: Pulls active input values and the captured clock timestamp straight into the PDF report header zone
+        const userTitle = document.getElementById('student-name').value.trim();
+        const sectionTitle = document.getElementById('student-section').value.trim();
+
+        let structuralHeaderHtml = `
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 20px; line-height: 1.5; font-size: 0.95rem; color: var(--text-main);">
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px; margin-bottom: 8px;">
+                    <div><strong>Student Full Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+                    <div><strong>Assigned Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+                </div>
+                <div><strong>Examination Start Time:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+            </div>
+        `;
+
+        // Combine the metadata header badge with your existing questions compilation list cleanly
+        document.getElementById('report-injection-zone').innerHTML = structuralHeaderHtml + compilationHtml;
 
         if (window.katex && typeof window.renderMathInElement === 'function') {
             window.renderMathInElement(document.getElementById('report-injection-zone'));
         }
+
     }
 
 
     // Action Form Click Handlers
+    // Global variable holder to capture system launch time metrics securely
+    let formattedQuizStartTimeStamp = "";
+
     document.getElementById('action-start').onclick = () => {
         const user = document.getElementById('student-name').value.trim();
         const sect = document.getElementById('student-section').value.trim();
@@ -1157,6 +1177,11 @@
             alert("Please provide credential values to unlock the examination matrix.");
             return;
         }
+
+        // FIXED: Captures current system clock date parameters instantly at submission launch
+        const rightNow = new Date();
+        formattedQuizStartTimeStamp = rightNow.toLocaleDateString() + " @ " + rightNow.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
         document.getElementById('stage-auth').classList.add('hidden');
         document.getElementById('stage-engine').classList.remove('hidden');
         generateEntireQuizSuite();
