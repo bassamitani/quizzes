@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadratic Equations - Math Practice Quiz</title>
+<!-- KaTeX Auto-Render Extension with Custom Delimiter Config -->
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #16a34a;
+            --error: #dc2626;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --bg-canvas: #f9fafb;
+            --bg-card: #ffffff;
+            --border-ui: #e5e7eb;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .quiz-card {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-ui);
+        }
+        .hidden { display: none !important; }
+        /* 3mm Visual Meter Tracker */
+        .time-bar-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--border-ui);
+        }
+        .time-bar-fill {
+            height: 3mm;
+            width: 100%;
+            background-color: var(--primary);
+            transition: width 1s linear, background-color 0.3s ease;
+        }
+        h1, h2, h3 {
+            color: var(--text-main);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-field { margin-bottom: 18px; }
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-ui);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--primary); }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: var(--primary-hover); }
+        .panel-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+        .clock-lbl { font-weight: 700; color: var(--text-main); }
+        .math-statement {
+            font-size: 1.15rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .options-stack { display: flex; flex-direction: column; gap: 12px; }
+        .opt-btn {
+            background-color: #fcfcfd;
+            border: 1px solid var(--border-ui);
+            color: var(--text-main);
+            text-align: left;
+            padding: 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .opt-btn.active {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .tf-row { display: flex; gap: 14px; }
+        .tf-row button { flex: 1; text-align: center; }
+        .controls-row { margin-top: 28px; display: flex; gap: 14px; }
+        .btn-secondary { background-color: #e5e7eb; color: var(--text-main); }
+        .btn-secondary:hover { background-color: #d1d5db; }
+
+        /* Report Screen Components */
+        .score-badge-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #f0fdf4;
+            border: 4px solid var(--success);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+        }
+        .score-large { font-size: 2.2rem; font-weight: 800; color: var(--success); }
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 24px 0; text-align: center; }
+        .metric-box { background: var(--bg-canvas); padding: 12px; border-radius: 8px; border: 1px solid var(--border-ui); }
+        .metric-val { font-size: 1.25rem; font-weight: 700; }
+        .metric-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+        .report-item { padding: 14px; background: var(--bg-canvas); border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #9ca3af; text-align: left;}
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+        .explanation-pane { margin-top: 8px; padding: 8px 12px; background: #ffffff; border: 1px dashed var(--border-ui); font-size: 0.9rem; border-radius: 6px; }
+
+        @media print {
+            body { background: #ffffff; display: block; padding: 0; }
+            .quiz-card { border: none; box-shadow: none; max-width: 100%; padding: 0; }
+            .no-print { display: none !important; }
+            .report-item { page-break-inside: avoid; background: #ffffff; border: 1px solid var(--border-ui); }
+        }
+    </style>
+</head>
+<body>
+<div class="quiz-card">
+    <div id="meter-container" class="time-bar-wrapper hidden">
+        <div id="meter-progress" class="time-bar-fill"></div>
+    </div>
+
+    <!-- Stage A: Registration/Login Portal -->
+    <div id="stage-auth">
+        <h1>📚 Quadratic Equations</h1>
+        <h2>Math Practice Quiz</h2>
+        <div class="form-field">
+            <label for="student-name">Username</label>
+            <input type="text" id="student-name" placeholder="Enter student name...">
+        </div>
+        <div class="form-field">
+            <label for="student-section">Class Section</label>
+            <input type="text" id="student-section" placeholder="Enter class section...">
+        </div>
+        <button id="action-start">Start Quiz</button>
+    </div>
+
+    <!-- Stage B: Active Quiz Panel Interface -->
+    <div id="stage-engine" class="hidden">
+        <div class="panel-meta">
+            <div>Question <span id="idx-current">1</span> of <span id="idx-total">20</span></div>
+            <div id="clock-countdown" class="clock-lbl">25:00</div>
+        </div>
+
+        <div class="math-statement" id="math-prompt-container"></div>
+
+        <!-- Layout Formats Configurations -->
+        <div id="box-mcq" class="options-stack hidden"></div>
+
+        <div id="box-tf" class="tf-row options-stack hidden">
+            <button class="opt-btn flag-tf" data-core="True">True</button>
+            <button class="opt-btn flag-tf" data-core="False">False</button>
+        </div>
+
+        <div id="box-text" class="hidden">
+            <div class="form-field">
+                <input type="text" id="manual-text-input" placeholder="Type answer...">
+            </div>
+        </div>
+
+        <!-- RESTORED: The control buttons row container -->
+        <div class="controls-row" style="margin-top: 28px; display: flex; gap: 14px;">
+            <button id="action-back" class="btn-secondary no-print" style="flex: 1;">← Previous</button>
+            <button id="action-forward" class="no-print" style="flex: 1;">Next →</button>
+        </div>
+    </div>
+
+
+    <!-- Stage C: Performance Matrix & PDF Evaluation -->
+    <div id="stage-summary" class="hidden">
+        <h2>Quiz Complete! 🎉</h2>
+        <div class="score-badge-circle">
+            <span class="score-large" id="lbl-score-obtained">0</span>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">out of 20</span>
+        </div>
+        <p style="text-align:center; font-weight:500;">Great job! Keep practicing to improve.</p>
+        <h3 style="margin-top:24px; text-align:left; border-bottom:1px solid var(--border-ui); padding-bottom:6px;">Summary</h3>
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div class="metric-val" style="color:var(--success);" id="m-correct">0</div>
+                <div class="metric-lbl">Correct</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-val" style="color:var(--error);" id="m-incorrect">0</div>
+                <div class="metric-lbl">Incorrect</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-val" style="color:var(--primary);" id="m-percent">0%</div>
+                <div class="metric-lbl">Percentage</div>
+            </div>
+        </div>
+        <h3 style="text-align:left; margin-bottom:12px;">Detailed Report</h3>
+        <div id="report-injection-zone"></div>
+        <div class="controls-row no-print">
+            <button id="action-pdf" style="background-color:var(--success);">📥 Export as PDF</button>
+            <button id="action-retry" class="btn-secondary">🔄 Retake Quiz</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Universal Runtime Config Parameters (20 Items: 6 Easy, 7 Medium, 7 Hard)
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 1800,
+        tiers: { easy: 6, medium: 7, hard: 7 }
+    };
+
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+    let standardTrinomialHistory = [];
+
+    // Helper: Generate randomized options matrix cleanly
+    function buildShuffledChoices(correct, fakes) {
+        let options = [correct];
+        while (options.length < 4 && fakes.length > 0) {
+            let randomIndex = Math.floor(Math.random() * fakes.length);
+            let pick = fakes.splice(randomIndex, 1);
+            if (!options.includes(pick)) options.push(pick);
+        }
+        return options.sort(() => Math.random() - 0.5);
+    }
+
+    // Greatest Common Divisor Utility
+    function __gcd(x, y) {
+        x = Math.abs(x); y = Math.abs(y);
+        while(y) { let t = y; y = x % y; x = t; }
+        return x;
+    }
+
+    // Native Safe Slash String Compiler (\)
+    function slashCmd(cmd) {
+        return String.fromCharCode(92) + cmd;
+    }
+
+    // Streamlined Generation Matrix Core
+    function constructMathProblem(tier) {
+        const easyPool = ['INCOMPLETE', 'STANDARD_EASY', 'SUM_PRODUCT'];
+        const mediumPool = ['BIQUADRATIC', 'IDENTITIES'];
+        const hardPool = ['RATIONAL'];
+
+        let selectedType = "";
+        if (tier === 'easy') selectedType = easyPool[Math.floor(Math.random() * easyPool.length)];
+        else if (tier === 'medium') selectedType = mediumPool[Math.floor(Math.random() * mediumPool.length)];
+        else selectedType = hardPool[Math.floor(Math.random() * hardPool.length)];
+
+        let equationLatex = "";
+        let solutionString = "";
+        let promptText = "";
+        let interactionFormat = "TEXT";
+        let choicesPool = [];
+        let nsOption = slashCmd('text') + "{NO SOLUTION}";
+
+        if (selectedType === 'INCOMPLETE') {
+            let passSecurity = false;
+            let subType = Math.floor(Math.random() * 3); // 0=integers, 1=radicals, 2=no solution
+            let a = 1, c = 0, checkKey = "";
+
+            while (!passSecurity) {
+                if (subType === 0) {
+                    a = Math.floor(Math.random() * 2) + 1;
+                    let r = Math.floor(Math.random() * 4) + 2;
+                    c = -(a * r * r);
+                    checkKey = "INC-INT-" + a + "-" + c;
+                } else if (subType === 1) {
+                    let radicalVariant = Math.floor(Math.random() * 3);
+                    if (radicalVariant === 0) { a = 1; c = -3; }
+                    else if (radicalVariant === 1) { a = 3; c = -4; }
+                    else { a = 1; c = -5; }
+                    checkKey = "INC-IRR-" + a + "-" + c;
+                } else {
+                    a = Math.floor(Math.random() * 2) + 1;
+                    let r = Math.floor(Math.random() * 4) + 2;
+                    c = a * r * r;
+                    checkKey = "INC-NOSOL-" + a + "-" + c;
+                }
+
+                if (!standardTrinomialHistory.includes(checkKey)) {
+                    standardTrinomialHistory.push(checkKey);
+                    passSecurity = true;
+                } else {
+                    a = 1; c = -4; subType = 0;
+                    passSecurity = true;
+                }
+            }
+
+            equationLatex = (a === 1 ? '' : a) + "x^2 " + (c > 0 ? "+ " + c : "- " + Math.abs(c)) + " = 0";
+
+            if (subType === 0) {
+                let rVal = Math.sqrt(-c / a);
+                solutionString = (-rVal) + "," + rVal;
+                interactionFormat = "TEXT";
+            } else if (subType === 1) {
+                interactionFormat = "MCQ";
+                if (a === 1 && c === -3) {
+                    solutionString = slashCmd('pm') + slashCmd('sqrt') + "{3}";
+                    choicesPool = buildShuffledChoices(solutionString, [slashCmd('pm') + "3", slashCmd('pm') + slashCmd('sqrt') + "{2}", nsOption]);
+                } else if (a === 3 && c === -4) {
+                    solutionString = slashCmd('pm') + slashCmd('frac') + "{2" + slashCmd('sqrt') + "{3}}{3}";
+                    choicesPool = buildShuffledChoices(solutionString, [slashCmd('pm') + slashCmd('frac') + "{2}{3}", slashCmd('pm') + slashCmd('sqrt') + "{3}", nsOption]);
+                } else {
+                    solutionString = slashCmd('pm') + slashCmd('sqrt') + "{5}";
+                    choicesPool = buildShuffledChoices(solutionString, [slashCmd('pm') + "5", slashCmd('pm') + slashCmd('sqrt') + "{2}", nsOption]);
+                }
+            } else {
+                solutionString = "NO SOLUTION";
+                interactionFormat = "TEXT";
+            }
+            promptText = "Find the real solution roots of the incomplete quadratic equation:";
+        }
+        else if (selectedType === 'STANDARD_EASY') {
+            let passSecurity = false;
+            let subType = Math.floor(Math.random() * 3);
+            let a = 1, b = 0, c = 0, checkKey = "";
+
+            while (!passSecurity) {
+                if (subType === 0) {
+                    let r1 = Math.floor(Math.random() * 4) + 2;
+                    let r2 = Math.floor(Math.random() * 4) + 2;
+                    if (r1 === r2) r2 += 2;
+                    a = 1; b = -(r1 + r2); c = r1 * r2;
+                    checkKey = "STD-RAT-" + b + "-" + c;
+                } else if (subType === 1) {
+                    a = 2; b = -2; c = -1;
+                    if (Math.random() > 0.5) { b = -4; c = 1; }
+                    checkKey = "STD-ADV-IRR-" + b + "-" + c;
+                } else {
+                    a = 1; b = Math.floor(Math.random() * 4) + 2;
+                    c = b * b + Math.floor(Math.random() * 4) + 2;
+                    checkKey = "STD-NOSOL-" + b + "-" + c;
+                }
+
+                if (!standardTrinomialHistory.includes(checkKey)) {
+                    standardTrinomialHistory.push(checkKey);
+                    passSecurity = true;
+                } else {
+                    subType = 0; passSecurity = true;
+                }
+            }
+
+            let leadingCoeff = a === 1 ? "" : "" + a;
+            equationLatex = leadingCoeff + "x^2 " + (b >= 0 ? "+ " + b : "- " + Math.abs(b)) + "x " + (c >= 0 ? "+ " + c : "- " + Math.abs(c)) + " = 0";
+            interactionFormat = "MCQ";
+            promptText = "Find the real roots of the quadratic equation:";
+
+            if (subType === 0) {
+                let disc = b * b - 4 * a * c;
+                let x1 = (-b - Math.sqrt(disc)) / (2 * a);
+                let x2 = (-b + Math.sqrt(disc)) / (2 * a);
+                solutionString = Math.min(x1, x2) + "," + Math.max(x1, x2);
+                choicesPool = buildShuffledChoices(solutionString, [(x1+2)+","+(x2+3), (-x1)+","+(-x2), nsOption, "2,3"]);
+            } else if (subType === 1) {
+                if (b === -2 && c === -1) {
+                    solutionString = slashCmd('frac') + "{1-" + slashCmd('sqrt') + "{3}}{2}," + slashCmd('frac') + "{1+" + slashCmd('sqrt') + "{3}}{2}";
+                    choicesPool = buildShuffledChoices(solutionString, [slashCmd('frac') + "{1-" + slashCmd('sqrt') + "{5}}{2}," + slashCmd('frac') + "{1+" + slashCmd('sqrt') + "{5}}{2}", "1,3", nsOption, "-1,2"]);
+                } else {
+                    solutionString = slashCmd('frac') + "{2-" + slashCmd('sqrt') + "{2}}{2}," + slashCmd('frac') + "{2+" + slashCmd('sqrt') + "{2}}{2}";
+                    choicesPool = buildShuffledChoices(solutionString, [slashCmd('frac') + "{2-" + slashCmd('sqrt') + "{7}}{2}," + slashCmd('frac') + "{2+" + slashCmd('sqrt') + "{7}}{2}", "2,4", nsOption, "0,1"]);
+                }
+            } else {
+                solutionString = nsOption;
+                choicesPool = buildShuffledChoices(solutionString, ["1,2", "-2,-2", "3,5", "4,4"]);
+            }
+        }
+        else if (selectedType === 'SUM_PRODUCT') {
+            let passSecurity = false;
+            let subType = Math.floor(Math.random() * 2);
+            let S = 0, P = 0, checkKey = "";
+
+            while (!passSecurity) {
+                S = Math.floor(Math.random() * 8) + 3; if (Math.random() > 0.5) S = -S;
+                P = Math.floor(Math.random() * 12) + 2; if (Math.random() > 0.5) P = -P;
+                let disc = S * S - 4 * P;
+                if (subType === 0) {
+                    let root1 = Math.floor(Math.random() * 4) + 2;
+                    let root2 = Math.floor(Math.random() * 4) + 6;
+                    if (Math.random() > 0.5) root1 = -root1;
+                    S = root1 + root2; P = root1 * root2;
+                    disc = S * S - 4 * P;
+                }
+                if (Math.abs(S) <= 2 && P <= 1) continue;
+                checkKey = "SUM-INT-P-" + S + "-" + P;
+                if (!standardTrinomialHistory.includes(checkKey)) {
+                    standardTrinomialHistory.push(checkKey);
+                    passSecurity = true;
+                }
+            }
+
+            equationLatex = slashCmd('text') + "{Sum (S)} = " + S + "; " + slashCmd('text') + "{ Product (P)} = " + P;
+            let disc = S * S - 4 * P;
+
+            if (disc < 0) {
+                interactionFormat = "MCQ"; solutionString = nsOption;
+                choicesPool = buildShuffledChoices(solutionString, ["2,3", "-1,4", "0,5", "-2,-2"]);
+            } else {
+                let r1_num = S - Math.sqrt(disc); let r2_num = S + Math.sqrt(disc);
+                if (Number.isInteger(r1_num / 2) && Number.isInteger(r2_num / 2)) {
+                    interactionFormat = "TEXT"; solutionString = (r1_num / 2) + "," + (r2_num / 2);
+                } else {
+                    interactionFormat = "MCQ";
+                    let rootPart = slashCmd('sqrt') + "{" + disc + "}";
+                    solutionString = slashCmd('frac') + "{" + S + "-" + rootPart + "}{2}," + slashCmd('frac') + "{" + S + "+" + rootPart + "}{2}";
+                    let invS = -S;
+                    choicesPool = buildShuffledChoices(solutionString, [
+                        slashCmd('frac') + "{" + (S + 1) + "-" + rootPart + "}{2}," + slashCmd('frac') + "{" + (S + 1) + "+" + rootPart + "}{2}",
+                        invS + ", " + P, nsOption, "1,2"
+                    ]);
+                }
+            }
+            promptText = "Find the two targeted component numbers using their stated sum and product traits:";
+        }
+        else if (selectedType === 'BIQUADRATIC') {
+            let passSecurity = false;
+            let subType = Math.floor(Math.random() * 3); // 0 = 4 real radical roots, 1 = 2 real radical roots, 2 = No Real Solution
+            let b = 0, c = 0, checkKey = "";
+            let u1 = 0, u2 = 0;
+
+            while (!passSecurity) {
+                if (subType === 0) {
+                    u1 = Math.floor(Math.random() * 3) + 2;
+                    u2 = Math.floor(Math.random() * 4) + 5;
+                    b = -(u1 + u2); c = u1 * u2;
+                    checkKey = "BIQ-4R-" + b + "-" + c;
+                } else if (subType === 1) {
+                    u1 = Math.floor(Math.random() * 5) + 2;
+                    let r2_val = Math.floor(Math.random() * 3) + 2;
+                    if (u1 === r2_val) r2_val += 1;
+                    u2 = -(r2_val * r2_val);
+                    b = -(u1 + u2); c = u1 * u2;
+                    checkKey = "BIQ-2R-" + b + "-" + c;
+                } else {
+                    u1 = -(Math.floor(Math.random() * 4) + 2);
+                    u2 = -(Math.floor(Math.random() * 4) + 6);
+                    b = -(u1 + u2); c = u1 * u2;
+                    checkKey = "BIQ-NOSOL-" + b + "-" + c;
+                }
+
+                if (!standardTrinomialHistory.includes(checkKey)) {
+                    standardTrinomialHistory.push(checkKey);
+                    passSecurity = true;
+                }
+            }
+
+            equationLatex = "x^4 " + (b >= 0 ? "+ " + b : b) + "x^2 " + (c >= 0 ? "+ " + c : c) + " = 0";
+            interactionFormat = "MCQ";
+
+            let formatBiquadRoot = (val) => {
+                let s = Math.sqrt(val);
+                return Number.isInteger(s) ? "" + s : slashCmd('sqrt') + "{" + val + "}";
+            };
+
+            if (subType === 0) {
+                let r1Text = formatBiquadRoot(u1);
+                let r2Text = formatBiquadRoot(u2);
+                solutionString = slashCmd('pm') + r1Text + ", " + slashCmd('pm') + r2Text;
+                choicesPool = buildShuffledChoices(solutionString, [
+                    slashCmd('pm') + formatBiquadRoot(u1+1) + ", " + slashCmd('pm') + formatBiquadRoot(u2+2),
+                    slashCmd('pm') + r1Text, nsOption, slashCmd('pm') + "1, " + slashCmd('pm') + "3"
+                ]);
+            } else if (subType === 1) {
+                let r1Text = formatBiquadRoot(u1);
+                solutionString = slashCmd('pm') + r1Text;
+                choicesPool = buildShuffledChoices(solutionString, [
+                    slashCmd('pm') + formatBiquadRoot(u1+2), slashCmd('pm') + "2, " + slashCmd('pm') + "5", nsOption, "0"
+                ]);
+            } else {
+                solutionString = nsOption;
+                choicesPool = buildShuffledChoices(solutionString, [
+                    slashCmd('pm') + "2, " + slashCmd('pm') + "3", slashCmd('pm') + slashCmd('sqrt') + "{5}", "0", slashCmd('pm') + "1, " + slashCmd('pm') + "4"
+                ]);
+            }
+            promptText = "Solve the biquadratic higher-order equation for exact real roots of x:";
+        }
+        else if (selectedType === 'IDENTITIES') {
+            let passSecurity = false;
+            let variantIdx = Math.floor(Math.random() * 4);
+            let checkKey = "";
+            let r1 = Math.floor(Math.random() * 3) + 1;
+            let r2 = Math.floor(Math.random() * 4) + 2;
+
+            while (!passSecurity) {
+                checkKey = "IDEN-ADV-" + variantIdx + "-" + r1 + "-" + r2;
+                if (!standardTrinomialHistory.includes(checkKey)) {
+                    standardTrinomialHistory.push(checkKey);
+                    passSecurity = true;
+                } else {
+                    r1 = Math.floor(Math.random() * 3) + 1;
+                    r2 = Math.floor(Math.random() * 4) + 3;
+                }
+            }
+
+            if (variantIdx === 0) {
+                equationLatex = "2(x + " + r1 + ")^2 - (x + " + r1 + ")(x + " + r2 + ") = 0";
+                let root1 = -r1; let root2 = r2 - (2 * r1);
+                solutionString = root1 === root2 ? "" + root1 : Math.min(root1, root2) + "," + Math.max(root1, root2);
+                interactionFormat = "MCQ";
+                choicesPool = buildShuffledChoices(solutionString, [(root1 + 1) + "," + (root2 - 1), (-root1) + "," + (-root2), nsOption, "0,1"]);
+                promptText = "Factor out the common binomial expression block and solve for exact roots:";
+            }
+            else if (variantIdx === 1) {
+                let v1 = Math.floor(Math.random() * 3) + 1;
+                let v2 = -(Math.floor(Math.random() * 3) + 1);
+                if (v1 === Math.abs(v2)) v2 -= 1;
+                let sumX = -(v1 + v2); let x1 = Math.floor(Math.random() * 3) + 1; let x2 = sumX - x1;
+                let targetConstant = (v1 * v1) + (v2 * v2) - (2 * x1 * x2);
+                let sign1 = v1 >= 0 ? "+ " + v1 : "- " + Math.abs(v1);
+                let sign2 = v2 >= 0 ? "+ " + v2 : "- " + Math.abs(v2);
+                equationLatex = "(x " + sign1 + ")^2 + (x " + sign2 + ")^2 = " + targetConstant;
+                solutionString = x1 === x2 ? "" + x1 : Math.min(x1, x2) + "," + Math.max(x1, x2);
+                interactionFormat = "TEXT";
+                promptText = "Expand the binomial blocks and solve for real variable values:";
+            }
+            else if (variantIdx === 2) {
+                let perfectSum = r1 * r1 + r2;
+                equationLatex = "(x - " + r1 + ")(x + " + r1 + ") = " + r2;
+                let valRoot = Math.sqrt(perfectSum);
+                if (Number.isInteger(valRoot)) {
+                    solutionString = (-valRoot) + "," + valRoot; interactionFormat = "TEXT";
+                } else {
+                    solutionString = "-" + slashCmd('sqrt') + "{" + perfectSum + "}," + slashCmd('sqrt') + "{" + perfectSum + "}";
+                    interactionFormat = "MCQ";
+                    choicesPool = buildShuffledChoices(solutionString, ["-" + r1 + "," + r1, "-" + r2 + "," + r2, nsOption]);
+                }
+                promptText = "Apply the difference of squares identity structure to isolate real solutions:";
+            }
+            else {
+                let bVal = 2 * r1; let cVal = r1 * r1 + r2 * r2 - (r1 + 3) * (r1 + 3); let targetNum = r1 * r1 + r2 * r2 - cVal;
+                equationLatex = "x^2 + (x + " + r1 + ")^2 - (x - " + r2 + ")(x + " + r2 + ") = " + targetNum;
+                let finalC = r1 * r1 + r2 * r2 - targetNum; let disc = (2*r1)*(2*r1) - 4*finalC;
+                let x1 = (-(2*r1) - Math.sqrt(disc)) / 2; let x2 = (-(2*r1) + Math.sqrt(disc)) / 2;
+                solutionString = Math.min(x1, x2) + "," + Math.max(x1, x2); interactionFormat = "TEXT";
+                promptText = "Expand all short-multiplication identity blocks and solve the resulting system:";
+            }
+        }
+        else if (selectedType === 'RATIONAL') {
+            let variants = [
+                {
+                    eq: "\u005Cfrac{2x+1}{x+2} = \u005Cfrac{x-1}{x-2}",
+                    sol: "0, 4",
+                    fakes: ["-2, 2", "1, 3", nsOption, "0, -4"],
+                    p: "Solve the rational expressions fractional equation and isolate the exact integer roots:",
+                    id: "RAT-1"
+                },
+                {
+                    eq: "\u005Cfrac{x+3}{x+1} = \u005Cfrac{2x-2}{x+2}",
+                    sol: "2-2" + slashCmd('sqrt') + "{3}, 2+2" + slashCmd('sqrt') + "{3}",
+                    fakes: ["-1, 4", "1, -4", nsOption, "2-" + slashCmd('sqrt') + "{3}, 2+" + slashCmd('sqrt') + "{3}"],
+                    p: "Solve the rational expressions fractional equation and select the exact radical roots:",
+                    id: "RAT-2"
+                },
+                {
+                    eq: "\u005Cfrac{2x-1}{x+1} = \u005Cfrac{x+2}{x-1}",
+                    sol: "3-" + slashCmd('sqrt') + "{10}, 3+" + slashCmd('sqrt') + "{10}",
+                    fakes: ["3, -1", "-3, 1", "2, -2", nsOption],
+                    p: "Cross-multiply and isolate the exact simplified radical solution roots:",
+                    id: "RAT-3"
+                },
+                {
+                    eq: "\u005Cfrac{x-1}{x-3} = \u005Cfrac{2x+1}{x+1}",
+                    sol: slashCmd('frac') + "{5-" + slashCmd('sqrt') + "{33}}{2}, " + slashCmd('frac') + "{5+" + slashCmd('sqrt') + "{33}}{2}",
+                    fakes: ["2, 3", "-1, 5", nsOption, "1, -5"],
+                    p: "Solve the rational expressions fractional equation and pick the exact radical roots:",
+                    id: "RAT-4"
+                },
+                {
+                    eq: "\u005Cfrac{x-1}{2} = \u005Cfrac{3}{x-2}",
+                    sol: "-1, 4",
+                    fakes: ["1, -4", "2, -3", nsOption, "0, 5"],
+                    p: "Clear the fractions by cross-multiplying and find the clean integer solution set values:",
+                    id: "RAT-5"
+                },
+                {
+                    eq: "\u005Cfrac{x}{2} = \u005Cfrac{2}{x-2}",
+                    sol: "1-" + slashCmd('sqrt') + "{5}, 1+" + slashCmd('sqrt') + "{5}",
+                    fakes: ["-2, 2", "1, 3", nsOption, "1-2" + slashCmd('sqrt') + "{5}, 1+2" + slashCmd('sqrt') + "{5}"],
+                    p: "Solve the fractional rational operational expression and pick the exact radical roots:",
+                    id: "RAT-6"
+                },
+                {
+                    eq: "\u005Cfrac{x+2}{x-1} = \u005Cfrac{x-4}{x-2}",
+                    sol: "8",
+                    fakes: ["-8", "0", nsOption, "4"],
+                    p: "Solve for the unique solution root of the fractional algebraic statement:",
+                    id: "RAT-7"
+                },
+                {
+                    eq: "\u005Cfrac{x^2-5x}{x-5} = 3",
+                    sol: nsOption,
+                    fakes: ["3", "5", "0,3"],
+                    p: "Solve the rational expression carefully checking for restrictions and holes:",
+                    id: "RAT-8"
+                }
+            ];
+            let available = variants.filter(v => !standardTrinomialHistory.includes(v.id));
+            let pick = available.length > 0 ? available[Math.floor(Math.random() * available.length)] : variants[Math.floor(Math.random() * variants.length)];
+
+            standardTrinomialHistory.push(pick.id);
+            equationLatex = pick.eq;
+            solutionString = pick.sol;
+            promptText = pick.p;
+
+            interactionFormat = "MCQ";
+            choicesPool = buildShuffledChoices(solutionString, pick.fakes);
+        }
+
+        return {
+            equation: equationLatex,
+            tier: tier,
+            type: interactionFormat,
+            categoryType: selectedType,
+            pool: choicesPool,
+            solution: solutionString,
+            prompt: promptText,
+            graphData: null
+        };
+    }
+
+    function generateEntireQuizSuite() {
+        standardTrinomialHistory = [];
+        generatedSuite = [];
+        for(let i=0; i<APP_LIMITS.tiers.easy; i++) generatedSuite.push(constructMathProblem('easy'));
+        for(let i=0; i<APP_LIMITS.tiers.medium; i++) generatedSuite.push(constructMathProblem('medium'));
+        for(let i=0; i<APP_LIMITS.tiers.hard; i++) generatedSuite.push(constructMathProblem('hard'));
+    }
+    // ========================================== -->
+    // PART 6A: INTERFACE DISPLAY SYNC ENGINE     -->
+    // ========================================== -->
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+
+        let equationBlock = activeProblem.equation ? `
+            <div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 12px;">
+                $$${activeProblem.equation}$$
+            </div>
+        ` : "";
+
+        let problemMarkup = `
+            <div style="font-size:1.15rem; line-height:1.6; text-align:center; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; width:100%; padding: 0 10px;">
+                <p style="margin-bottom: 4px; color: var(--text-main); font-weight: 500;">
+                    ${activeProblem.prompt}
+                </p>
+                ${equationBlock}
+            </div>
+        `;
+
+        document.getElementById('math-prompt-container').innerHTML = problemMarkup;
+
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+        document.getElementById('box-text').classList.add('hidden');
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+            activeProblem.pool.forEach(choice => {
+                const buttonElement = document.createElement('button');
+                buttonElement.className = `opt-btn ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+
+                // Tight vertical sizing around layout choices
+                buttonElement.setAttribute("style", "display: flex; justify-content: center; align-items: center; text-align: center; width: 100%; padding: 6px 12px; min-height: auto; height: auto; line-height: 1; margin: 0;");
+
+                buttonElement.innerHTML = `\\(${choice}\\)`;
+                buttonElement.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    buttonElement.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(buttonElement);
+            });
+            if (window.katex && typeof window.renderMathInElement === 'function') {
+                window.renderMathInElement(mcqContainer);
+            }
+        } else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        } else if (activeProblem.type === 'TEXT') {
+            document.getElementById('box-text').classList.remove('hidden');
+            const targetInput = document.getElementById('manual-text-input');
+            targetInput.value = storedResponses[traversalIndex] || "";
+
+            if (activeProblem.categoryType === 'SUM_PRODUCT') {
+                targetInput.placeholder = "Type values separated by a comma (e.g., 3,-5) or NO SOLUTION";
+            } else if (activeProblem.categoryType === 'BIQUADRATIC') {
+                targetInput.placeholder = "Type all roots comma-separated (e.g., -4,-2,2,4) or NO SOLUTION";
+            } else {
+                targetInput.placeholder = "Type values comma-separated (e.g., -2,2) or NO SOLUTION";
+            }
+
+            targetInput.oninput = (e) => recordInput(e.target.value);
+        }
+
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(document.getElementById('math-prompt-container'));
+        }
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; }
+    // ========================================== -->
+    // PART 6B: METRIC TIMERS & EVALUATION ENGINES -->
+    // ========================================== -->
+
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            let m = Math.floor(timeTrackingRemaining / 60);
+            let s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            let dynamicPercentage = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${dynamicPercentage}%`;
+
+            if (dynamicPercentage < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (dynamicPercentage < 50) progress.style.backgroundColor = '#d97706';
+        }
+        pulse();
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limits reached. Compiling final diagnostic report sheet now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+        let renderReportMath = (rawStr) => {
+            if (!rawStr) return '<span style="color:var(--error); font-weight:500;">Unanswered</span>';
+            let str = rawStr.toString().trim();
+            if (str === "NO SOLUTION" || str.includes("NO SOLUTION")) return "NO SOLUTION";
+
+            return str.split(',').map(part => {
+                let formula = part.trim().replace(/^\\\(/, '').replace(/\\\)\$/, '');
+                try {
+                    return window.katex ? window.katex.renderToString(formula, { throwOnError: false, displayMode: false }) : formula;
+                } catch(e) {
+                    return formula;
+                }
+            }).join(', ');
+        };
+
+        generatedSuite.forEach((problem, index) => {
+            let cleanString = (str) => str.toString().trim().toUpperCase().replace(/\s+/g, "").replace(/X=/g, "").replace(/\\TEXT\{/g, "").replace(/\}/g, "");
+            let userAns = cleanString(storedResponses[index] || "");
+            let correctAns = cleanString(problem.solution);
+            let outcomeState = userAns === correctAns;
+
+            if (problem.type === "TEXT" && !outcomeState && userAns.includes(",")) {
+                let userParts = userAns.split(",").sort();
+                let correctParts = correctAns.split(",").sort();
+
+                if (userParts.length === correctParts.length) {
+                    outcomeState = userParts.every((val, i) => val === correctParts[i]);
+                }
+            }
+
+            let itemScoreBadge = outcomeState ?
+                `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>` :
+                `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+
+            if (outcomeState) tallyCorrect++;
+
+            let userAnsView = renderReportMath(storedResponses[index]);
+            let correctAnsView = renderReportMath(problem.solution);
+
+            compilationHtml += `
+                <div class="report-item ${outcomeState ? 'pass' : 'fail'}" style="position: relative; overflow: auto;">
+                    ${itemScoreBadge}
+                    <strong>Question ${index + 1} &middot; Topic Category: ${problem.categoryType.replace('_',' ')}</strong>
+                    <div style="margin: 12px 0; font-size:1.05rem; text-align: center;">$$${problem.equation}$$</div>
+                    <p style="font-size:0.9rem; margin-bottom:4px; color:var(--text-muted);">Prompt: <em>${problem.prompt}</em></p>
+                    <p style="display: flex; align-items: center; flex-wrap: wrap; margin: 4px 0; gap: 4px;"><strong>Your Answer:</strong> <span>${userAnsView}</span></p>
+                    <p style="display: flex; align-items: center; flex-wrap: wrap; margin: 4px 0; gap: 4px;"><strong>Correct Reference Answer:</strong> <span>${correctAnsView}</span></p>
+                </div>
+            `;
+        });
+
+        document.getElementById('lbl-score-obtained').innerText = tallyCorrect;
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+        document.getElementById('report-injection-zone').innerHTML = compilationHtml;
+
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(document.getElementById('report-injection-zone'));
+        }
+    }
+
+    document.getElementById('action-start').onclick = () => {
+        const user = document.getElementById('student-name').value.trim();
+        const sect = document.getElementById('student-section').value.trim();
+        if (!user || !sect) {
+            alert("Please provide credential values to unlock the examination matrix.");
+            return;
+        }
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Are you confident you want to finalize and process this quiz?")) {
+                compileFinalPerformanceReport();
+            }
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) {
+            traversalIndex--;
+            synchroniseQuestionIndex();
+        }
+    };
+
+    document.getElementById('action-pdf').onclick = () => { window.print(); };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {};
+        traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+</script>
+</body>
+</html>
