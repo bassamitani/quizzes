@@ -304,8 +304,9 @@
     // Generator logic mapping out all book sections natively (100% FIXED SCOPE)
     function constructMathProblem(tier) {
         const easyPool = ['INCOMPLETE', 'STANDARD_EASY', 'SUM_PRODUCT'];
-        const mediumPool = ['BIQUADRATIC', 'RADICAL', 'IDENTITIES'];
-        const hardPool = ['RATIONAL', 'WORD_PROBLEM'];
+        const mediumPool = ['BIQUADRATIC', 'RADICAL', 'IDENTITIES', 'PARAM_NATURE'];
+        const hardPool = ['RATIONAL', 'WORD_PROBLEM', 'PARAM_ROOT'];
+
 
         let selectedType = "";
         if (tier === 'easy') selectedType = easyPool[Math.floor(Math.random() * easyPool.length)];
@@ -890,6 +891,78 @@
             var activeAltHolder = altSol;
         }
 
+else if (selectedType === 'PARAM_NATURE') {
+    let param = Math.random() > 0.5 ? 'k' : 'm';
+    let conditions = ['equal', 'distinct', 'no_real'];
+    let cond = conditions[Math.floor(Math.random() * conditions.length)];
+
+    // Choose numbers that maintain neat integers for the discriminant calculations
+    let d = Math.floor(Math.random() * 5) + 2; // 2 to 6
+    let b = 2 * d;
+    let dSq = d * d;
+    let sign = Math.random() > 0.5 ? '+' : '-';
+
+    equationLatex = `x^2 ${sign} ${b}x + ${param} = 0`;
+    interactionFormat = "MCQ";
+
+    if (cond === 'equal') {
+        promptText = `The equation has two equal real roots. Find the value of \\(${param}\\):`;
+        solutionString = `${param} = ${dSq}`;
+        choicesPool = buildShuffledChoices(solutionString, [
+            `${param} = ${b}`,
+            `${param} = ${d}`,
+            `${param} = -${dSq}`
+        ]);
+    } else if (cond === 'distinct') {
+        promptText = `Find the range of values of \\(${param}\\) for which the equation has two distinct real roots:`;
+        solutionString = `${param} < ${dSq}`;
+        choicesPool = buildShuffledChoices(solutionString, [
+            `${param} > ${dSq}`,
+            `${param} \u005Cleq ${dSq}`,
+            `${param} < ${b}`
+        ]);
+    } else {
+        promptText = `Find the range of values of \\(${param}\\) so that the quadratic equation has no real roots:`;
+        solutionString = `${param} > ${dSq}`;
+        choicesPool = buildShuffledChoices(solutionString, [
+            `${param} < ${dSq}`,
+            `${param} \u005Cgeq ${dSq}`,
+            `${param} > ${d}`
+        ]);
+    }
+}
+else if (selectedType === 'PARAM_ROOT') {
+    let param = Math.random() > 0.5 ? 'k' : 'm';
+
+    // Generate clean integer roots
+    let r1 = Math.floor(Math.random() * 4) + 1;
+    if (Math.random() > 0.5) r1 = -r1;
+    let r2 = Math.floor(Math.random() * 4) + 1;
+    if (r2 === Math.abs(r1)) r2 += 1;
+    if (Math.random() > 0.5) r2 = -r2;
+
+    let a = Math.floor(Math.random() * 2) + 1; // Leading coefficient 1 or 2
+
+    // a*(x - r1)*(x - r2) = a*x^2 - a*(r1+r2)x + a*r1*r2 = 0
+    let bVal = -a * (r1 + r2);
+    let cVal = a * r1 * r2;
+
+    let signStr = bVal < 0 ? "-" : "+";
+    let pActual = Math.abs(bVal);
+
+    equationLatex = `${a === 1 ? '' : a}x^2 ${signStr} ${param}x ${cVal >= 0 ? '+ ' + cVal : '- ' + Math.abs(cVal)} = 0`;
+    promptText = `If one root of the equation is \\(x = ${r1}\\), what is the value of \\(${param}\\) and what is the other root?`;
+    interactionFormat = "MCQ";
+
+    solutionString = `${param} = ${pActual}, x = ${r2}`;
+    choicesPool = buildShuffledChoices(solutionString, [
+        `${param} = ${-pActual}, x = ${r2}`,
+        `${param} = ${pActual}, x = ${-r2}`,
+        `${param} = ${Math.abs(cVal)}, x = ${r1}`
+    ]);
+}
+
+
          return {
             equation: equationLatex,
             tier: tier,
@@ -1207,7 +1280,7 @@
         }
     };
 
-    document.getElementById('action-pdf').onclick = () => { window.print(); };
+    document.getElementById('action-pdf').onclick = () => { triggerDirectPdfDownload(); };
 
     document.getElementById('action-retry').onclick = () => {
         storedResponses = {};
@@ -1216,6 +1289,43 @@
         document.getElementById('stage-summary').classList.add('hidden');
         document.getElementById('stage-auth').classList.remove('hidden');
     };
+
+    function triggerDirectPdfDownload() {
+        // 1. Point cleanly to your exact DOM element holders
+        const targetContainer = document.getElementById('stage-summary');
+        const scrollZone = document.getElementById('report-injection-zone');
+
+        // 2. Temporarily roll out scroll limits so html2canvas sees all 10 questions
+        const originalMaxHeight = scrollZone.style.maxHeight;
+        const originalOverflow = scrollZone.style.overflowY;
+        const originalBg = scrollZone.style.backgroundColor;
+
+        scrollZone.style.maxHeight = 'none';
+        scrollZone.style.overflowY = 'visible';
+        scrollZone.style.backgroundColor = '#ffffff';
+
+        const config = {
+            margin:       10,
+            filename:     'Sets_Quiz_Diagnostic_Report.pdf',
+            image:        { type: 'jpeg', quality: 0.99 },
+            html2canvas:  {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // 3. FIXED: Pointed directly to targetContainer reference to clear the execution crash
+        html2pdf().set(config).from(targetContainer).toPdf().get('pdf').then((pdf) => {
+            // Restore structural scroll layout immediately for the user
+            scrollZone.style.maxHeight = originalMaxHeight;
+            scrollZone.style.overflowY = originalOverflow;
+            scrollZone.style.backgroundColor = originalBg;
+        }).save();
+    }
+
+
 </script>
 </body>
 </html>
