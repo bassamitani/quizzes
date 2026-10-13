@@ -749,21 +749,19 @@
             window.renderMathInElement(document.getElementById('report-injection-zone'));
         }
 
-         const executionDurationMinutes = Math.floor((APP_LIMITS.allocatedDurationSeconds - timeTrackingRemaining) / 60);
-  sendGradesToTeacher(
-    userTitle,
-    sectionTitle,
-    `${tallyCorrect} / ${APP_LIMITS.totalItems}`,
-    `${executionDurationMinutes}m`
-  );
-}
+ const executionDurationMinutes = Math.floor((APP_LIMITS.allocatedDurationSeconds - timeTrackingRemaining) / 60);
+
+    sendGradesToTeacher(
+        userTitle,
+        sectionTitle,
+        `${tallyCorrect} / ${APP_LIMITS.totalItems}`,
+        `${executionDurationMinutes}m`
+    );
 
 
 function sendGradesToTeacher(name, classroom, score, duration) {
-
    // PASTE YOUR GOOGLE WEB APP LINK FROM STEP 3 DIRECTLY INSIDE THE QUOTES BELOW
     const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
-
     fetch(url, {
         method: "POST",
         mode: "no-cors",
