@@ -103,7 +103,7 @@
                 <!-- TIMER COMPONENT: Grouped tightly inside the primary top header control area -->
                 <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
                     <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
-                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">15:00</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">10:00</span>
                     <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
                         <div id="meter-progress" class="bg-sky-400 h-full transition-all duration-1000" style="width: 100%;"></div>
                     </div>
@@ -174,7 +174,6 @@
                 <!-- FIXED: Repositioned standalone PDF action handler bar to the absolute bottom of the page structure -->
                 <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
                         <button id="action-pdf-bottom" onclick="triggerDirectPdfDownload()" class="flex-grow bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
-                        <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
                 </div>
         </div>
 
@@ -185,7 +184,7 @@
 <script>
     const APP_LIMITS = {
         totalItems: 10,
-        allocatedDurationSeconds: 900, // 15 Minutes exactly
+        allocatedDurationSeconds: 600, // 10 Minutes exactly
         tiers: { easy: 3, medium: 4, hard: 3 }
     };
 
@@ -816,12 +815,7 @@
         }
     };
 
-    document.getElementById('action-retry').onclick = () => {
-        storedResponses = {}; traversalIndex = 0;
-        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
-        document.getElementById('stage-summary').classList.add('hidden');
-        document.getElementById('stage-auth').classList.remove('hidden');
-    };
+
 
      // 1. Inject print-optimized styles to fix the Flexbox page-clipping bug
     if (!document.getElementById('print-fix-styles')) {
@@ -870,7 +864,7 @@
 
 // ====== PROCTOR ENFORCED SECURITY SYSTEM ENGINE ======
 (function() {
-    const ACCESS_TOKEN = "PROCTOR" + Y;
+    const ACCESS_TOKEN = "TECH" + Y;
     const gateOverlay = document.getElementById('stage-gate');
     const gateInput = document.getElementById('gate-password');
     const gateButton = document.getElementById('action-unlock-gate');
