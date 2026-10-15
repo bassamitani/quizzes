@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Teacher Dashboard - Assessment Tracker</title>
+ <script src="https://tailwindcss.com"></script>
+ <style>
+  /* Core Base Layout Modifications to optimize visibility */
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f8fafc;
+    padding: 2rem;
+    margin: 0;
+  }
+  .dashboard-wrapper {
+    width: 100%;
+    max-width: 1100px;
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    margin: 0 auto;
+  }
+  /* Crisp, explicit table grid lines */
+  .grid-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+  .grid-table th {
+    background-color: #f1f5f9;
+    color: #334155;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    padding: 14px 16px;
+    border: 2px solid #cbd5e1; /* Double thick border line layout */
+    text-align: left;
+  }
+  .grid-table td {
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0; /* Crisp explicit bounding dividers */
+    color: #0f172a;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    /* Force text wrap to show full words instead of clipping */
+    white-space: normal;
+    word-break: break-word;
+  }
+  .grid-table tr:hover {
+    background-color: #f8fafc;
+  }
+  /* Live Statistics Cards */
+  .metric-card {
+    border-radius: 12px;
+    padding: 1.25rem;
+    border: 2px solid;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.6);
+  }
+ </style>
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+   <!-- Top Branding Panel Header -->
+   <div class="flex flex-col md:flex-row md:justify-between md:items-center border-b-2 border-slate-200 pb-5 mb-6 gap-4">
+     <div>
+       <h1 class="text-3xl font-black text-slate-900 tracking-tight">Classroom Performance Analytics</h1>
+       <p class="text-sm font-medium text-slate-500 mt-1">Live submission tracking & monitoring ledger panel</p>
+     </div>
+     <div class="bg-indigo-600 text-white px-5 py-3 rounded-xl shadow-md flex flex-col items-center justify-center min-w-[140px]">
+       <span class="text-[10px] uppercase font-bold tracking-widest opacity-80 block">Class Average</span>
+       <span id="class-avg" class="text-3xl font-black block mt-0.5">0%</span>
+     </div>
+   </div>
+
+   <!-- Dynamic Metrics Summary Cards Overview -->
+   <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+     <div class="metric-card bg-sky-50 border-sky-200 text-sky-900">
+       <span class="text-xs font-extrabold uppercase tracking-wider opacity-75">Total Submissions</span>
+       <span id="total-count" class="text-3xl font-black block mt-1">0</span>
+     </div>
+     <div class="metric-card bg-emerald-50 border-emerald-200 text-emerald-900">
+       <span class="text-xs font-extrabold uppercase tracking-wider opacity-75">Highest Score</span>
+       <span id="highest-score" class="text-3xl font-black block mt-1">0%</span>
+     </div>
+     <div class="metric-card bg-rose-50 border-rose-200 text-rose-900">
+       <span class="text-xs font-extrabold uppercase tracking-wider opacity-75">Lowest Score</span>
+       <span id="lowest-score" class="text-3xl font-black block mt-1">0%</span>
+     </div>
+   </div>
+
+   <!-- Submissions Ledger Data Sheet Table Component -->
+   <div class="w-full overflow-x-auto rounded-xl">
+     <table class="grid-table">
+       <thead>
+         <tr>
+           <th style="width: 22%;">Student Name</th>
+           <th style="width: 15%;">Class & Section</th>
+           <th style="width: 25%;">Quiz Title</th>
+           <th style="width: 23%; text-align: center;">Start Time</th>
+           <th style="width: 15%; text-align: right;">Score</th>
+         </tr>
+       </thead>
+       <tbody id="ledger-rows">
+         <tr id="empty-row">
+           <td colspan="5" class="p-12 text-center text-slate-400 font-medium bg-slate-50">
+             No submission logs recorded yet. Waiting for incoming data synchronization...
+           </td>
+         </tr>
+       </tbody>
+     </table>
+   </div>
+</div>
+
+<script>
+   let studentsRecords = [];
+
+   // YOUR SECURE DEPLOYED GOOGLE WEB APP SERVER LINKS
+   const dataEndpointUrl = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+
+   async function fetchLiveGrades() {
+     try {
+       const res = await fetch(dataEndpointUrl);
+       studentsRecords = await res.json();
+       updateDashboardUI();
+     } catch (err) {
+       console.error("Could not synchronize live database feeds:", err);
+     }
+   }
+
+   function updateDashboardUI() {
+     const rowsContainer = document.getElementById('ledger-rows');
+     if (!studentsRecords || studentsRecords.length === 0) return;
+
+     document.getElementById('empty-row')?.remove();
+     rowsContainer.innerHTML = '';
+
+     let totalPercentage = 0;
+     let highPercentage = 0;
+     let lowPercentage = 100;
+     let validRecordsCount = 0;
+
+     studentsRecords.forEach(rec => {
+       // Multi-key checking strategy safely extracts dynamic quiz title casing variants
+       let liveQuizTitle = rec.quiztitle || rec.quizTitle || rec["quiz title"] || rec["Quiz Title"] || 'Sets Quiz';
+
+       let itemPercentage = 0;
+       let rawScoreString = rec.score ? rec.score.toString().trim().replace('%', '') : "0";
+
+       // 1. Process standard fractional input text layouts (e.g. "5 / 10" or "5/10")
+       if (rawScoreString.includes('/')) {
+         const parts = rawScoreString.split('/');
+         const obtained = parseFloat(parts[0].trim());
+         const total = parseFloat(parts[1].trim());
+         if (total > 0) {
+           itemPercentage = Math.round((obtained / total) * 100);
+         }
+       }
+       // 2. Handle cases where the sheet engine compresses fractions into standard numbers
+       else {
+         let rawNumValue = parseInt(rawScoreString) || 0;
+         itemPercentage = Math.round((rawNumValue / 10) * 100); // Base default 10 fallback ratio multiplier
+         rawScoreString = `${rawNumValue} / 10`;
+       }
+
+       totalPercentage += itemPercentage;
+       validRecordsCount++;
+
+       if (itemPercentage > highPercentage) highPercentage = itemPercentage;
+       if (itemPercentage < lowPercentage) lowPercentage = itemPercentage;
+
+       // Render rows with full text support and no clipping masks
+       const tr = document.createElement('tr');
+       tr.innerHTML = `
+         <td class="font-bold text-slate-900">${rec.name || 'N/A'}</td>
+         <td class="font-medium text-slate-700">${rec.classroom || 'N/A'}</td>
+         <td class="font-medium text-slate-600">${liveQuizTitle}</td>
+         <td class="text-center text-slate-500 font-mono font-medium">${rec.duration || 'N/A'}</td>
+         <td class="text-right font-black text-slate-900">
+           <span class="block">${rawScoreString}</span>
+           <span class="text-xs font-bold text-indigo-500">(${itemPercentage}%)</span>
+         </td>
+       `;
+       rowsContainer.appendChild(tr);
+     });
+
+     // Render calculations cleanly into analytics summary nodes
+     if (validRecordsCount > 0) {
+       document.getElementById('total-count').innerText = validRecordsCount;
+       document.getElementById('class-avg').innerText = Math.round(totalPercentage / validRecordsCount) + '%';
+       document.getElementById('highest-score').innerText = highPercentage + '%';
+       document.getElementById('lowest-score').innerText = lowPercentage + '%';
+     }
+   }
+
+   // Initialize data checking tracking cycles immediately on tab window load every 10 seconds
+   fetchLiveGrades();
+   setInterval(fetchLiveGrades, 10000);
+</script>
+
+</body>
+</html>
