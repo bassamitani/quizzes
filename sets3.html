@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Theory & Venn Diagrams Diagnostic Suite</title>
+    <!-- Tailwind CSS Styling Framework CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX Mathematical Typography Notation Engine Setup CDN -->                  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7; --primary-hover: #0369a1; --bg-main: #f8fafc;
+            --bg-surface: #ffffff; --border-color: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #16a34a; --error: #dc2626;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; }
+        .hidden { display: none !important; }
+        .opt-btn {
+            background-color: var(--bg-surface); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 1.05rem;
+        }
+        .opt-btn:hover { border-color: var(--primary); background-color: #f0f9ff; }
+        .opt-btn.active { border-color: var(--primary); background-color: #e0f2fe; font-weight: 600; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+        .venn-region { cursor: pointer; transition: fill 0.2s ease; }
+        .venn-region:hover { opacity: 0.8; }
+        .report-item { background: var(--bg-surface); border-radius: 10px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #cbd5e1; }
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+            .katex { font-size: 1.12em; }
+        .venn-region:hover { opacity: 0.85; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Credentials Authentication Entry Stage -->
+    <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
+        <h2 class="text-3xl font-extrabold text-slate-800 text-center tracking-tight mb-2">SETS Matrix Quiz</h2>
+        <p class="text-sm text-slate-500 text-center mb-8">Set Theory, Venn Diagrams & Elements Evaluation</p>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Student Full Name</label>
+                <input type="text" id="student-name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Assigned Class Section</label>
+                <input type="text" id="student-section" placeholder="Grade 10-A" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <button id="action-start" class="w-full bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm tracking-wider uppercase mt-4">Unlock Examination Matrix</button>
+        </div>
+    </div>
+
+    <!-- FIXED: Active Test Core Engine Integrated Inside One Single Unified Main Box Header Layout -->
+    <div id="stage-engine" class="hidden max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+        <div class="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between min-h-[550px]">
+
+            <!-- HEADER INFO BAR: Time tracking and Question counts grouped inside the single main container block -->
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-5 flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Question Tracker &middot; <span id="idx-current">0</span> / <span id="idx-total">0</span></span>
+                    <span id="txt-tier-badge" class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase bg-slate-100 text-slate-600">Tier</span>
+                </div>
+
+                <!-- TIMER COMPONENT: Grouped tightly inside the primary top header control area -->
+                <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
+                    <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">15:00</span>
+                    <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                        <div id="meter-progress" class="bg-sky-400 h-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Content Presentation Window -->
+            <div class="flex-grow flex flex-col justify-center">
+                <div id="math-prompt-container" class="mb-6"></div>
+
+                <div id="interactive-zone" class="w-full flex flex-col items-center justify-center mb-6">
+                    <div id="venn-diagram-canvas" class="mb-5 w-full"></div>
+                    <div id="box-mcq" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"></div>
+                    <div id="box-tf" class="hidden flex gap-4 w-full justify-center">
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="TRUE">TRUE</button>
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="FALSE">FALSE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Layout Shortcut Matrix Navigation Row -->
+            <div class="border-t border-slate-100 pt-4 mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <!-- Grid Shortcuts inline at the bottom left -->
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden md:block">Overview:</span>
+                    <div id="navigation-shortcut-grid" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="flex gap-3 justify-end w-full sm:w-auto">
+                    <button id="action-back" class="px-5 py-2 border border-slate-300 rounded-xl font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 text-sm transition cursor-pointer">&larr; Back</button>
+                    <button id="action-forward" class="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 text-sm shadow transition cursor-pointer">Next &rarr;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Final Diagnostic Summary Sheet Layout -->
+    <div id="stage-summary" class="hidden max-w-3xl mx-auto w-full px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 p-6 text-white flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">Performance Summary Report</h1>
+                    <p class="text-sky-100 text-xs mt-1">Set Theory Curriculum Assessment Key</p>
+                </div>
+                <button onclick="triggerDirectPdfDownload()" class="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition cursor-pointer shadow-sm border border-white/10 text-white">Download as PDF</button>
+            </div>
+
+            <div class="grid grid-cols-3 text-center border-b border-slate-100 bg-slate-50 py-4">
+                <div>
+                    <div id="m-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div id="m-incorrect" class="text-2xl font-extrabold text-rose-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Incorrect</div>
+                </div>
+                <div>
+                    <div id="m-percent" class="text-2xl font-extrabold text-sky-600">0%</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score Rate</div>
+                </div>
+            </div>
+
+                    <!-- Dynamic Question Injections -->
+                        <div id="report-injection-zone" class="p-6 space-y-4 bg-slate-50/50"></div>
+                </div>
+
+                <!-- FIXED: Repositioned standalone PDF action handler bar to the absolute bottom of the page structure -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
+                        <button id="action-pdf-bottom" onclick="triggerDirectPdfDownload()" class="flex-grow bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
+                        <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
+                </div>
+        </div>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
+        &copy; 2026 Set Theory Assessment Suite &bull; Academic Diagnostic Engine
+    </footer>
+
+<script>
+    const APP_LIMITS = {
+        totalItems: 10,
+        allocatedDurationSeconds: 900, // 15 Minutes exactly
+        tiers: { easy: 3, medium: 4, hard: 3 }
+    };
+
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+    let formattedQuizStartTimeStamp = "";
+
+    // ---------- tiny helpers (no literal backslashes are needed anywhere: BS is a backslash) ----------
+    const BS = String.fromCharCode(92);
+    function tx(s) { return s.split('@').join(BS); }          // write LaTeX with @ instead of a backslash
+    function slashCmd(cmd) { return BS + cmd; }
+
+    function shuffleArray(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    // LaTeX version of a set: braces are escaped so KaTeX really shows them (plain { } vanish in KaTeX)
+    function setTex(arr) {
+        if (!arr || arr.length === 0) return BS + "emptyset";
+        return BS + "{" + [...arr].sort((x, y) => x - y).join(", ") + BS + "}";
+    }
+    // Plain-text version for ordinary HTML
+    function setText(arr) {
+        if (!arr || arr.length === 0) return "∅";
+        return "{" + [...arr].sort((x, y) => x - y).join(", ") + "}";
+    }
+    function formatSetString(arr) { return setTex(arr); }   // kept for compatibility
+
+    // Always returns 4 DIFFERENT options (the old version could repeat the answer or push arrays)
+    function buildShuffledChoices(correct, fakes) {
+        const options = [correct];
+        shuffleArray(fakes).forEach(f => {
+            if (options.length < 4 && f !== undefined && f !== null && !options.includes(f)) options.push(f);
+        });
+        let guard = 0;
+        while (options.length < 4 && guard++ < 80) {          // safety top-up with random subsets of E
+            const subset = [1, 2, 3, 4, 5, 6, 7, 8].filter(() => Math.random() > 0.55);
+            const t = setTex(subset);
+            if (!options.includes(t)) options.push(t);
+        }
+        return shuffleArray(options);
+    }
+
+    // Random sets. Every Venn region is guaranteed to contain at least one number
+    function generateRandomSetsData() {
+        const universe = [1, 2, 3, 4, 5, 6, 7, 8];
+        for (let attempt = 0; attempt < 80; attempt++) {
+            const A = [], B = [];
+            universe.forEach(num => {
+                if (num <= 5 && Math.random() > 0.3) A.push(num);
+                if (num >= 3 && num <= 7 && Math.random() > 0.3) B.push(num);
+            });
+            const r = regionsOf({ E: universe, A: A, B: B });
+            if (r.A.length >= 1 && r.AB.length >= 1 && r.B.length >= 1) return { E: universe, A: A, B: B };
+        }
+        return { E: universe, A: [1, 2, 3, 4], B: [3, 4, 5, 6] };
+    }
+
+    // The four regions of a two-set Venn diagram: A only, A∩B, B only, outside both (O)
+    function regionsOf(ds) {
+        return {
+            A:  ds.A.filter(x => !ds.B.includes(x)),
+            AB: ds.A.filter(x => ds.B.includes(x)),
+            B:  ds.B.filter(x => !ds.A.includes(x)),
+            O:  ds.E.filter(x => !ds.A.includes(x) && !ds.B.includes(x))
+        };
+    }
+    function unionOfRegions(regs, keys) {
+        return keys.reduce((acc, k) => acc.concat(regs[k]), []).sort((a, b) => a - b);
+    }
+    function sameRegionSet(a, b) { return a.length === b.length && a.every(x => b.includes(x)); }
+    function plainBox(lines) {
+        return '<br><span class="block mt-2 font-mono text-sm bg-slate-50 p-2.5 rounded-lg border border-slate-200">' + lines.join('<br>') + '</span>';
+    }
+    // ========================================== -->
+    // PART 3A: THE CORE EXAM PROBLEM FACTORIES   -->
+    // ========================================== -->
+
+    // Every way of shading the 4 regions that we ask about, with its set expression
+    const REGION_EXPR = [
+        { r: ['AB'],            tex: 'A @cap B',                         lvl: 1 },
+        { r: ['A'],             tex: 'A @cap B^c',                       lvl: 1 },
+        { r: ['B'],             tex: 'B @cap A^c',                       lvl: 1 },
+        { r: ['O'],             tex: '(A @cup B)^c',                     lvl: 1 },
+        { r: ['A', 'AB', 'B'],  tex: 'A @cup B',                         lvl: 1 },
+        { r: ['B', 'O'],        tex: 'A^c',                              lvl: 2 },
+        { r: ['A', 'O'],        tex: 'B^c',                              lvl: 2 },
+        { r: ['A', 'B', 'O'],   tex: '(A @cap B)^c',                     lvl: 3 },
+        { r: ['A', 'B'],        tex: '(A @cup B) @setminus (A @cap B)',  lvl: 3 }
+    ];
+    const HIGHLIGHT_COLORS = [
+        { name: 'Red',    fill: '#fca5a5', text: '#dc2626' },
+        { name: 'Blue',   fill: '#93c5fd', text: '#2563eb' },
+        { name: 'Yellow', fill: '#fde047', text: '#ca8a04' },
+        { name: 'Green',  fill: '#86efac', text: '#16a34a' }
+    ];
+    // Questions that read the numbers off a Venn diagram
+    const READING_VARIANTS = [
+        { tex: 'A @cap B',        keys: ['AB'] },
+        { tex: 'A @cup B',        keys: ['A', 'AB', 'B'] },
+        { tex: 'A^c',             keys: ['B', 'O'] },
+        { tex: 'B^c',             keys: ['A', 'O'] },
+        { tex: 'A @cap B^c',      keys: ['A'] },
+        { tex: 'B @cap A^c',      keys: ['B'] },
+        { tex: '(A @cup B)^c',    keys: ['O'] },
+        { tex: 'card(A @cup B)',  keys: ['A', 'AB', 'B'], card: true },
+        { tex: 'card(A^c)',       keys: ['B', 'O'],       card: true }
+    ];
+    const REGION_COMBOS = [['AB'], ['A'], ['B'], ['O'], ['A', 'AB'], ['AB', 'B'], ['A', 'B'], ['A', 'AB', 'B'],
+                           ['B', 'O'], ['A', 'O'], ['A', 'B', 'O'], ['AB', 'O'], ['A', 'AB', 'O'], ['AB', 'B', 'O']];
+
+    function constructSetsProblem(tier, spec) {
+        const selectedType = spec.cat;   // the question type + sub-variant are chosen up-front by pickQuizSpecs()
+
+        const dataset = generateRandomSetsData();
+        const regs = regionsOf(dataset);
+        let promptText = "", equationLatex = "", solutionString = "", interactionFormat = "MCQ";
+        let choicesPool = [], vennConfig = null;
+        const allSets = (keys) => unionOfRegions(regs, keys);
+
+        // ---------------------------------------------------------------- extension operations
+        if (selectedType === 'EXTENSION_OP') {
+            const v = spec.v;
+            if (v === 0) {
+                promptText = "Given the sets in extension below, find the intersection set elements:";
+                equationLatex = tx("A @cap B");
+                solutionString = setTex(regs.AB);
+                choicesPool = buildShuffledChoices(solutionString, [setTex(dataset.A), setTex(dataset.B), setTex(allSets(['A', 'AB', 'B'])), setTex(regs.A), setTex([])]);
+            } else if (v === 1) {
+                promptText = "Given the sets in extension below, find the union set elements:";
+                equationLatex = tx("A @cup B");
+                solutionString = setTex(allSets(['A', 'AB', 'B']));
+                choicesPool = buildShuffledChoices(solutionString, [setTex(dataset.A), setTex(dataset.B), setTex(dataset.E), setTex(regs.AB)]);
+            } else {
+                promptText = "Given the sets in universal set E, determine the absolute complement set of A in E:";
+                equationLatex = tx("A^c");
+                solutionString = setTex(allSets(['B', 'O']));
+                choicesPool = buildShuffledChoices(solutionString, [setTex(dataset.A), setTex(dataset.B), setTex(allSets(['A', 'O'])), setTex(regs.O)]);
+            }
+            promptText += plainBox(["E = " + setText(dataset.E), "A = " + setText(dataset.A), "B = " + setText(dataset.B)]);
+        }
+
+        // ---------------------------------------------------------------- true / false
+        else if (selectedType === 'TRUE_FALSE_MEMBERSHIP') {
+            interactionFormat = "TF";
+            const elementPick = Math.floor(Math.random() * 8) + 1;
+            const tfVariant = spec.v;
+            let cond = false;
+            if (tfVariant === 0) {
+                equationLatex = elementPick + tx(" @in A");
+                cond = dataset.A.includes(elementPick);
+            } else if (tfVariant === 1) {
+                equationLatex = elementPick + tx(" @notin B");
+                cond = !dataset.B.includes(elementPick);
+            } else if (tfVariant === 2) {
+                equationLatex = elementPick + tx(" @in B^c");
+                cond = !dataset.B.includes(elementPick);
+            } else {
+                let guessedCard = regs.AB.length;
+                if (Math.random() > 0.5) guessedCard += 1;
+                equationLatex = tx("card(A @cap B) = ") + guessedCard;
+                cond = (guessedCard === regs.AB.length);
+            }
+            solutionString = cond ? "TRUE" : "FALSE";
+            promptText = "Evaluate the membership or cardinality assertion statement for correctness:" +
+                plainBox(["E = " + setText(dataset.E), "A = " + setText(dataset.A), "B = " + setText(dataset.B)]);
+        }
+
+        // ---------------------------------------------------------------- comprehension -> extension
+        else if (selectedType === 'COMPREHENSION_TO_EXTENSION') {
+            const E = dataset.E;
+            const v = spec.v;
+            let res;
+            if (v === 0) {
+                // THE FIX: the old line used  \text  and  \(  inside a normal JS string, so  \t  became a TAB
+                // (that is why the page showed "x ( ext{ is an even number}))"). tx() keeps every backslash.
+                equationLatex = tx("X = @{x @in E @mid x @text{ is an even number}@}");
+                res = E.filter(x => x % 2 === 0);
+                choicesPool = buildShuffledChoices(setTex(res), [setTex(E.filter(x => x % 2 !== 0)), setTex([]), setTex(E), setTex([2, 4, 6])]);
+            } else if (v === 1) {
+                const threshold = Math.floor(Math.random() * 3) + 4;
+                equationLatex = tx("Y = @{y @in E @mid y > " + threshold + "@}");
+                res = E.filter(x => x > threshold);
+                choicesPool = buildShuffledChoices(setTex(res), [setTex(E.filter(x => x <= threshold)), setTex(E.filter(x => x >= threshold)), setTex([]), setTex([7, 8])]);
+            } else if (v === 2) {
+                equationLatex = tx("P = @{p @in E @mid p @text{ is a prime number}@}");
+                res = E.filter(x => [2, 3, 5, 7].includes(x));
+                choicesPool = buildShuffledChoices(setTex(res), [setTex([1, 3, 5, 7]), setTex([3, 5, 7]), setTex([2, 3, 5, 7, 8]), setTex([1, 2, 3, 5, 7])]);
+            } else {
+                equationLatex = tx("M = @{m @in E @mid m @text{ is a multiple of } 3@}");
+                res = E.filter(x => x % 3 === 0);
+                choicesPool = buildShuffledChoices(setTex(res), [setTex([3, 6, 9]), setTex([1, 3, 6]), setTex([3]), setTex([2, 4, 5, 7, 8])]);
+            }
+            solutionString = setTex(res);
+            promptText = "Convert the set statement from mathematical comprehension rules to extension layout listings:" +
+                plainBox(["E = " + setText(E)]);
+        }
+
+        // ---------------------------------------------------------------- read numbers off a Venn diagram
+        else if (selectedType === 'VENN_READING') {
+            
+            const rv = READING_VARIANTS[spec.v];
+            const res = allSets(rv.keys);
+            promptText = "Study the Venn diagram. Each number is written inside the region it belongs to. Find the set described below:";
+            equationLatex = tx(rv.tex);
+            if (rv.card) {
+                const n = res.length;
+                solutionString = String(n);
+                const fakes = [n + 1, n - 1, n + 2, n - 2, n + 3].filter(x => x >= 0 && x !== n).map(String);
+                choicesPool = buildShuffledChoices(solutionString, fakes);
+            } else {
+                solutionString = setTex(res);
+                const key = rv.keys.join('+');
+                const fakes = REGION_COMBOS.filter(c => c.join('+') !== key).map(c => setTex(allSets(c)));
+                choicesPool = buildShuffledChoices(solutionString, fakes);
+            }
+            vennConfig = { type: 'reading', regions: regs, sets: dataset };
+        }
+
+        // ---------------------------------------------------------------- which expression is highlighted?
+        else if (selectedType === 'VENN_REGION') {
+            
+            const target = REGION_EXPR[spec.v];
+            const col = HIGHLIGHT_COLORS[Math.floor(Math.random() * HIGHLIGHT_COLORS.length)];
+            promptText = "Examine the Venn diagram below. Which mathematical expression accurately describes the region highlighted in <span style='color:" + col.text + "; font-weight:bold;'>" + col.name + "</span>?";
+            solutionString = tx(target.tex);
+            const fakes = REGION_EXPR.filter(e => e !== target).map(e => tx(e.tex));
+            choicesPool = buildShuffledChoices(solutionString, fakes);
+            vennConfig = { type: 'highlight', target: target.r, color: col };
+        }
+
+        // ---------------------------------------------------------------- click the regions to shade them
+        else if (selectedType === 'VENN_INTERACTIVE') {
+            interactionFormat = "SHADE";
+            
+            const target = REGION_EXPR[spec.v];
+            promptText = "Shade the Venn diagram. Click every region that belongs to the set below (click a region again to un-shade it). Your shading is saved automatically.";
+            equationLatex = tx(target.tex);
+            solutionString = "Correct Shading Verified";
+            vennConfig = { type: 'shade', target: target.r, selected: [] };
+        }
+
+        return {
+            equation: equationLatex,
+            tier: tier,
+            type: interactionFormat,
+            categoryType: selectedType,
+            pool: choicesPool,
+            solution: solutionString,
+            prompt: promptText,
+            venn: vennConfig
+        };
+    }
+
+  // ============================================================================
+  // NO-REPEAT QUESTION PLANNER
+  // Every question is a (type, variant) "spec". Specs are chosen BEFORE any numbers are
+  // generated, so two questions can never be the same kind of problem with new numbers.
+  // concept = which part of the Venn diagram the question is really about
+  //           (A∩B, A∪B, A^c ...), so "A∩B" is not asked again in another disguise.
+  // ============================================================================
+  const CONCEPT_OF = keys => keys.join('+');
+  function buildSpecCatalog() {
+      const specs = [];
+      const add = (cat, v, concept, tiers) => specs.push({ cat: cat, v: v, concept: concept, tiers: tiers });
+
+      // EXTENSION_OP: 0 = A∩B, 1 = A∪B, 2 = A^c
+      add('EXTENSION_OP', 0, CONCEPT_OF(['AB']), ['easy', 'medium']);
+      add('EXTENSION_OP', 1, CONCEPT_OF(['A', 'AB', 'B']), ['easy', 'medium']);
+      add('EXTENSION_OP', 2, CONCEPT_OF(['B', 'O']), ['easy', 'medium']);
+      // TRUE_FALSE_MEMBERSHIP: 0 = x∈A, 1 = x∉B, 2 = x∈B^c, 3 = card(A∩B)=n
+      add('TRUE_FALSE_MEMBERSHIP', 0, 'tf-in-A', ['easy', 'medium']);
+      add('TRUE_FALSE_MEMBERSHIP', 1, 'tf-notin-B', ['easy', 'medium']);
+      add('TRUE_FALSE_MEMBERSHIP', 2, 'tf-in-Bc', ['easy', 'medium']);
+      add('TRUE_FALSE_MEMBERSHIP', 3, 'tf-card', ['easy', 'medium']);
+      // COMPREHENSION_TO_EXTENSION: 0 = even, 1 = y > k, 2 = prime, 3 = multiple of 3
+      add('COMPREHENSION_TO_EXTENSION', 0, 'comp-even', ['medium', 'hard']);
+      add('COMPREHENSION_TO_EXTENSION', 1, 'comp-greater', ['medium', 'hard']);
+      add('COMPREHENSION_TO_EXTENSION', 2, 'comp-prime', ['medium', 'hard']);
+      add('COMPREHENSION_TO_EXTENSION', 3, 'comp-multiple', ['medium', 'hard']);
+      // VENN_READING: index into READING_VARIANTS
+      READING_VARIANTS.forEach((rv, i) => {
+          const tiers = [];
+          if ([0, 1, 2, 3, 7].includes(i)) tiers.push('medium');
+          if ([2, 3, 4, 5, 6, 8].includes(i)) tiers.push('hard');
+          add('VENN_READING', i, CONCEPT_OF(rv.keys) + (rv.card ? '#card' : ''), tiers);
+      });
+      // VENN_REGION and VENN_INTERACTIVE: index into REGION_EXPR
+      REGION_EXPR.forEach((e, i) => {
+          const tiers = [];
+          if (e.lvl <= 2) tiers.push('medium');
+          if (e.lvl >= 2) tiers.push('hard');
+          add('VENN_REGION', i, CONCEPT_OF(e.r), tiers);
+          add('VENN_INTERACTIVE', i, CONCEPT_OF(e.r), tiers);
+      });
+      return specs;
+  }
+
+  function pickQuizSpecs() {
+      const catalog = buildSpecCatalog();
+      const chosen = { easy: [], medium: [], hard: [] };
+      const usedConcepts = new Set();
+      const usedKeys = new Set();
+      const catCount = {};
+      const keyOf = s => s.cat + ':' + s.v;
+
+      ['easy', 'medium', 'hard'].forEach(tier => {
+          for (let n = 0; n < APP_LIMITS.tiers[tier]; n++) {
+              const inTier = catalog.filter(s => s.tiers.includes(tier) && !usedKeys.has(keyOf(s)));
+              // relax the rules step by step only if we run out of fresh material
+              const attempts = [
+                  inTier.filter(s => !usedConcepts.has(s.concept)),   // brand-new concept
+                  inTier,                                             // at least a brand-new variant
+                  catalog.filter(s => s.tiers.includes(tier))         // last resort
+              ];
+              const pool = attempts.find(p => p.length > 0);
+              // prefer the question TYPE that has been used least so far -> maximum variety
+              const least = Math.min.apply(null, pool.map(s => catCount[s.cat] || 0));
+              const best = pool.filter(s => (catCount[s.cat] || 0) === least);
+              const pick = best[Math.floor(Math.random() * best.length)];
+              chosen[tier].push(pick);
+              usedKeys.add(keyOf(pick));
+              usedConcepts.add(pick.concept);
+              catCount[pick.cat] = (catCount[pick.cat] || 0) + 1;
+          }
+      });
+      return chosen;
+  }
+
+  function generateEntireQuizSuite() {
+      const specs = pickQuizSpecs();
+      const build = tier => specs[tier].map(spec => constructSetsProblem(tier, spec));
+      const easy = build('easy'), medium = build('medium'), hard = build('hard');
+
+      // Shuffle inside each tier (easy -> medium -> hard order is kept) and make sure
+      // two questions of the same type are never next to each other, boundaries included.
+      let best = null;
+      for (let t = 0; t < 200; t++) {
+          const candidate = [...shuffleArray(easy), ...shuffleArray(medium), ...shuffleArray(hard)];
+          let clashes = 0;
+          for (let i = 1; i < candidate.length; i++) if (candidate[i].categoryType === candidate[i - 1].categoryType) clashes++;
+          if (!best || clashes < best.clashes) best = { list: candidate, clashes: clashes };
+          if (clashes === 0) break;
+      }
+      generatedSuite = best.list;
+  }
+
+    // ========================================== -->
+    // PART 4A: DYNAMIC SVG VENN GRAPHICS ENGINE  -->
+    // ========================================== -->
+    // One pure function builds the picture (used in the quiz AND in the report).
+    // Geometry: viewBox 640x400, two circles r=130 centred at x=250 and x=390.
+    let vennCounter = 0;
+    const VG = { W: 640, H: 400, cy: 205, r: 130, ax: 250, bx: 390 };
+    const NUM_FONT = 36;                         // size of the numbers drawn inside the regions
+
+    function vennSlots(key, n) {
+        const A_SLOTS = {
+            1: [[190, 205]],
+            2: [[165, 205], [222, 205]],
+            3: [[165, 176], [222, 176], [193, 236]],
+            4: [[165, 176], [222, 176], [165, 236], [222, 236]]
+        };
+        const OUT = [[62, 72], [578, 72], [62, 338], [578, 338], [62, 205], [578, 205], [320, 44], [320, 366], [150, 366], [490, 366]];
+        const X = VG.W / 2;
+        if (key === 'A') return (A_SLOTS[n] || genericGrid(190, n));
+        if (key === 'B') return (A_SLOTS[n] || genericGrid(190, n)).map(p => [VG.W - p[0], p[1]]);
+        if (key === 'AB') {
+            const ys = { 1: [205], 2: [178, 234], 3: [150, 205, 260] }[n] || [150, 205, 260];
+            return ys.map(y => [X, y]);
+        }
+        return OUT.slice(0, n);
+    }
+    function genericGrid(cx, n) {
+        const out = [];
+        for (let i = 0; i < n; i++) out.push([cx - 28 + (i % 2) * 56, 160 + Math.floor(i / 2) * 44]);
+        return out;
+    }
+
+    // cfg.regions (optional): {A:[..],AB:[..],B:[..],O:[..]} -> numbers are written inside the regions
+    // opts.selected: region keys filled with opts.color;  opts.interactive: regions are clickable
+    function vennMarkup(cfg, opts) {
+        opts = opts || {};
+        const uid = 'vn' + (++vennCounter);
+        const sel = opts.selected || [];
+        const color = opts.color || '#bae6fd';
+        const regions = opts.regions || null;
+        const fill = k => sel.includes(k) ? color : '#ffffff';
+        const click = k => opts.interactive ? ' class="venn-region" style="cursor:pointer" onclick="toggleVennRegion(\'' + k + '\')"' : '';
+        const a = VG.ax, b = VG.bx, cy = VG.cy, r = VG.r;
+
+        let s = '<svg viewBox="0 0 ' + VG.W + ' ' + VG.H + '" class="w-full mx-auto" style="display:block; max-width:' + (opts.maxWidth || 560) + 'px; background:#fff; border:1px solid #cbd5e1; border-radius:12px;" role="img" aria-label="Venn diagram">';
+        s += '<defs><clipPath id="' + uid + '-clipA"><circle cx="' + a + '" cy="' + cy + '" r="' + r + '"/></clipPath></defs>';
+        // 1) fills (bottom to top):  outside  ->  A  ->  B  ->  lens (B clipped by A)
+        s += '<rect x="10" y="10" width="' + (VG.W - 20) + '" height="' + (VG.H - 20) + '" rx="6" fill="' + fill('O') + '"' + click('O') + '/>';
+        s += '<circle cx="' + a + '" cy="' + cy + '" r="' + r + '" fill="' + fill('A') + '"' + click('A') + '/>';
+        s += '<circle cx="' + b + '" cy="' + cy + '" r="' + r + '" fill="' + fill('B') + '"' + click('B') + '/>';
+        s += '<circle cx="' + b + '" cy="' + cy + '" r="' + r + '" fill="' + fill('AB') + '" clip-path="url(#' + uid + '-clipA)"' + click('AB') + '/>';
+        // 2) outlines (never catch clicks)
+        s += '<rect x="10" y="10" width="' + (VG.W - 20) + '" height="' + (VG.H - 20) + '" rx="6" fill="none" stroke="#475569" stroke-width="3" pointer-events="none"/>';
+        s += '<circle cx="' + a + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#b91c1c" stroke-width="4" pointer-events="none"/>';
+        s += '<circle cx="' + b + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#1d4ed8" stroke-width="4" pointer-events="none"/>';
+        // 3) set names (large)
+        s += '<text x="30" y="46" font-size="30" font-weight="800" fill="#475569" font-family="Georgia, serif" font-style="italic" pointer-events="none">E</text>';
+        s += '<text x="118" y="70" font-size="40" font-weight="800" fill="#b91c1c" font-family="system-ui, sans-serif" pointer-events="none">A</text>';
+        s += '<text x="494" y="70" font-size="40" font-weight="800" fill="#1d4ed8" font-family="system-ui, sans-serif" pointer-events="none">B</text>';
+        // 4) the numbers inside each region
+        if (regions) {
+            ['A', 'AB', 'B', 'O'].forEach(k => {
+                const nums = regions[k] || [];
+                const slots = vennSlots(k, nums.length);
+                nums.forEach((n, i) => {
+                    s += '<text x="' + slots[i][0] + '" y="' + (slots[i][1] + NUM_FONT * 0.35) + '" font-size="' + NUM_FONT + '" font-weight="800" fill="#0f172a" text-anchor="middle" font-family="system-ui, sans-serif" pointer-events="none">' + n + '</text>';
+                });
+            });
+        }
+        return s + '</svg>';
+    }
+
+    function buildVennDiagramGraphic(activeProblem) {
+        const box = document.getElementById('venn-diagram-canvas');
+        box.innerHTML = "";
+        if (!activeProblem.venn) return;
+        const v = activeProblem.venn;
+        let html;
+        if (v.type === 'reading') {
+            html = vennMarkup(v, { regions: v.regions });
+        } else if (v.type === 'highlight') {
+            html = vennMarkup(v, { selected: v.target, color: v.color.fill });
+        } else {
+            html = vennMarkup(v, { selected: v.selected, color: '#bae6fd', interactive: true }) +
+                   '<p class="text-center text-sm text-slate-500 mt-2">Tap or click the regions to shade them.</p>';
+        }
+        box.innerHTML = html;
+    }
+
+    function toggleVennRegion(key) {
+        const p = generatedSuite[traversalIndex];
+        if (!p || !p.venn || p.venn.type !== 'shade') return;
+        const s = p.venn.selected, i = s.indexOf(key);
+        if (i > -1) s.splice(i, 1); else s.push(key);
+        buildVennDiagramGraphic(p);
+        if (s.length === 0) { delete storedResponses[traversalIndex]; buildShortcutsGridMatrix(); }
+        else recordInput(sameRegionSet(s, p.venn.target) ? "Correct Shading Verified" : "Incorrect Shading Configurations");
+    }
+    function toggleVennRegionShading(id) { toggleVennRegion(String(id).replace('region-', '')); }   // old name still works
+
+    // ========================================== -->
+    // PART 4B: INTERFACE VIEW SYNCHRONIZER       -->
+    // ========================================== -->
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+        document.getElementById('txt-tier-badge').innerText = activeProblem.tier + " tier";
+
+        let equationBlock = activeProblem.equation ? `
+            <div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 8px; text-align:center;">
+                $$${activeProblem.equation}$$
+            </div>
+        ` : "";
+
+        document.getElementById('math-prompt-container').innerHTML = `
+            <div style="font-size:1.1rem; line-height:1.5; color: var(--text-main);">
+                ${activeProblem.prompt}
+                ${equationBlock}
+            </div>
+        `;
+
+        document.getElementById('venn-diagram-canvas').innerHTML = "";
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+
+        if (activeProblem.venn) buildVennDiagramGraphic(activeProblem);
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+
+            activeProblem.pool.forEach(choice => {
+                const buttonElement = document.createElement('button');
+                buttonElement.className = `opt-btn p-3 text-center transition flex justify-center items-center ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+                buttonElement.style.minHeight = "48px";
+                buttonElement.style.fontSize = "1.2rem";
+                buttonElement.innerHTML = BS + "(" + choice + BS + ")";      // choices are stored as LaTeX
+                buttonElement.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    buttonElement.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(buttonElement);
+            });
+            if (window.katex && typeof window.renderMathInElement === 'function') {
+                window.renderMathInElement(mcqContainer);
+            }
+        } else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        }
+
+        buildShortcutsGridMatrix();
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(document.getElementById('math-prompt-container'));
+        }
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; buildShortcutsGridMatrix(); }
+
+    function buildShortcutsGridMatrix() {
+        const grid = document.getElementById('navigation-shortcut-grid');
+        grid.innerHTML = "";
+        for (let i = 0; i < APP_LIMITS.totalItems; i++) {
+            const b = document.createElement('button');
+            b.innerText = i + 1;
+            let bgStyle = "bg-slate-100 text-slate-600 border border-slate-300";
+            if (traversalIndex === i) bgStyle = "bg-sky-600 text-white font-bold ring-2 ring-sky-300";
+            else if (storedResponses[i]) bgStyle = "bg-emerald-100 text-emerald-700 border border-emerald-400 font-semibold";
+
+            b.className = `p-2 text-xs text-center rounded-lg transition cursor-pointer min-w-[32px] ${bgStyle}`;
+            b.onclick = () => { traversalIndex = i; synchroniseQuestionIndex(); };
+            grid.appendChild(b);
+        }
+    }
+    // ========================================== -->
+    // PART 5: TIMERS, PDF EXPORT & EVENT LISTENERS-->
+    // ========================================== -->
+
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            let m = Math.floor(timeTrackingRemaining / 60);
+            let s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            let dynamicPercentage = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${dynamicPercentage}%`;
+
+            if (dynamicPercentage < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (dynamicPercentage < 50) progress.style.backgroundColor = '#d97706';
+        }
+        pulse();
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limit reached. Compiling final performance report now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+ generatedSuite.forEach((problem, index) => {
+ const userRaw = storedResponses[index];
+ const userAns = (userRaw || "").toString().trim().toUpperCase();
+ const correctAns = problem.solution.toString().trim().toUpperCase();
+ const outcomeState = userAns === correctAns;
+ if (outcomeState) tallyCorrect++;
+
+ // answers that are maths (sets, expressions, numbers) are rendered by KaTeX, words are shown as text
+ const isPlain = s => /^(TRUE|FALSE|UNANSWERED)$/i.test(s) || /Shading/.test(s);
+ const showAns = s => isPlain(String(s)) ? String(s) : (BS + "(" + s + BS + ")");
+
+ let vennBlock = "";
+ let answerBlock = "";
+ const answerColor = outcomeState ? 'var(--success)' : 'var(--error)';
+ if (problem.venn && problem.venn.type === 'shade') {
+     const v = problem.venn;
+     const cap = (t) => '<div style="text-align:center; font-size:0.75rem; font-weight:700; color:var(--text-muted); letter-spacing:0.05em; margin-bottom:4px;">' + t + '</div>';
+     vennBlock = '<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:12px 0;">' +
+         '<div style="width:260px; max-width:100%;">' + cap('YOUR SHADING') + vennMarkup(v, { selected: v.selected, color: '#bae6fd', maxWidth: 260 }) + '</div>' +
+         '<div style="width:260px; max-width:100%;">' + cap('CORRECT SHADING') + vennMarkup(v, { selected: v.target, color: '#bbf7d0', maxWidth: 260 }) + '</div></div>';
+     answerBlock = '<p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:' + answerColor + ';">' +
+         (outcomeState ? 'Shading is correct' : (userRaw ? 'Shading is incorrect' : 'Unanswered')) + '</span></p>';
+ } else {
+     if (problem.venn) {
+         const v = problem.venn;
+         vennBlock = '<div style="margin:12px 0;">' + vennMarkup(v, {
+             regions: v.type === 'reading' ? v.regions : null,
+             selected: v.type === 'highlight' ? v.target : [],
+             color: v.type === 'highlight' ? v.color.fill : '#bae6fd',
+             maxWidth: 320 }) + '</div>';
+     }
+     answerBlock =
+         '<p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:' + answerColor + '; font-size:1.05rem;">' + (userRaw ? showAns(userRaw) : 'Unanswered') + '</span></p>' +
+         '<p style="margin:0; color: var(--text-muted);"><strong>Correct Verification Key:</strong> <span style="font-weight:600; color: var(--text-main); font-size:1.05rem;">' + showAns(problem.solution) + '</span></p>';
+ }
+
+ let itemScoreBadge = outcomeState ?
+ `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>` :
+ `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+
+ compilationHtml += `
+ <div class="report-item" style="position: relative; overflow: auto; background:#ffffff; padding:16px; margin-bottom:12px; border-radius:12px; border-left: 5px solid ${outcomeState ? 'var(--success)' : 'var(--error)'};">
+ ${itemScoreBadge}
+ <div style="font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+ Question ${index + 1} &middot; Topic Category: <span style="color: var(--primary);">${problem.categoryType.replace(/_/g,' ')}</span>
+ </div>
+ <div style="margin: 16px 0; text-align: center; font-size: 1.4rem; font-weight: bold; color: var(--text-main);">
+ ${problem.equation ? '$$' + problem.equation + '$$' : ''}
+ </div>
+ <div style="font-size: 0.95rem; line-height: 1.5; color: var(--text-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+ <strong>Problem Prompt:</strong>
+ <div style="margin-top: 4px; font-family: system-ui, sans-serif;">${problem.prompt}</div>
+ </div>
+ ${vennBlock}
+ <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; padding-left: 4px;">
+ ${answerBlock}
+ </div>
+ </div>
+ `;
+ });
+
+
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = document.getElementById('student-name').value.trim();
+        const sectionTitle = document.getElementById('student-section').value.trim();
+
+ let headerMetaHtml = `
+ <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 0.95rem; line-height:1.4;">
+ <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+ <div><strong>Student Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+ <div><strong>Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+ </div>
+ <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem;">
+ <div><strong>Quiz Assessment:</strong> <span style="color: #475569; font-weight: 700;">SETS and Venn-Diagrams</span></div>
+ <div><strong>Quiz Start Timestamp:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+ </div>
+ </div>
+ `;
+
+
+        document.getElementById('report-injection-zone').innerHTML = headerMetaHtml + compilationHtml;
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(document.getElementById('report-injection-zone'));
+        }
+
+ const executionDurationMinutes = Math.floor((APP_LIMITS.allocatedDurationSeconds - timeTrackingRemaining) / 60);
+
+// Automatically extract the text written inside your main h1 title banner
+const quizMainTitleText = document.querySelector("#stage-auth h1")?.textContent.trim() || "Sets Quiz";
+
+sendGradesToTeacher(
+    userTitle,
+    sectionTitle,
+    `${tallyCorrect} / ${APP_LIMITS.totalItems}`,
+    formattedQuizStartTimeStamp, // Fixed: Removed the trailing 'm' character
+    quizMainTitleText
+);
+
+function sendGradesToTeacher(name, classroom, score, duration, quizTitle) {
+   // PASTE YOUR GOOGLE WEB APP LINK FROM STEP 3 DIRECTLY INSIDE THE QUOTES BELOW
+    const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+     fetch(url, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                        name: name,
+                        classroom: classroom,
+                        score: score,
+                        duration: duration, // Receives the start time string and logs it into your sheet's Column E
+                        quizTitle: "SETS and Venn-Diagrams",
+                        date: new Date().toLocaleString()
+                })
+    }).catch(err => console.log("Network trace: Client sync fallback triggered."));
+}
+
+    }
+
+    function triggerDirectPdfDownload() {
+        const targetElement = document.getElementById('stage-summary');
+        const config = {
+            margin:       10,
+            filename:     'Sets_Quiz_Diagnostic_Report.pdf',
+            image:        { type: 'jpeg', quality: 0.99 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(config).from(targetElement).save();
+    }
+
+    document.getElementById('action-start').onclick = () => {
+        if (!document.getElementById('student-name').value.trim() || !document.getElementById('student-section').value.trim()) {
+            alert("Please complete credential parameters to unlock.");
+            return;
+        }
+        const now = new Date();
+        formattedQuizStartTimeStamp = now.toLocaleDateString() + " @ " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Finalize and compile report sheets?")) compileFinalPerformanceReport();
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) {
+            traversalIndex--;
+            synchroniseQuestionIndex();
+        }
+    };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+     // 1. Inject print-optimized styles to fix the Flexbox page-clipping bug
+    if (!document.getElementById('print-fix-styles')) {
+        const style = document.createElement('style');
+        style.id = 'print-fix-styles';
+        style.innerHTML = `
+            @media print {
+                html, body {
+                    display: block !important;
+                    height: auto !important;
+                    overflow: visible !important;
+                    background: white !important;
+                }
+                #stage-summary {
+                    display: block !important;
+                    max-width: 100% !important;
+                    width: 100% !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                }
+                footer, #stage-auth, #stage-engine, button, .bg-gradient-to-r button {
+                    display: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // 2. Find the buttons using the text on your screen
+    document.querySelectorAll('button').forEach(button => {
+        if (button.textContent.includes('Save as PDF') || button.textContent.includes('Download as PDF')) {
+
+            // FIX: Remove the broken built-in html2pdf download trigger
+            button.removeAttribute('onclick');
+
+            // 3. Add the clean click action to trigger the working save/print dialog
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.print();
+            });
+        }
+    });
+</script>
+</body>
+</html>
