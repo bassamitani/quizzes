@@ -749,64 +749,70 @@
             }
         }
 
-        else if (selectedType === 'RATIONAL') {
-            // FIXED: Replaced all question variations with 100% mathematically verified solutions (exact and radicals)
-            let variants = [
-                {
-                    eq: "\u005Cfrac{2x+1}{x+2} = \u005Cfrac{x-1}{x-2}",
-                    sol: "0, 4",
-                    fakes: ["-2, 2", "1, 3", nsOption, "0, -4"],
-                    p: "Solve the rational expressions fractional equation and isolate the exact integer roots:",
-                    id: "RAT-1"
-                },
-                {
-                    eq: "\u005Cfrac{x+3}{x+1} = \u005Cfrac{2x-2}{x+2}",
-                    sol: `2-2${slashCmd('sqrt')}{3}, 2+2${slashCmd('sqrt')}{3}`,
-                    fakes: ["-1, 4", "1, -4", nsOption, `2-${slashCmd('sqrt')}{3}, 2+${slashCmd('sqrt')}{3}`],
-                    p: "Solve the rational expressions fractional equation and select the exact radical roots:",
-                    id: "RAT-2"
-                },
-                {
-                    eq: "\u005Cfrac{2x-1}{x+1} = \u005Cfrac{x+2}{x-1}",
-                    // FIXED: Corrected math roots matching the question on your screen
-                    sol: `3-${slashCmd('sqrt')}{10}, 3+${slashCmd('sqrt')}{10}`,
-                    fakes: ["3, -1", "-3, 1", "2, -2", nsOption],
-                    p: "Cross-multiply and isolate the exact simplified radical solution roots:",
-                    id: "RAT-3"
-                },
-                {
-                    eq: "\u005Cfrac{x-1}{x-3} = \u005Cfrac{2x+1}{x+1}",
-                    sol: `${slashCmd('frac')}{5-${slashCmd('sqrt')}{33}}{2}, ${slashCmd('frac')}{5+${slashCmd('sqrt')}{33}}{2}`,
-                    fakes: ["2, 3", "-1, 5", nsOption, "1, -5"],
-                    p: "Solve the rational expressions fractional equation and pick the exact radical roots:",
-                    id: "RAT-4"
-                },
-                {
-                    eq: "\u005Cfrac{x-1}{2} = \u005Cfrac{3}{x-2}",
-                    sol: "-1, 4",
-                    fakes: ["1, -4", "2, -3", nsOption, "0, 5"],
-                    p: "Clear the fractions by cross-multiplying and find the clean integer solution set values:",
-                    id: "RAT-5"
-                },
-                {
-                    eq: "\u005Cfrac{x}{2} = \u005Cfrac{2}{x-2}",
-                    sol: `1-${slashCmd('sqrt')}{5}, 1+${slashCmd('sqrt')}{5}`,
-                    fakes: ["-2, 2", "1, 3", nsOption, `1-2${slashCmd('sqrt')}{5}, 1+2${slashCmd('sqrt')}{5}`],
-                    p: "Solve the fractional rational operational expression and pick the exact radical roots:",
-                    id: "RAT-6"
-                }
-            ];
-            let available = variants.filter(v => !standardTrinomialHistory.includes(v.id));
-            let pick = available.length > 0 ? available[Math.floor(Math.random() * available.length)] : variants[Math.floor(Math.random() * variants.length)];
+else if (selectedType === 'RATIONAL') {
+ // FIXED: Restored using exact \u005C unicode tags and native template slashCmd wrappers
+ let variants = [
+         {
+            eq: "\u005Cfrac{x^2 - 25}{x - 5} = 7",
+            sol: "2", // Perfectly valid solution!
+            fakes: ["5", "-2", nsOption],
+            p: "Solve the rational expression carefully checking for domain restrictions and holes:",
+            id: "RAT-HOLE-fixed"
+        },
+ {
+ eq: "\u005Cfrac{2x+1}{x+2} = \u005Cfrac{x-1}{x-2}",
+ sol: "0, 4",
+ fakes: ["-2, 2", "1, 3", nsOption, "0, -4"],
+ p: "Solve the rational expressions fractional equation and isolate the exact integer roots:",
+ id: "RAT-1"
+ },
+ {
+ eq: "\u005Cfrac{x+3}{x+1} = \u005Cfrac{2x-2}{x+2}",
+ sol: `2-2${slashCmd('sqrt')}{3}, 2+2${slashCmd('sqrt')}{3}`,
+ fakes: ["-1, 4", "1, -4", nsOption, `2-${slashCmd('sqrt')}{3}, 2+${slashCmd('sqrt')}{3}`],
+ p: "Solve the rational expressions fractional equation and select the exact radical roots:",
+ id: "RAT-2"
+ },
+ {
+ eq: "\u005Cfrac{2x-1}{x+1} = \u005Cfrac{x+2}{x-1}",
+ sol: `3-${slashCmd('sqrt')}{10}, 3+${slashCmd('sqrt')}{10}`,
+ fakes: ["3, -1", "-3, 1", "2, -2", nsOption],
+ p: "Cross-multiply and isolate the exact simplified radical solution roots:",
+ id: "RAT-3"
+ },
+ {
+ eq: "\u005Cfrac{x-1}{x-3} = \u005Cfrac{2x+1}{x+1}",
+ sol: `${slashCmd('frac')}{5-${slashCmd('sqrt')}{33}}{2}, ${slashCmd('frac')}{5+${slashCmd('sqrt')}{33}}{2}`,
+ fakes: ["2, 3", "-1, 5", nsOption, "1, -5"],
+ p: "Solve the rational expressions fractional equation and pick the exact radical roots:",
+ id: "RAT-4"
+ },
+ {
+ eq: "\u005Cfrac{x-1}{2} = \u005Cfrac{3}{x-2}",
+ sol: "-1, 4",
+ fakes: ["1, -4", "2, -3", nsOption, "0, 5"],
+ p: "Clear the fractions by cross-multiplying and find the clean integer solution set values:",
+ id: "RAT-5"
+ },
+ {
+ eq: "\u005Cfrac{x}{2} = \u005Cfrac{2}{x-2}",
+ sol: `1-${slashCmd('sqrt')}{5}, 1+${slashCmd('sqrt')}{5}`,
+ fakes: ["-2, 2", "1, 3", nsOption, `1-2${slashCmd('sqrt')}{5}, 1+2${slashCmd('sqrt')}{5}`],
+ p: "Solve the fractional rational operational expression and pick the exact radical roots:",
+ id: "RAT-6"
+ }
+ ];
+ let available = variants.filter(v => !standardTrinomialHistory.includes(v.id));
+ let pick = available.length > 0 ? available[Math.floor(Math.random() * available.length)] :
+ variants[Math.floor(Math.random() * variants.length)];
+ standardTrinomialHistory.push(pick.id);
+ equationLatex = pick.eq;
+ solutionString = pick.sol;
+ promptText = pick.p;
+ interactionFormat = "MCQ";
+ choicesPool = buildShuffledChoices(solutionString, pick.fakes);
+}
 
-            standardTrinomialHistory.push(pick.id);
-            equationLatex = pick.eq;
-            solutionString = pick.sol;
-            promptText = pick.p;
-
-            interactionFormat = "MCQ";
-            choicesPool = buildShuffledChoices(solutionString, pick.fakes);
-        }
 
         else if (selectedType === 'WORD_PROBLEM') {
             let passSecurity = false;
@@ -1011,20 +1017,21 @@ else if (selectedType === 'PARAM_ROOT') {
         document.getElementById('idx-current').innerText = traversalIndex + 1;
         document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
 
-        let equationBlock = activeProblem.equation ? `
-            <div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 12px;">
-                $$${activeProblem.equation}$$
-            </div>
-        ` : "";
+    let equationBlock = activeProblem.equation ? `
+    <div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; line-height: 1.4;">
+        $$${activeProblem.equation}$$
+    </div>
+    ` : "";
 
-        let problemMarkup = `
-            <div style="font-size:1.15rem; line-height:1.6; text-align:center; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; width:100%; padding: 0 10px;">
-                <p style="margin-bottom: 4px; color: var(--text-main); font-weight: 500;">
-                    ${activeProblem.prompt}
-                </p>
-                ${equationBlock}
-            </div>
-        `;
+    let problemMarkup = `
+    <div style="font-size:1.15rem; line-height:1.6; text-align:center; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; width:100%; padding: 0 10px;">
+        <p style="margin-bottom: 4px; color: var(--text-main); font-weight: 500;">
+            ${activeProblem.prompt}
+        </p>
+        ${equationBlock}
+    </div>
+    `;
+
 
         document.getElementById('math-prompt-container').innerHTML = problemMarkup;
 
