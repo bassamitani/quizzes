@@ -280,11 +280,26 @@
 
     // Helper: Generate randomized options matrix cleanly
     function buildShuffledChoices(correct, fakes) {
-        let options = [correct];
-        while (options.length < 4 && fakes.length > 0) {
-            let randomIndex = Math.floor(Math.random() * fakes.length);
-            let pick = fakes.splice(randomIndex, 1);
-            if (!options.includes(pick)) options.push(pick);
+        // Canonical form: "-1,-2" and "-2, -1" are the same answer set, so a "wrong" option can never be secretly correct
+        const canon = (v) => {
+            const t = String(v).replace(/\s+/g, "");
+            if (/^-?\d+(\.\d+)?(,-?\d+(\.\d+)?)*$/.test(t)) {
+                return t.split(",").map(Number).sort((p, q) => p - q).join(",");
+            }
+            return t;
+        };
+        const correctStr = String(correct);
+        const options = [correctStr];
+        const seen = new Set([canon(correctStr)]);
+        const pool = fakes.map(String);
+        while (options.length < 4 && pool.length > 0) {
+            const candidate = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
+            if (!seen.has(canon(candidate))) { options.push(candidate); seen.add(canon(candidate)); }
+        }
+        const fillers = ["0", "1,-1", "2,5", "-3,4", "6", "-2,-5"];
+        for (const f of fillers) {
+            if (options.length >= 4) break;
+            if (!seen.has(canon(f))) { options.push(f); seen.add(canon(f)); }
         }
         return options.sort(() => Math.random() - 0.5);
     }
@@ -380,6 +395,7 @@
             let passSecurity = false;
             let subType = Math.floor(Math.random() * 3);
             let a = 1, b = 0, c = 0, checkKey = "";
+            let standardAttempts = 0;
 
             while (!passSecurity) {
                 if (subType === 0) {
@@ -402,7 +418,8 @@
                     standardTrinomialHistory.push(checkKey);
                     passSecurity = true;
                 } else {
-                    subType = 0; passSecurity = true;
+                    standardAttempts++;
+                    if (standardAttempts > 30) { passSecurity = true; } else { subType = Math.floor(Math.random() * 3); }
                 }
             }
 
@@ -592,12 +609,34 @@
                 promptText = "Apply the difference of squares identity structure to isolate real solutions:";
             }
             else {
-                let bVal = 2 * r1; let cVal = r1 * r1 + r2 * r2 - (r1 + 3) * (r1 + 3); let targetNum = r1 * r1 + r2 * r2 - cVal;
+                // Variant 3: x^2 + (x + r1)^2 - (x - r2)(x + r2) = T   <=>   (x + r1)^2 = T - r2^2
+                let targetNum = (r1 + 3) * (r1 + 3);
                 equationLatex = "x^2 + (x + " + r1 + ")^2 - (x - " + r2 + ")(x + " + r2 + ") = " + targetNum;
-                let finalC = r1 * r1 + r2 * r2 - targetNum; let disc = (2*r1)*(2*r1) - 4*finalC;
-                let x1 = (-(2*r1) - Math.sqrt(disc)) / 2; let x2 = (-(2*r1) + Math.sqrt(disc)) / 2;
-                solutionString = Math.min(x1, x2) + "," + Math.max(x1, x2); interactionFormat = "TEXT";
-                promptText = "Expand all short-multiplication identity blocks and solve the resulting system:";
+                let radicandK = targetNum - r2 * r2;
+                interactionFormat = "MCQ";
+                if (radicandK < 0) {
+                    solutionString = nsOption;
+                    choicesPool = buildShuffledChoices(solutionString, [
+                        "-" + r1 + "," + r1, "0",
+                        "-" + r1 + "-" + slashCmd('sqrt') + "{5}, -" + r1 + "+" + slashCmd('sqrt') + "{5}"
+                    ]);
+                } else if (radicandK === 0) {
+                    solutionString = "" + (-r1);
+                    choicesPool = buildShuffledChoices(solutionString, ["" + r1, nsOption, (-r1) + "," + r1, "0"]);
+                } else if (Number.isInteger(Math.sqrt(radicandK))) {
+                    let sRoot = Math.sqrt(radicandK);
+                    let xa = -r1 - sRoot, xb = -r1 + sRoot;
+                    solutionString = xa + "," + xb;
+                    choicesPool = buildShuffledChoices(solutionString, [(-xa) + "," + (-xb), (xa - 1) + "," + (xb + 1), nsOption, "" + xb]);
+                } else {
+                    let textInt = -r1;
+                    solutionString = textInt + "-" + slashCmd('sqrt') + "{" + radicandK + "}," + textInt + "+" + slashCmd('sqrt') + "{" + radicandK + "}";
+                    let fakeInt = textInt - 1, fakeRad = radicandK + 5;
+                    let fake1 = fakeInt + "-" + slashCmd('sqrt') + "{" + radicandK + "}," + fakeInt + "+" + slashCmd('sqrt') + "{" + radicandK + "}";
+                    let fake2 = textInt + "-" + slashCmd('sqrt') + "{" + fakeRad + "}," + textInt + "+" + slashCmd('sqrt') + "{" + fakeRad + "}";
+                    choicesPool = buildShuffledChoices(solutionString, [fake1, fake2, nsOption, "1, 4"]);
+                }
+                promptText = "Expand all short-multiplication identity blocks and select the exact real solution roots:";
             }
         }
         else if (selectedType === 'RATIONAL') {
@@ -611,8 +650,8 @@
                 },
                 {
                     eq: "\u005Cfrac{x+3}{x+1} = \u005Cfrac{2x-2}{x+2}",
-                    sol: "2-2" + slashCmd('sqrt') + "{3}, 2+2" + slashCmd('sqrt') + "{3}",
-                    fakes: ["-1, 4", "1, -4", nsOption, "2-" + slashCmd('sqrt') + "{3}, 2+" + slashCmd('sqrt') + "{3}"],
+                    sol: slashCmd('frac') + "{5-" + slashCmd('sqrt') + "{57}}{2}, " + slashCmd('frac') + "{5+" + slashCmd('sqrt') + "{57}}{2}",
+                    fakes: ["-1, 4", "1, -4", nsOption, slashCmd('frac') + "{-5-" + slashCmd('sqrt') + "{57}}{2}, " + slashCmd('frac') + "{-5+" + slashCmd('sqrt') + "{57}}{2}"],
                     p: "Solve the rational expressions fractional equation and select the exact radical roots:",
                     id: "RAT-2"
                 },
@@ -645,16 +684,16 @@
                     id: "RAT-6"
                 },
                 {
-                    eq: "\u005Cfrac{x+2}{x-1} = \u005Cfrac{x-4}{x-2}",
+                    eq: "\u005Cfrac{x+6}{x-1} = \u005Cfrac{x+4}{x-2}",
                     sol: "8",
                     fakes: ["-8", "0", nsOption, "4"],
                     p: "Solve for the unique solution root of the fractional algebraic statement:",
                     id: "RAT-7"
                 },
                 {
-                    eq: "\u005Cfrac{x^2-5x}{x-5} = 3",
+                    eq: "\u005Cfrac{x^2-25}{x-5} = 10",
                     sol: nsOption,
-                    fakes: ["3", "5", "0,3"],
+                    fakes: ["5", "10", "-5"],
                     p: "Solve the rational expression carefully checking for restrictions and holes:",
                     id: "RAT-8"
                 }
