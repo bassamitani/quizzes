@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Properties of Functions - Math Practice Quiz</title>
+<!-- KaTeX Auto-Render Extension with Custom Delimiter Config -->
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #16a34a;
+            --error: #dc2626;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --bg-canvas: #f9fafb;
+            --bg-card: #ffffff;
+            --border-ui: #e5e7eb;
+            --bg-surface: #ffffff;
+            --border-color: #e5e7eb;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .quiz-card {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-ui);
+        }
+        .hidden { display: none !important; }
+        /* 3mm Visual Meter Tracker */
+        .time-bar-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--border-ui);
+        }
+        .time-bar-fill {
+            height: 3mm;
+            width: 100%;
+            background-color: var(--primary);
+            transition: width 1s linear, background-color 0.3s ease;
+        }
+        h1, h2, h3 {
+            color: var(--text-main);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-field { margin-bottom: 18px; }
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-ui);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--primary); }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: var(--primary-hover); }
+        .panel-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+        .clock-lbl { font-weight: 700; color: var(--text-main); }
+        .math-statement {
+            font-size: 1.15rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .options-stack { display: flex; flex-direction: column; gap: 12px; }
+        .opt-btn {
+            background-color: #fcfcfd;
+            border: 1px solid var(--border-ui);
+            color: var(--text-main);
+            text-align: left;
+            padding: 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .opt-btn.active {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .tf-row { display: flex; gap: 14px; }
+        .tf-row button { flex: 1; text-align: center; }
+        .controls-row { margin-top: 28px; display: flex; gap: 14px; }
+        .btn-secondary { background-color: #e5e7eb; color: var(--text-main); }
+        .btn-secondary:hover { background-color: #d1d5db; }
+
+        /* Report Screen Components */
+        .score-badge-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #f0fdf4;
+            border: 4px solid var(--success);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+        }
+        .score-large { font-size: 2.2rem; font-weight: 800; color: var(--success); }
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 24px 0; text-align: center; }
+        .metric-box { background: var(--bg-canvas); padding: 12px; border-radius: 8px; border: 1px solid var(--border-ui); }
+        .metric-val { font-size: 1.25rem; font-weight: 700; }
+        .metric-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+        .report-item { padding: 14px; background: var(--bg-canvas); border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #9ca3af; text-align: left;}
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+        .explanation-pane { margin-top: 8px; padding: 8px 12px; background: #ffffff; border: 1px dashed var(--border-ui); font-size: 0.9rem; border-radius: 6px; }
+
+
+        /* Worked-solution sign tables + tables of variations */
+        .sign-table { border-collapse: collapse; margin: 8px auto 2px; font-size: 0.85rem; }
+        .sign-table th, .sign-table td { border: 1px solid var(--border-ui); padding: 3px 9px; text-align: center; min-width: 30px; }
+        .sign-table th { background: var(--bg-canvas); font-weight: 600; text-align: left; white-space: nowrap; }
+        .sg-pos { color: var(--success); font-weight: 700; }
+        .sg-neg { color: var(--error); font-weight: 700; }
+        .sg-zero { font-weight: 700; }
+        .sg-ok { background: #f0fdf4; color: var(--success); font-weight: 700; }
+        .explanation-pane strong:first-child { display:block; margin-bottom:4px; color: var(--text-muted); font-size:0.8rem; text-transform:uppercase; letter-spacing:.05em; }
+        .tv-wrap { overflow-x: auto; margin: 12px auto 4px; text-align: center; }
+        .tv { border-collapse: collapse; margin: 0 auto; font-size: 0.9rem; background: #fff; }
+        .tv th, .tv td { border: 1px solid var(--text-muted); padding: 5px 6px; min-width: 28px; text-align: center; }
+        .tv th { background: var(--bg-canvas); font-style: italic; font-weight: 700; white-space: nowrap; padding: 5px 8px; }
+        .tv td.tvarrow { font-size: 1.25rem; line-height: 1; color: var(--primary); padding: 3px 4px; min-width: 22px; }
+        .tv td.tvg { border-left: none; border-right: none; min-width: 22px; padding: 3px 4px; }
+        .tv td.tvp { border-left: 3px double var(--text-muted); border-right: 3px double var(--text-muted); white-space: nowrap; }
+        .tv .tvbar { color: var(--text-muted); font-weight: 700; }
+        @media (max-width: 480px) { .tv { font-size: 0.8rem; } .tv th, .tv td { padding: 4px 4px; min-width: 24px; } .tv th { padding: 4px 6px; } .tv td.tvarrow, .tv td.tvg { min-width: 18px; padding: 2px 2px; } }
+        .tv-note { font-size: 0.8rem; color: var(--text-muted); text-align: center; margin: 2px 0 6px; }
+
+        @media print {
+            html, body { height: auto !important; overflow: visible !important; }
+            body { background: #ffffff; display: block; padding: 0; }
+            .quiz-card { overflow: visible !important; }
+            #stage-auth, #stage-engine, #meter-container { display: none !important; }
+            #stage-summary { display: block !important; }
+            .quiz-card { border: none; box-shadow: none; max-width: 100%; padding: 0; }
+            .no-print { display: none !important; }
+            .report-item { page-break-inside: avoid; background: #ffffff; border: 1px solid var(--border-ui); }
+        }
+    </style>
+</head>
+<body>
+<div class="quiz-card">
+    <div id="meter-container" class="time-bar-wrapper hidden">
+        <div id="meter-progress" class="time-bar-fill"></div>
+    </div>
+
+    <!-- Stage A: Registration/Login Portal -->
+    <div id="stage-auth">
+        <h1>📚 Advanced Properties of Functions</h1>
+        <h2>Math Practice Quiz</h2>
+        <p style="text-align:center; color: var(--text-muted); font-size:0.9rem; margin: -8px 0 20px;">20 questions &middot; 45 minutes &middot; sets and images use interval notation, e.g. \(\,]-2,1[\,\cup\,[3,+\infty[\,\)</p>
+        <div class="form-field">
+            <label for="student-name">Username</label>
+            <input type="text" id="student-name" placeholder="Enter student name...">
+        </div>
+        <div class="form-field">
+            <label for="student-section">Class Section</label>
+            <input type="text" id="student-section" placeholder="Enter class section...">
+        </div>
+        <button id="action-start">Start Quiz</button>
+    </div>
+
+    <!-- Stage B: Active Quiz Panel Interface -->
+    <div id="stage-engine" class="hidden">
+        <div class="panel-meta">
+            <div>Question <span id="idx-current">1</span> of <span id="idx-total">20</span></div>
+            <div id="clock-countdown" class="clock-lbl">25:00</div>
+        </div>
+
+        <div class="math-statement" id="math-prompt-container"></div>
+
+        <!-- Layout Formats Configurations -->
+        <div id="box-mcq" class="options-stack hidden"></div>
+
+        <div id="box-tf" class="tf-row options-stack hidden">
+            <button class="opt-btn flag-tf" data-core="True">True</button>
+            <button class="opt-btn flag-tf" data-core="False">False</button>
+        </div>
+
+        <div id="box-text" class="hidden">
+            <div class="form-field">
+                <input type="text" id="manual-text-input" placeholder="Type answer...">
+            </div>
+        </div>
+
+        <!-- RESTORED: The control buttons row container -->
+        <div class="controls-row" style="margin-top: 28px; display: flex; gap: 14px;">
+            <button id="action-back" class="btn-secondary no-print" style="flex: 1;">← Previous</button>
+            <button id="action-forward" class="no-print" style="flex: 1;">Next →</button>
+        </div>
+    </div>
+
+
+    <!-- Stage C: Performance Matrix & PDF Evaluation -->
+    <div id="stage-summary" class="hidden">
+        <h2>Quiz Complete! 🎉</h2>
+        <div class="score-badge-circle">
+            <span class="score-large" id="lbl-score-obtained">0</span>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">out of 20</span>
+        </div>
+        <p style="text-align:center; font-weight:500;">Great job! Keep practicing to improve.</p>
+        <h3 style="margin-top:24px; text-align:left; border-bottom:1px solid var(--border-ui); padding-bottom:6px;">Summary</h3>
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div class="metric-val" style="color:var(--success);" id="m-correct">0</div>
+                <div class="metric-lbl">Correct</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-val" style="color:var(--error);" id="m-incorrect">0</div>
+                <div class="metric-lbl">Incorrect</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-val" style="color:var(--primary);" id="m-percent">0%</div>
+                <div class="metric-lbl">Percentage</div>
+            </div>
+        </div>
+        <h3 style="text-align:left; margin-bottom:12px;">Detailed Report</h3>
+        <div id="report-injection-zone"></div>
+        <div class="controls-row no-print">
+            <button id="action-pdf" style="background-color:var(--success);">📥 Save as PDF</button>
+            <button id="action-retry" class="btn-secondary">🔄 Retake Quiz</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Universal Runtime Config Parameters
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 2700, // 45 minutes
+        tiers: { easy: 6, medium: 7, hard: 7 }
+    };
+
+    const QUIZ_TITLE = "Advanced Properties of Functions - Math Practice Quiz";
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+
+    // ============================================================================
+    // 1. TEX CONSTANTS + SMALL UTILITIES
+    // ============================================================================
+    const EPS = 1e-9;
+    const NL = '\\\\';                                   // TeX line break
+    const INF_NEG = String.raw`-\infty`;
+    const INF_POS = String.raw`+\infty`;
+    const TEX_R = String.raw`\mathbb{R}`;
+    const TEX_EMPTY = String.raw`\varnothing`;
+    const OP_TEX = { '<': String.raw`\lt`, '<=': String.raw`\leq`, '>': String.raw`\gt`, '>=': String.raw`\geq` };
+    const OPS = ['<', '<=', '>', '>='];
+    const STRICT_FLIP = { '<': '<=', '<=': '<', '>': '>=', '>=': '>' };
+    const DIR_FLIP = { '<': '>', '>': '<', '<=': '>=', '>=': '<=' };
+    const COMPL = { '<': '>=', '>=': '<', '>': '<=', '<=': '>' };
+
+
+    function ri(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function gcd(x, y) { x = Math.abs(x); y = Math.abs(y); while (y) { const t = y; y = x % y; x = t; } return x; }
+    function shuffleList(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+        return a;
+    }
+    function until(gen, ok) { for (let i = 0; i < 400; i++) { const g = gen(); if (ok(g)) return g; } return gen(); }
+    function ints(n, lo, hi) { const s = new Set(); while (s.size < n) s.add(ri(lo, hi)); return shuffleList(Array.from(s)); }
+
+    // Randomised options matrix (always plain strings, never a duplicate)
+    function buildShuffledChoices(correct, fakes) {
+        const options = [String(correct)];
+        const pool = fakes.slice();
+        while (options.length < 4 && pool.length > 0) {
+            const pick = String(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+            if (!options.includes(pick)) options.push(pick);
+        }
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+        return options;
+    }
+
+    // ============================================================================
+    // 2. POLYNOMIAL + EXACT ROOT FORMATTING  (coefficients stored low -> high: [c0, c1, c2])
+    // ============================================================================
+    function fracTex(n, d) {
+        const g = gcd(n, d) || 1; n /= g; d /= g;
+        if (d < 0) { n = -n; d = -d; }
+        if (d === 1) return String(n === 0 ? 0 : n);
+        return (n < 0 ? '-' : '') + String.raw`\frac{${Math.abs(n)}}{${d}}`;
+    }
+    function polyTex(c, v) {
+        v = v || 'x';
+        let s = '';
+        for (let i = c.length - 1; i >= 0; i--) {
+            const a = c[i];
+            if (!a) continue;
+            const abs = Math.abs(a);
+            let term;
+            if (i === 0) term = String(abs);
+            else term = (abs === 1 ? '' : String(abs)) + (i === 1 ? v : v + '^' + i);
+            s += (s === '' ? (a < 0 ? '-' : '') : (a < 0 ? '-' : '+')) + term;
+        }
+        return s || '0';
+    }
+    function facTex(p) { return (p.length === 2 && p[0] === 0 && p[1] === 1) ? 'x' : '(' + polyTex(p) + ')'; }
+    function lin(r) { return [-r, 1]; }
+    function quadFromInts(r1, r2, s) { s = s || 1; return [s * r1 * r2, -s * (r1 + r2), s]; }
+    function pv(p, x) { let r = 0; for (let i = p.length - 1; i >= 0; i--) r = r * x + p[i]; return r; }
+    function trimPoly(p) { const q = p.slice(); while (q.length && Math.abs(q[q.length - 1]) < EPS) q.pop(); return q; }
+
+    // Real roots with an exact TeX form (rational, or simplified radical)
+    function polyRoots(p) {
+        const q = trimPoly(p);
+        if (q.length <= 1) return [];
+        if (q.length === 2) return [{ v: -q[0] / q[1], tex: fracTex(-q[0], q[1]) }];
+        const a = q[2], b = q[1], c = q[0], D = b * b - 4 * a * c;
+        if (D < 0) return [];
+        const s = Math.round(Math.sqrt(D));
+        if (s * s === D) {
+            const out = [{ v: (-b - s) / (2 * a), tex: fracTex(-b - s, 2 * a) }];
+            if (s !== 0) out.push({ v: (-b + s) / (2 * a), tex: fracTex(-b + s, 2 * a) });
+            return out;
+        }
+        let sq = 1, d = D;
+        for (let k = Math.floor(Math.sqrt(D)); k >= 1; k--) { if (D % (k * k) === 0) { sq = k; d = D / (k * k); break; } }
+        let m = -b, t = sq, e = 2 * a;
+        const g = gcd(gcd(m, t), e) || 1;
+        m /= g; t /= g; e /= g;
+        if (e < 0) { e = -e; m = -m; }
+        const rad = (t === 1 ? '' : String(t)) + String.raw`\sqrt{${d}}`;
+        const mk = sgn => {
+            const num = m === 0 ? (sgn < 0 ? '-' : '') + rad : m + (sgn < 0 ? '-' : '+') + rad;
+            return e === 1 ? num : String.raw`\frac{${num}}{${e}}`;
+        };
+        const val = Math.sqrt(d) * t / e;
+        return [{ v: m / e - val, tex: mk(-1) }, { v: m / e + val, tex: mk(1) }];
+    }
+
+    // ============================================================================
+    // 3. SIGN-ANALYSIS SOLVER
+    //    constraint = { num:[poly,...], den:[poly,...], op }   meaning  (prod num)/(prod den)  op  0
+    // ============================================================================
+    function gatherCrits(cons) {
+        const all = [];
+        cons.forEach(c => c.num.concat(c.den).forEach(p => polyRoots(p).forEach(r => all.push(r))));
+        all.sort((a, b) => a.v - b.v);
+        const out = [];
+        all.forEach(r => { if (!out.length || Math.abs(r.v - out[out.length - 1].v) > 1e-9) out.push(r); });
+        return out;
+    }
+    function conState(c, x) {
+        for (const p of c.den) { if (Math.abs(pv(p, x)) < EPS) return 'undef'; }
+        let sign = 1, zero = false;
+        for (const p of c.num) { const v = pv(p, x); if (Math.abs(v) < EPS) zero = true; else if (v < 0) sign = -sign; }
+        for (const p of c.den) { if (pv(p, x) < 0) sign = -sign; }
+        return zero ? 'zero' : (sign > 0 ? 'pos' : 'neg');
+    }
+    function opOk(op, st) {
+        if (st === 'undef') return false;
+        if (op === '<') return st === 'neg';
+        if (op === '<=') return st === 'neg' || st === 'zero';
+        if (op === '>') return st === 'pos';
+        return st === 'pos' || st === 'zero';
+    }
+    function holds(cons, x, mode) {
+        const r = cons.map(c => opOk(c.op, conState(c, x)));
+        return mode === 'or' ? r.some(Boolean) : r.every(Boolean);
+    }
+    function seqPoints(cr) {
+        const n = cr.length, seq = [];
+        if (n === 0) { seq.push({ t: 'I', i: 0, x: 0 }); return seq; }
+        for (let i = 0; i <= n; i++) {
+            const x = i === 0 ? cr[0].v - 1 : (i === n ? cr[n - 1].v + 1 : (cr[i - 1].v + cr[i].v) / 2);
+            seq.push({ t: 'I', i: i, x: x });
+            if (i < n) seq.push({ t: 'P', i: i, x: cr[i].v });
+        }
+        return seq;
+    }
+
+    // Returns the exact interval-notation TeX plus numeric intervals (used for self-tests)
+    function solveSet(cons, mode) {
+        mode = mode || 'and';
+        const cr = gatherCrits(cons), n = cr.length;
+        const seq = seqPoints(cr);
+        seq.forEach(e => { e.ok = holds(cons, e.x, mode); });
+        const groups = []; let cur = null;
+        seq.forEach(e => {
+            if (e.ok) { if (!cur) cur = { first: e, last: e }; else cur.last = e; }
+            else if (cur) { groups.push(cur); cur = null; }
+        });
+        if (cur) groups.push(cur);
+        const numeric = [];
+        const parts = groups.map(g => {
+            const f = g.first, l = g.last;
+            if (f === l && f.t === 'P') { numeric.push({ lo: cr[f.i].v, hi: cr[f.i].v, loC: true, hiC: true }); return String.raw`\{` + cr[f.i].tex + String.raw`\}`; }
+            let lo, loC, hi, hiC, nlo, nhi;
+            if (f.t === 'I') { lo = f.i === 0 ? INF_NEG : cr[f.i - 1].tex; nlo = f.i === 0 ? -Infinity : cr[f.i - 1].v; loC = false; }
+            else { lo = cr[f.i].tex; nlo = cr[f.i].v; loC = true; }
+            if (l.t === 'I') { hi = l.i === n ? INF_POS : cr[l.i].tex; nhi = l.i === n ? Infinity : cr[l.i].v; hiC = false; }
+            else { hi = cr[l.i].tex; nhi = cr[l.i].v; hiC = true; }
+            numeric.push({ lo: nlo, hi: nhi, loC: loC, hiC: hiC });
+            if (lo === INF_NEG && hi === INF_POS) return TEX_R;
+            return (loC ? '[' : ']') + lo + ',' + hi + (hiC ? ']' : '[');
+        });
+        return { tex: parts.length ? parts.join(String.raw` \cup `) : TEX_EMPTY, crits: cr, numeric: numeric };
+    }
+
+    // ---- Distractors: the mistakes students really make ----
+    function mirrorPoly(p) { return p.map((v, i) => (i % 2 ? -v : v)); }
+    function distractorSets(cons, mode) {
+        const mapOps = f => cons.map(c => ({ num: c.num, den: c.den, op: f[c.op] }));
+        const out = [];
+        [STRICT_FLIP, DIR_FLIP, COMPL].forEach(f => out.push(solveSet(mapOps(f), mode).tex));       // wrong endpoints / wrong direction / complement
+        out.push(solveSet(cons.map(c => ({ num: c.num.map(mirrorPoly), den: c.den.map(mirrorPoly), op: c.op })), mode).tex);   // sign error x -> -x
+        out.push(solveSet(cons.map(c => ({ num: c.num, den: [], op: c.op })), mode).tex);            // forgot the excluded values
+        if (cons.length > 1) {
+            cons.forEach(c => out.push(solveSet([c], 'and').tex));                                    // answered only one inequality
+            out.push(solveSet(cons, 'or').tex);                                                       // union instead of intersection
+            cons.forEach((c, i) => out.push(solveSet(cons.map((d, j) => j === i ? { num: d.num, den: d.den, op: DIR_FLIP[d.op] } : d), 'and').tex));
+        }
+        return out;
+    }
+    function mcqFromCons(cons, mode) {
+        mode = mode || 'and';
+        const correct = solveSet(cons, mode).tex;
+        const uniq = Array.from(new Set(distractorSets(cons, mode))).filter(t => t !== correct);
+        const picks = shuffleList(uniq).slice(0, 3);
+        const fillers = [TEX_R, TEX_EMPTY, String.raw`\{0\}`, String.raw`]-1,1[`];
+        for (const f of shuffleList(fillers)) { if (picks.length >= 3) break; if (f !== correct && !picks.includes(f)) picks.push(f); }
+        return { correct: correct, pool: buildShuffledChoices(correct, picks) };
+    }
+
+    // ---- Worked sign table shown in the final report (same style as the PDF solved examples) ----
+    function explainHtml(cons, varName, mode) {
+        const cr = gatherCrits(cons), n = cr.length;
+        if (!n) return '';
+        mode = mode || 'and';
+        const seq = seqPoints(cr);
+        const sym = (st, t) => {
+            if (st === 'pos') return '<span class="sg-pos">+</span>';
+            if (st === 'neg') return '<span class="sg-neg">&minus;</span>';
+            if (st === 'zero') return '<span class="sg-zero">0</span>';
+            return '<span class="sg-zero">&#8214;</span>';
+        };
+        let html = '<div style="overflow-x:auto"><table class="sign-table"><tr><th>' + varName + '</th>';
+        seq.forEach(e => {
+            if (e.t === 'P') html += '<td>\\(' + cr[e.i].tex + '\\)</td>';
+            else html += '<td>' + (e.i === 0 ? '\\(' + INF_NEG + '\\)' : (e.i === n ? '\\(' + INF_POS + '\\)' : '')) + '</td>';
+        });
+        html += '</tr>';
+        cons.forEach((c, k) => {
+            html += '<tr><th>' + (cons.length > 1 ? 'E<sub>' + (k + 1) + '</sub>' : 'E') + '</th>';
+            seq.forEach(e => { html += '<td>' + sym(conState(c, e.x), e.t) + '</td>'; });
+            html += '</tr>';
+        });
+        html += '<tr><th>Solution</th>';
+        seq.forEach(e => { html += '<td class="' + (holds(cons, e.x, mode) ? 'sg-ok' : '') + '">' + (holds(cons, e.x, mode) ? '&#10003;' : '') + '</td>'; });
+        html += '</tr></table></div>';
+        return html;
+    }
+
+
+    // ============================================================================
+    // EXACT FRACTIONS + POLYNOMIALS (coefficients low -> high, each a fraction {n,d})
+    // ============================================================================
+    function F(n, d) { if (d === undefined) d = 1; if (d < 0) { n = -n; d = -d; } const g = gcd(n, d) || 1; return { n: n / g, d: d / g }; }
+    const F0 = F(0), F1 = F(1);
+    function fadd(a, b) { return F(a.n * b.d + b.n * a.d, a.d * b.d); }
+    function fsub(a, b) { return F(a.n * b.d - b.n * a.d, a.d * b.d); }
+    function fmul(a, b) { return F(a.n * b.n, a.d * b.d); }
+    function fdiv(a, b) { return F(a.n * b.d, a.d * b.n); }
+    function fneg(a) { return F(-a.n, a.d); }
+    function fsign(a) { return a.n > 0 ? 1 : (a.n < 0 ? -1 : 0); }
+    function fcmp(a, b) { return fsign(fsub(a, b)); }
+    function fval(a) { return a.n / a.d; }
+    function fTex(a) { return fracTex(a.n, a.d); }
+    function pEval(p, x) { let r = F0; for (let i = p.length - 1; i >= 0; i--) r = fadd(fmul(r, x), p[i]); return r; }
+    function pDeriv(p) { const o = []; for (let i = 1; i < p.length; i++) o.push(fmul(p[i], F(i))); return o.length ? o : [F0]; }
+    function pInteg(p) { const o = [F0]; for (let i = 0; i < p.length; i++) o.push(fdiv(p[i], F(i + 1))); return o; }
+    function pMul(p, q) {
+        const o = []; for (let i = 0; i < p.length + q.length - 1; i++) o.push(F0);
+        for (let i = 0; i < p.length; i++) for (let j = 0; j < q.length; j++) o[i + j] = fadd(o[i + j], fmul(p[i], q[j]));
+        return o;
+    }
+    function polyTexF(p, v) {
+        v = v || 'x';
+        let s = '';
+        for (let i = p.length - 1; i >= 0; i--) {
+            const c = p[i];
+            if (c.n === 0) continue;
+            const neg = c.n < 0, an = Math.abs(c.n), ad = c.d;
+            const num = ad === 1 ? String(an) : String.raw`\frac{${an}}{${ad}}`;
+            const coef = (i === 0) ? num : ((an === 1 && ad === 1) ? '' : num);
+            const term = coef + (i === 0 ? '' : (i === 1 ? v : v + '^' + i));
+            s += (s === '' ? (neg ? '-' : '') : (neg ? '-' : '+')) + term;
+        }
+        return s || '0';
+    }
+
+    // ---------------------------------------------------------------- shared helpers
+    function mkProblem(o) {
+        return Object.assign({ tier: '', type: 'MCQ', pool: [], solution: '', alternativeSolution: '', prompt: '', equation: '', explain: '', tableHtml: '', graphData: null, _cons: null, _mode: 'and', _spec: null }, o);
+    }
+    function setProblem(tier, cat, prompt, eq, cons, opts) {
+        opts = opts || {};
+        const mode = opts.mode || 'and';
+        const r = mcqFromCons(cons, mode);
+        return mkProblem({ tier: tier, categoryType: cat, type: 'MCQ', prompt: prompt, equation: eq, pool: r.pool, solution: r.correct,
+            explain: opts.explain || explainHtml(cons, opts.varName || 'x', mode), _cons: cons, _mode: mode });
+    }
+    // 4 distinct string options; fillers only used if there are not enough distinct wrong answers
+    function buildChoices(correct, fakes, fillers) {
+        const opts = [String(correct)], seen = new Set(opts);
+        shuffleList(fakes.map(String)).forEach(f => { if (opts.length < 4 && !seen.has(f)) { opts.push(f); seen.add(f); } });
+        shuffleList((fillers || []).map(String)).forEach(f => { if (opts.length < 4 && !seen.has(f)) { opts.push(f); seen.add(f); } });
+        return shuffleList(opts);
+    }
+    function mcq(tier, cat, prompt, eq, key, fakes, fillers, explain, extra) {
+        return mkProblem(Object.assign({ tier: tier, categoryType: cat, type: 'MCQ', prompt: prompt, equation: eq,
+            pool: buildChoices(key, fakes, fillers), solution: String(key), explain: explain || '' }, extra || {}));
+    }
+    function pointTex(x, y) { return String.raw`(${fTex(x)},\,${fTex(y)})`; }
+    function lineTex(m, n) {      // y = m x + n  (m, n fractions)
+        let s = 'y=';
+        if (m.n !== 0) {
+            const am = F(Math.abs(m.n), m.d);
+            s += (m.n < 0 ? '-' : '') + ((am.n === 1 && am.d === 1) ? '' : fTex(am)) + 'x';
+        }
+        if (n.n !== 0 || m.n === 0) {
+            const an = F(Math.abs(n.n), n.d);
+            s += (m.n === 0 ? (n.n < 0 ? '-' : '') : (n.n < 0 ? '-' : '+')) + fTex(an);
+        }
+        return s;
+    }
+    function nTex(v) { if (v === Infinity) return INF_POS; if (v === -Infinity) return INF_NEG; return typeof v === 'number' ? String(v) : fTex(v); }
+    function ivTex(lo, hi, loC, hiC) {
+        if (lo === -Infinity && hi === Infinity) return TEX_R;
+        if (lo === hi && loC && hiC) return String.raw`\{` + nTex(lo) + String.raw`\}`;
+        return ((loC && isFinite(lo)) ? '[' : ']') + nTex(lo) + ',' + nTex(hi) + ((hiC && isFinite(hi)) ? ']' : '[');
+    }
+    function sgnCoef(c) { return c === 1 ? '' : (c === -1 ? '-' : String(c)); }
+    function expl(lines) { return '<p style="margin:2px 0; line-height:1.55;">' + lines.join('<br>') + '</p>'; }
+    const M = (t) => String.raw`\(` + t + String.raw`\)`;           // inline math wrapper
+    const GENERIC_NUM_FILLERS = ['0', '1', '-1', '2', '-2', String.raw`\frac{1}{2}`, INF_POS, INF_NEG];
+
+    // exact L'Hopital: lim x->a N(x)/D(x) for fraction polynomials (null if it is infinite / does not exist)
+    function limitAt(N, D, a) {
+        let n = N, d = D;
+        for (let k = 0; k < 8; k++) {
+            const nv = pEval(n, a), dv = pEval(d, a);
+            if (nv.n === 0 && dv.n === 0) { n = pDeriv(n); d = pDeriv(d); continue; }
+            if (dv.n === 0) return null;
+            return fdiv(nv, dv);
+        }
+        return null;
+    }
+    const FP = (arr) => arr.map(v => F(v));
+
+    // ============================================================================
+    // LIMITS
+    // ============================================================================
+    function genLimInf(tier, spec) {
+        const v = spec.v;
+        let n, m;
+        if (v === 0) { n = ri(1, 3); m = n + ri(1, 2); } else if (v === 1) { n = ri(1, 3); m = n; } else { m = ri(1, 2); n = m + ri(1, 2); }
+        const lead = () => pick([1, 2, 3, 4, 5, 6, -1, -2, -3, -4]);
+        const mk = (deg, ld) => { const c = []; for (let i = 0; i < deg; i++) c.push(ri(-4, 5)); c.push(ld); return c; };
+        const a = lead(), b = lead();
+        const num = mk(m, a), den = mk(n, b);
+        const dir = pick([1, -1]);
+        let key;
+        if (m < n) key = '0';
+        else if (m === n) key = fracTex(a, b);
+        else { let s = Math.sign(a) * Math.sign(b); if (dir < 0 && ((m - n) % 2 === 1)) s = -s; key = s > 0 ? INF_POS : INF_NEG; }
+        const eq = String.raw`\lim_{x \to ${dir > 0 ? INF_POS : INF_NEG}} \frac{${polyTex(num)}}{${polyTex(den)}}`;
+        const fakes = ['0', INF_POS, INF_NEG, fracTex(a, b), fracTex(b, a), fracTex(-a, b)];
+        const ex = expl([
+            String.raw`Only the leading terms matter at infinity: ${M(String.raw`\frac{${sgnCoef(a)}x^{${m}}}{${sgnCoef(b)}x^{${n}}}`)}.`,
+            m < n ? 'The denominator has the larger degree, so the quotient tends to 0.' :
+            m === n ? 'Equal degrees: the limit is the ratio of the leading coefficients.' :
+            String.raw`The numerator has the larger degree: the limit is infinite, its sign given by the sign of ${M(String.raw`\frac{${a}}{${b}}x^{${m - n}}`)} as ${M(dir > 0 ? String.raw`x\to+\infty` : String.raw`x\to-\infty`)}.`
+        ]);
+        return mcq(tier, 'LIM_INF', 'Calculate the limit:', eq, key, fakes, GENERIC_NUM_FILLERS, ex);
+    }
+
+    function genLimFactor(tier, spec) {
+        const v = spec.v;
+        let a, N, D, eqLim;
+        if (v === 0) {
+            const t = until(() => ints(3, -4, 5), q => true);
+            a = t[0]; const b = t[1], c = t[2];
+            N = FP([a * b, -(a + b), 1]); D = FP([a * c, -(a + c), 1]);
+        } else if (v === 1) {
+            a = until(() => ri(-3, 4), z => z !== 0);
+            D = FP([-a * a * a, 0, 0, 1]);
+            N = Math.random() < 0.5 ? FP([-a, 1]) : FP([-a * a, 0, 1]);
+        } else {
+            a = until(() => ri(-5, 5), z => z !== 0);
+            N = FP([a * a, -2 * a, 1]); D = FP([-a * a, 0, 1]);
+        }
+        const key = limitAt(N, D, F(a));
+        if (key === null) return genLimFactor(tier, spec);
+        const nTexS = polyTex(N.map(c => c.n)), dTexS = polyTex(D.map(c => c.n));
+        const eq = String.raw`\lim_{x \to ${a}} \frac{${nTexS}}{${dTexS}}`;
+        const dN = pEval(pDeriv(N), F(a)), dD = pEval(pDeriv(D), F(a));
+        const fakes = ['0', '1', INF_POS, fTex(fneg(key))];
+        if (key.n !== 0) fakes.push(fTex(fdiv(F1, key)));
+        const ex = expl([
+            String.raw`At ${M('x=' + a)} both numerator and denominator vanish (form ${M(String.raw`\frac{0}{0}`)}): apply L'H&ocirc;pital's rule.`,
+            (dN.n === 0 && dD.n === 0) ? 'The derivatives vanish too, so differentiate once more.'
+              : String.raw`${M(String.raw`\lim = \frac{N'(${a})}{D'(${a})} = \frac{${fTex(dN)}}{${fTex(dD)}}`)}`,
+            String.raw`Result: ${M(fTex(key))}.`
+        ]);
+        return mcq(tier, 'LIM_FACTOR', 'Calculate the limit:', eq, fTex(key), fakes, GENERIC_NUM_FILLERS, ex);
+    }
+
+    function genLimRadical(tier, spec) {
+        const v = spec.v;
+        if (v === 0 || v === 2) {
+            const m = pick([1, 1, 2, 3, 4]), q = ri(1, 5), a = ri(-3, 5);
+            const n = q * q - m * a;
+            const rad = String.raw`\sqrt{${polyTex([n, m])}}`;
+            const den = polyTex([-a, 1]);
+            const key = F(m, 2 * q);
+            let eq, ans, fakes;
+            if (v === 0) {
+                eq = String.raw`\lim_{x \to ${a}} \frac{${rad} - ${q}}{${den}}`;
+                ans = key; fakes = [F(1, 2 * q), F(m, q), F(2 * q, m), F(m, 2 * q * q), F(0), F(-m, 2 * q)];
+            } else {
+                eq = String.raw`\lim_{x \to ${a}} \frac{${den}}{${rad} - ${q}}`;
+                ans = F(2 * q, m); fakes = [F(m, 2 * q), F(q, m), F(2, m), F(0), F(-2 * q, m)];
+            }
+            const ex = expl([
+                String.raw`At ${M('x=' + a)}: ${M(String.raw`\sqrt{${m}\cdot ${a}${n >= 0 ? '+' : ''}${n}} = ${q}`)}, so the form is ${M(String.raw`\frac{0}{0}`)}.`,
+                String.raw`L'H&ocirc;pital: derivative of ${M(rad)} is ${M(String.raw`\frac{${m}}{2\sqrt{${polyTex([n, m])}}}`)}, equal to ${M(fTex(key))} at ${M('x=' + a)}.`,
+                v === 0 ? String.raw`Limit ${M(fTex(ans))}.` : String.raw`The quotient is inverted: limit ${M(fTex(ans))}.`
+            ]);
+            return mcq(tier, 'LIM_RADICAL', 'Calculate the limit:', eq, fTex(ans), fakes.map(fTex), GENERIC_NUM_FILLERS, ex);
+        }
+        if (v === 1) {
+            const s = ri(1, 5), c = s * s;
+            const eq = String.raw`\lim_{x \to 0} \frac{\sqrt{x^2 + ${c}} - ${s}}{x}`;
+            const fakes = ['1', fracTex(1, s), INF_POS, '-1', fracTex(1, 2 * s)];
+            const ex = expl([
+                String.raw`Form ${M(String.raw`\frac{0}{0}`)} at 0. The derivative of ${M(String.raw`\sqrt{x^2+${c}}`)} is ${M(String.raw`\frac{x}{\sqrt{x^2+${c}}}`)}, which equals 0 at ${M('x=0')}.`,
+                String.raw`Limit ${M('0')}.`
+            ]);
+            return mcq(tier, 'LIM_RADICAL', 'Calculate the limit:', eq, '0', fakes, GENERIC_NUM_FILLERS, ex);
+        }
+        // v3: ((p + x)^e - p^e) / x  as x -> 0  = e p^(e-1)
+        const p = pick([1, 1, 2]), e = pick([-1, -2, -3, 2, 3, 4]);
+        const pe = e >= 0 ? F(Math.pow(p, e)) : F(1, Math.pow(p, -e));
+        const pe1 = (e - 1) >= 0 ? F(Math.pow(p, e - 1)) : F(1, Math.pow(p, 1 - e));
+        const key = fmul(F(e), pe1);
+        const eq = String.raw`\lim_{x \to 0} \frac{(${p}+x)^{${e}} - ${fTex(pe)}}{x}`;
+        const fakes = [F(e), fmul(F(-e), pe1), fmul(F(e - 1), (e - 2) >= 0 ? F(Math.pow(p, e - 2)) : F(1, Math.pow(p, 2 - e))), F(0), pe1].map(fTex);
+        const ex = expl([
+            String.raw`This is the derivative of ${M(String.raw`h(x)=(${p}+x)^{${e}}`)} at ${M('x=0')}: ${M(String.raw`h'(x)=${e}(${p}+x)^{${e - 1}}`)}.`,
+            String.raw`${M(String.raw`h'(0)=${fTex(key)}`)}.`
+        ]);
+        return mcq(tier, 'LIM_RADICAL', 'Calculate the limit:', eq, fTex(key), fakes, GENERIC_NUM_FILLERS, ex);
+    }
+
+    // ============================================================================
+    // CONCAVITY AND INFLECTION POINTS
+    // ============================================================================
+    function fppFromFactors(scale, facs) {
+        let p = [scale];
+        facs.forEach(fc => { for (let k = 0; k < fc.m; k++) p = pMul(p, [F(-fc.r), F1]); });
+        return p;
+    }
+    function antiderivTwice(p, b, c0) {
+        const f = pInteg(pInteg(p));
+        while (f.length < 2) f.push(F0);
+        f[1] = fadd(f[1], F(b)); f[0] = F(c0);
+        return f;
+    }
+    function oddRoots(facs) { return facs.filter(fc => fc.m % 2 === 1).map(fc => fc.r).sort((x, y) => x - y); }
+
+    function genConcPoly(tier, spec) {
+        const v = spec.v;
+        let a = pick([1, 2, -1, -2]), b = ri(-8, 8), c0 = ri(-5, 9), poly, cons, roots;
+        const up = Math.random() < 0.5;
+        const op = up ? '>' : '<';
+        if (v === 0) {
+            const r = ri(-3, 4);
+            poly = [c0, b, -3 * a * r, a];
+            cons = [{ num: [lin(r), [a]], den: [], op: op }]; roots = [r];
+        } else {
+            const [r1, r2] = ints(2, -3, 4).sort((x, y) => x - y);
+            poly = [c0, b, 6 * a * r1 * r2, -2 * a * (r1 + r2), a];
+            cons = [{ num: [lin(r1), lin(r2), [a]], den: [], op: op }]; roots = [r1, r2];
+        }
+        const eq = String.raw`f(x) = ${polyTex(poly)}`;
+        const prompt = String.raw`On which interval(s) is the curve of \(f\) concave ${up ? 'up' : 'down'}?`;
+        const fpp = v === 0 ? String.raw`f''(x)=${6 * a}(x${roots[0] > 0 ? '-' + roots[0] : (roots[0] < 0 ? '+' + (-roots[0]) : '')})`
+            : String.raw`f''(x)=${12 * a}(x${roots[0] > 0 ? '-' + roots[0] : (roots[0] < 0 ? '+' + (-roots[0]) : '')})(x${roots[1] > 0 ? '-' + roots[1] : (roots[1] < 0 ? '+' + (-roots[1]) : '')})`;
+        const ex = expl([M(fpp), 'The curve is concave up where f\'\'(x) > 0 and concave down where f\'\'(x) < 0:']) + explainHtml(cons, 'x', 'and');
+        return setProblem(tier, 'CONC_POLY', prompt, eq, cons, { explain: ex });
+    }
+
+    function facsTex(scale, facs, quad) {
+        let s = scale === 1 ? '' : (scale === -1 ? '-' : String(scale));
+        facs.forEach(fc => { s += String.raw`(${polyTex(lin(fc.r))})` + (fc.m > 1 ? '^{' + fc.m + '}' : ''); });
+        if (quad) s += String.raw`(x^2+${quad})`;
+        return s;
+    }
+    function genInflCount(tier, spec) {
+        const v = spec.v;
+        let facs, scale, quad, odd;
+        do {
+            const k = ri(2, 3);
+            const rs = ints(k, -4, 4).sort((x, y) => x - y);
+            facs = rs.map(r => ({ r: r, m: pick([1, 1, 2, 3]) }));
+            scale = pick([1, 2, -1, 3]); quad = Math.random() < 0.5 ? ri(1, 5) : 0;
+            odd = oddRoots(facs);
+        } while (odd.length === 0 && Math.random() < 0.8);
+        const eq = String.raw`f''(x) = ${facsTex(scale, facs, quad)}`;
+        const ex = expl([
+            String.raw`An inflection point occurs where ${M("f''")} vanishes <b>and changes sign</b>, i.e. at roots of <b>odd</b> multiplicity.`,
+            String.raw`Odd multiplicity: ${odd.length ? odd.map(r => M('x=' + r)).join(', ') : 'none'}. A factor ${M('x^2+k')} with ${M('k>0')} never vanishes.`
+        ]);
+        if (v === 0) {
+            return mkProblem({ tier: tier, categoryType: 'INFL_COUNT', type: 'TEXT', prompt: String.raw`The second derivative of a function \(f\) is given below. How many inflection points does the curve of \(f\) have?`,
+                equation: eq, solution: String(odd.length), explain: ex });
+        }
+        if (v === 1) {
+            const fc = pick(facs);
+            const truth = fc.m % 2 === 1;
+            return mkProblem({ tier: tier, categoryType: 'INFL_COUNT', type: 'TF', equation: eq,
+                prompt: String.raw`True or False: the curve of \(f\) has an inflection point at \(x=${fc.r}\).`, solution: truth ? 'True' : 'False', explain: ex });
+        }
+        const setTex = (arr) => arr.length ? String.raw`\{` + arr.join(String.raw`,\,`) + String.raw`\}` : TEX_EMPTY;
+        const allRoots = facs.map(f => f.r).sort((x, y) => x - y);
+        const fakes = [setTex(allRoots), setTex(odd.slice(1)), setTex(odd.slice(0, -1)), setTex(odd.map(r => -r).sort((x, y) => x - y)), setTex(facs.filter(f => f.m % 2 === 0).map(f => f.r))];
+        return mcq(tier, 'INFL_COUNT', String.raw`The second derivative of a function \(f\) is given below. Which set contains exactly the abscissas of the inflection points of its curve?`, eq,
+            setTex(odd), fakes, [TEX_EMPTY, String.raw`\{0\}`, String.raw`\{-1,\,1\}`], ex);
+    }
+
+    function genInflPoint(tier, spec) {
+        const v = spec.v;
+        const a = v === 2 ? pick([1, 3]) : pick([1, 2, -1]);
+        const b = ri(-8, 8), c0 = ri(-5, 9);
+        let facs, scale;
+        if (v === 0) { facs = [{ r: ri(-3, 4), m: 1 }]; scale = F(6 * a); }
+        else if (v === 1) { const [r1, r2] = ints(2, -3, 4).sort((x, y) => x - y); facs = [{ r: r1, m: 1 }, { r: r2, m: 1 }]; scale = F(12 * a); }
+        else { facs = [{ r: 0, m: 2 }, { r: until(() => ri(-3, 3), z => z !== 0), m: 1 }]; scale = F(20 * a); }
+        const fpp = fppFromFactors(scale, facs);
+        const f = antiderivTwice(fpp, b, c0);
+        const fp = pDeriv(f);
+        const roots = oddRoots(facs);
+        const pts = roots.map(r => ({ x: F(r), y: pEval(f, F(r)) }));
+        const key = pts.map(p => pointTex(p.x, p.y)).join(', ');
+        const sortPts = (arr) => arr.slice().sort((p, q) => fcmp(p.x, q.x));
+        const joinPts = (arr) => sortPts(arr).map(p => pointTex(p.x, p.y)).join(', ');
+        const fakes = [];
+        fakes.push(joinPts(pts.map(p => ({ x: p.y, y: p.x }))));                                            // coordinates swapped
+        fakes.push(joinPts(pts.map(p => ({ x: p.x, y: pEval(fp, p.x) }))));                                  // f' instead of f
+        fakes.push(joinPts(pts.map(p => ({ x: fneg(p.x), y: pEval(f, fneg(p.x)) }))));                       // sign slip on the abscissa
+        fakes.push(String.raw`\text{No inflection point}`);
+        if (v === 1) fakes.push(pointTex(pts[0].x, pts[0].y));
+        if (v === 2) { fakes.push(joinPts(pts.concat([{ x: F0, y: pEval(f, F0) }]))); fakes.push(pointTex(F0, pEval(f, F0))); }
+        const ex = expl([
+            M("f''(x)=" + polyTexF(pDeriv(pDeriv(f)))) + '.',
+            String.raw`Inflection points: roots of ${M("f''")} where the sign changes, i.e. ${roots.map(r => M('x=' + r)).join(', ')}${v === 2 ? ' (the double root x = 0 does <b>not</b> change the sign)' : ''}.`,
+            pts.map(p => M('f(' + fTex(p.x) + ')=' + fTex(p.y))).join(', ') + '.'
+        ]);
+        return mcq(tier, 'INFL_POINT', 'Determine the coordinates of the point(s) of inflection of the curve of ' + M('f') + '.',
+            String.raw`f(x) = ${polyTexF(f)}`, key, fakes, [String.raw`(0,\,0)`, String.raw`(1,\,1)`], ex);
+    }
+
+    function genInflRational(tier, spec) {
+        const v = spec.v;
+        const k = ri(1, 3), b = 3 * k * k;
+        let eq, pts, fakes, ex;
+        if (v === 0) {
+            const a = until(() => ri(-3, 12), z => z + b !== 0);
+            const fx = (x) => fdiv(F(x * x - a), F(x * x + b));
+            eq = String.raw`f(x) = \frac{x^2 - ${a}}{x^2 + ${b}}`.replace('- -', '+ ');
+            pts = [{ x: F(-k), y: fx(-k) }, { x: F(k), y: fx(k) }];
+            fakes = [pointTex(pts[1].x, pts[1].y), pointTex(F0, fx(0)), pts.map(p => pointTex(p.y, p.x)).join(', '),
+                pointTex(F(-k), F0) + ', ' + pointTex(F(k), F0), String.raw`\text{No inflection point}`];
+            ex = expl([
+                String.raw`${M(String.raw`f(x)=1-\frac{${a + b}}{x^2+${b}}`)}, so ${M(String.raw`f''(x)=-${a + b}\cdot\frac{6x^2-${2 * b}}{(x^2+${b})^3}`)}.`,
+                String.raw`${M("f''")} vanishes and changes sign at ${M(String.raw`x=\pm ${k}`)} (since ${M(String.raw`6x^2=${2 * b}`)}). At ${M('x=0')} the derivative is 0 but this is an extremum, not an inflection point.`
+            ]);
+        } else {
+            const fx = (x) => fdiv(F(x), F(x * x + b));
+            eq = String.raw`f(x) = \frac{x}{x^2 + ${b}}`;
+            pts = [{ x: F(-3 * k), y: fx(-3 * k) }, { x: F0, y: F0 }, { x: F(3 * k), y: fx(3 * k) }];
+            fakes = [pts.slice(1).map(p => pointTex(p.x, p.y)).join(', '), pointTex(F(-k), fx(-k)) + ', ' + pointTex(F0, F0) + ', ' + pointTex(F(k), fx(k)),
+                pointTex(F(-3 * k), fx(-3 * k)) + ', ' + pointTex(F(3 * k), fx(3 * k)), pointTex(F0, F0), String.raw`\text{No inflection point}`];
+            ex = expl([
+                String.raw`${M(String.raw`f''(x)=\frac{2x(x^2-${3 * b})}{(x^2+${b})^3}`)}.`,
+                String.raw`Sign changes at ${M('x=0')} and ${M(String.raw`x=\pm ${3 * k}`)} (since ${M(String.raw`x^2=${3 * b}=${9 * k * k}`)}).`
+            ]);
+        }
+        const key = pts.map(p => pointTex(p.x, p.y)).join(', ');
+        return mcq(tier, 'INFL_RATIONAL', 'Determine the coordinates of the point(s) of inflection of the curve of ' + M('f') + ', if they exist.', eq, key, fakes, [String.raw`(0,\,0)`], ex);
+    }
+
+    function genConcRational(tier, spec) {
+        const v = spec.v;
+        const a = ri(-3, 4);
+        let eq, R;
+        if (v === 0) {
+            let p, q;
+            do { p = ri(-4, 4); q = ri(-5, 6); R = q + a * p + a * a; } while (R === 0);
+            eq = String.raw`f(x) = \frac{${polyTex([q, p, 1])}}{${polyTex(lin(a))}}`;
+        } else {
+            let m, n;
+            do { m = pick([1, 2, 3, -1, -2]); n = ri(-5, 6); R = n + m * a; } while (R === 0);
+            eq = String.raw`f(x) = \frac{${polyTex([n, m])}}{${polyTex(lin(a))}}`;
+        }
+        const up = String.raw`]${a},+\infty[`, down = String.raw`]-\infty,${a}[`;
+        const stmt = (upI, downI, infl) => String.raw`\text{Up on } ${upI};\ \text{down on } ${downI};\ ${infl}`;
+        const NONE = String.raw`\text{no inflection point}`;
+        const correct = R > 0 ? stmt(up, down, NONE) : stmt(down, up, NONE);
+        const fakes = [R > 0 ? stmt(down, up, NONE) : stmt(up, down, NONE),
+            String.raw`\text{Concave up on } ${String.raw`\mathbb{R}\setminus\{${a}\}`};\ ${NONE}`,
+            R > 0 ? stmt(up, down, String.raw`\text{inflection point at } x=${a}`) : stmt(down, up, String.raw`\text{inflection point at } x=${a}`),
+            String.raw`\text{Concave down on } ${String.raw`\mathbb{R}\setminus\{${a}\}`};\ ${NONE}`];
+        const xa = polyTex(lin(a));
+        const ex = expl([
+            String.raw`Divide: ${M(String.raw`f(x)=(\text{polynomial part})+\frac{${R}}{${xa}}`)}, hence ${M(String.raw`f''(x)=\frac{${2 * R}}{(${xa})^3}`)}.`,
+            String.raw`The sign of ${M("f''")} is the sign of ${M(R > 0 ? xa : '-(' + xa + ')')}. It never vanishes and ${M('x=' + a)} is not in the domain, so there is <b>no</b> inflection point.`
+        ]);
+        return mcq(tier, 'CONC_RATIONAL', 'Study the concavity of the curve of ' + M('f') + ' and state whether it has an inflection point.', eq, correct, fakes, [], ex);
+    }
+
+    // ============================================================================
+    // TABLES OF VARIATIONS (continuous, strictly monotone on each piece)
+    //   col = { x, kind:'end'|'reg'|'pole', v } ; pole: { L, R } = left / right limits
+    //   dirs[i] = +1 (increasing) or -1 (decreasing) on the piece between col i and col i+1
+    // ============================================================================
+    function tvNum(v) { if (v === Infinity) return '+\u221E'; if (v === -Infinity) return '\u2212\u221E'; return v < 0 ? '\u2212' + (-v) : String(v); }
+    function genTable(kind) {
+        for (let attempt = 0; attempt < 2000; attempt++) {
+            const d = pick([1, -1]);
+            const xs = (n) => { const s = []; let x = ri(-6, -2); for (let i = 0; i < n; i++) { s.push(x); x += ri(2, 4); } return s; };
+            const end = (x) => ({ x: x, kind: 'end' }), reg = (x) => ({ x: x, kind: 'reg' }), pole = (x) => ({ x: x, kind: 'pole' });
+            let cols, dirs;
+            let k = kind;
+            if (k === 'pole') k = pick(['pole1', 'pole2a', 'pole2b']);
+            if (k === 'open1') { const [c] = xs(1); cols = [end(-Infinity), reg(c), end(Infinity)]; dirs = [d, -d]; }
+            else if (k === 'open2') { const [c1, c2] = xs(2); cols = [end(-Infinity), reg(c1), reg(c2), end(Infinity)]; dirs = [d, -d, d]; }
+            else if (k === 'closed') { const [p, c1, c2, q] = xs(4); cols = [end(p), reg(c1), reg(c2), end(q)]; dirs = [d, -d, d]; }
+            else if (k === 'pole1') { const [c] = xs(1); cols = [end(-Infinity), pole(c), end(Infinity)]; dirs = [pick([1, -1]), pick([1, -1])]; }
+            else if (k === 'pole2a') { const [c1, c2] = xs(2); const dr = pick([1, -1]); cols = [end(-Infinity), pole(c1), reg(c2), end(Infinity)]; dirs = [pick([1, -1]), dr, -dr]; }
+            else { const [c1, c2] = xs(2); cols = [end(-Infinity), reg(c1), pole(c2), end(Infinity)]; const dd = pick([1, -1]); dirs = [dd, -dd, pick([1, -1])]; }
+            const rv = () => ri(-6, 8);
+            cols.forEach((c, idx) => {
+                if (c.kind === 'reg') c.v = rv();
+                else if (c.kind === 'end') {
+                    if (isFinite(c.x)) c.v = rv();
+                    else if (Math.random() < 0.5) { const dd = idx === 0 ? dirs[0] : dirs[dirs.length - 1]; c.v = idx === 0 ? (dd > 0 ? -Infinity : Infinity) : (dd > 0 ? Infinity : -Infinity); }
+                    else c.v = rv();
+                } else { c.L = dirs[idx - 1] > 0 ? Infinity : -Infinity; c.R = dirs[idx] < 0 ? Infinity : -Infinity; }
+            });
+            let ok = true;
+            for (let i = 0; i < dirs.length; i++) {
+                const ll = tvLeftLimit(cols, i), rl = tvRightLimit(cols, i);
+                if (!(dirs[i] > 0 ? ll < rl : ll > rl)) { ok = false; break; }
+            }
+            if (!ok) continue;
+            const fin = cols.filter(c => c.kind !== 'pole' && isFinite(c.v)).map(c => c.v);
+            if (fin.length < 2 || Math.max.apply(null, fin) === Math.min.apply(null, fin)) continue;
+            return { cols: cols, dirs: dirs, kind: k };
+        }
+        throw new Error('table generation failed');
+    }
+    function tvLeftLimit(cols, i) { const c = cols[i]; return c.kind === 'pole' ? c.R : c.v; }     // value of f at the left end of piece i
+    function tvRightLimit(cols, i) { const c = cols[i + 1]; return c.kind === 'pole' ? c.L : c.v; } // value of f at the right end of piece i
+
+    function tvHtml(T) {
+        let x = '<tr><th>x</th>', f = '<tr><th>f(x)</th>';
+        T.cols.forEach((c, i) => {
+            x += '<td class="tvx">' + tvNum(c.x) + '</td>';
+            f += c.kind === 'pole' ? '<td class="tvp">' + tvNum(c.L) + ' <span class="tvbar">&#8214;</span> ' + tvNum(c.R) + '</td>' : '<td>' + tvNum(c.v) + '</td>';
+            if (i < T.dirs.length) { x += '<td class="tvg"></td>'; f += '<td class="tvarrow">' + (T.dirs[i] > 0 ? '&#8599;' : '&#8600;') + '</td>'; }
+        });
+        return '<div class="tv-wrap"><table class="tv">' + x + '</tr>' + f + '</tr></table></div>';
+    }
+
+    // ---- unions of intervals {lo,hi,loC,hiC} ----
+    function mergeIntervals(arr) {
+        const a = arr.slice().sort((p, q) => p.lo - q.lo || (q.loC ? 1 : 0) - (p.loC ? 1 : 0));
+        const out = [];
+        a.forEach(iv => {
+            const cur = out[out.length - 1];
+            if (cur && (iv.lo < cur.hi || (iv.lo === cur.hi && (cur.hiC || iv.loC)))) {
+                if (iv.hi > cur.hi) { cur.hi = iv.hi; cur.hiC = iv.hiC; } else if (iv.hi === cur.hi) cur.hiC = cur.hiC || iv.hiC;
+            } else out.push({ lo: iv.lo, hi: iv.hi, loC: iv.loC, hiC: iv.hiC });
+        });
+        return out;
+    }
+
+    function shiftFakes(img) {          // plausible wrong images: one bound moved, or the interval mirrored
+        const out = [];
+        if (isFinite(img.lo)) { out.push(ivTex(img.lo + 1, img.hi, img.loC, img.hiC)); out.push(ivTex(img.lo - 1, img.hi, img.loC, img.hiC)); }
+        if (isFinite(img.hi)) { out.push(ivTex(img.lo, img.hi + 1, img.loC, img.hiC)); out.push(ivTex(img.lo, img.hi - 1, img.loC, img.hiC)); }
+        out.push(ivTex(-img.hi, -img.lo, img.hiC, img.loC));
+        return out;
+    }
+
+    function tvFillers(T) {
+        const out = [TEX_R];
+        T.cols.forEach(c => { if (c.kind !== 'pole' && isFinite(c.v)) { out.push(ivTex(-Infinity, c.v, false, false)); out.push(ivTex(c.v, Infinity, false, false)); out.push(ivTex(c.v, Infinity, true, false)); out.push(ivTex(-Infinity, c.v, false, true)); } });
+        return out;
+    }
+    function ivObjTex(iv) { return ivTex(iv.lo, iv.hi, iv.loC, iv.hiC); }
+
+    // image by f of the interval from column i to column j (brackets loC / hiC)
+    function tvImage(T, i, j, loC, hiC) {
+        const parts = [];
+        for (let k = i; k < j; k++) {
+            const l = tvLeftLimit(T.cols, k), r = tvRightLimit(T.cols, k);
+            parts.push({ lo: Math.min(l, r), hi: Math.max(l, r), loC: false, hiC: false });
+        }
+        for (let k = i; k <= j; k++) {
+            const c = T.cols[k];
+            if (c.kind === 'pole' || !isFinite(c.x)) continue;
+            const inside = (k > i && k < j) || (k === i && loC) || (k === j && hiC);
+            if (inside) parts.push({ lo: c.v, hi: c.v, loC: true, hiC: true });
+        }
+        const m = mergeIntervals(parts);
+        if (m.length !== 1) throw new Error('image is not an interval');
+        return m[0];
+    }
+    function tvCount(T, k) {
+        let n = 0;
+        for (let i = 0; i < T.dirs.length; i++) {
+            const l = tvLeftLimit(T.cols, i), r = tvRightLimit(T.cols, i);
+            if (Math.min(l, r) < k && k < Math.max(l, r)) n++;
+        }
+        T.cols.forEach(c => { if (c.kind !== 'pole' && isFinite(c.x) && c.v === k) n++; });
+        return n;
+    }
+    function tvPieceIndex(T, x) {            // -> {piece:i} for an interior point, or {col:i} when x is a column value
+        for (let i = 0; i < T.cols.length; i++) if (T.cols[i].x === x) return { col: i };
+        for (let i = 0; i < T.dirs.length; i++) if (T.cols[i].x < x && x < T.cols[i + 1].x) return { piece: i };
+        return null;
+    }
+    function tvCompare(T, a, b) {            // -> '<', '>', '=', or '?' (cannot be compared)
+        const A = tvPieceIndex(T, a), B = tvPieceIndex(T, b);
+        const closure = (P) => P.piece !== undefined ? [P.piece] : [P.col - 1, P.col].filter(k => k >= 0 && k < T.dirs.length && T.cols[P.col].kind !== 'pole');
+        const possible = (P) => {
+            if (P.col !== undefined) { const v = T.cols[P.col].v; return { lo: v, hi: v, loC: true, hiC: true }; }
+            const l = tvLeftLimit(T.cols, P.piece), r = tvRightLimit(T.cols, P.piece);
+            return { lo: Math.min(l, r), hi: Math.max(l, r), loC: false, hiC: false };
+        };
+        const cA = closure(A), cB = closure(B);
+        const common = cA.filter(k => cB.includes(k));
+        if (common.length) return ((a < b) === (T.dirs[common[0]] > 0)) ? '<' : '>';
+        const PA = possible(A), PB = possible(B);
+        if (A.col !== undefined && B.col !== undefined) return PA.lo < PB.lo ? '<' : (PA.lo > PB.lo ? '>' : '=');
+        if (PA.hi < PB.lo || (PA.hi === PB.lo && !(PA.hiC && PB.loC))) return '<';
+        if (PB.hi < PA.lo || (PB.hi === PA.lo && !(PB.hiC && PA.loC))) return '>';
+        return '?';
+    }
+    const TV_LEGEND = '<p class="tv-note">The function <em>f</em> is continuous and strictly monotone on each interval of the table.</p>';
+
+    function genTvImage(tier, spec) {
+        const v = spec.v;
+        const T = genTable(v === 0 ? pick(['open1', 'open2']) : (v === 1 ? 'closed' : 'pole'));
+        let i, j, loC, hiC, tries = 0;
+        do {
+            i = ri(0, T.cols.length - 2); j = ri(i + 1, T.cols.length - 1);
+            tries++;
+        } while (tries < 200 && (T.cols.slice(i + 1, j).some(c => c.kind === 'pole') || (j - i === 1 && tries < 50 && Math.random() < 0.5)));
+        if (T.cols.slice(i + 1, j).some(c => c.kind === 'pole')) { i = 0; j = 1; }
+        const closable = (c) => c.kind !== 'pole' && isFinite(c.x);
+        loC = closable(T.cols[i]) && Math.random() < 0.6; hiC = closable(T.cols[j]) && Math.random() < 0.6;
+        const img = tvImage(T, i, j, loC, hiC);
+        const key = ivObjTex(img);
+        const flip = (o) => ivTex(o.lo, o.hi, isFinite(o.lo) ? !o.loC : false, isFinite(o.hi) ? !o.hiC : false);
+        const lv = tvLeftLimit(T.cols, i), rv = tvRightLimit(T.cols, j - 1);
+        const naive = ivTex(Math.min(lv, rv), Math.max(lv, rv), isFinite(Math.min(lv, rv)), isFinite(Math.max(lv, rv)));
+        const fakes = [flip(img), naive, ivTex(img.lo, img.hi, isFinite(img.lo) ? !img.loC : false, img.hiC), ivTex(img.lo, img.hi, img.loC, isFinite(img.hi) ? !img.hiC : false), TEX_R].concat(shiftFakes(img));
+        const L = ivTex(T.cols[i].x, T.cols[j].x, loC, hiC);
+        const lines = ['On each interval of the table <em>f</em> is continuous and strictly monotone, so its image is read from the limits and values of the table.'];
+        for (let k = i; k < j; k++) { const l = tvLeftLimit(T.cols, k), r = tvRightLimit(T.cols, k); lines.push('Piece ' + M(ivTex(T.cols[k].x, T.cols[k + 1].x, false, false)) + ': values between ' + M(nTex(Math.min(l, r))) + ' and ' + M(nTex(Math.max(l, r))) + ' (not reached at the limits).'); }
+        lines.push('Add the values actually attained at the finite endpoints / turning points inside the interval. Image: ' + M(key) + '.');
+        return mcq(tier, 'TV_IMAGE', 'Consider the table of variations of the function ' + M('f') + '. Determine the image by ' + M('f') + ' of the interval ' + M('I=' + L) + '.', '',
+            key, fakes, tvFillers(T), expl(lines), { tableHtml: tvHtml(T) + TV_LEGEND, _spec: { T: T, i: i, j: j, loC: loC, hiC: hiC } });
+    }
+
+    function genTvSolNum(tier, spec) {
+        const v = spec.v;
+        const T = genTable(v === 0 ? 'open2' : (v === 1 ? 'pole' : pick(['closed', 'open1'])));
+        const fin = T.cols.filter(c => c.kind !== 'pole' && isFinite(c.v)).map(c => c.v);
+        const cand = [];
+        fin.forEach(x => { cand.push(x); cand.push(x + 1); cand.push(x - 1); });
+        const k = pick(cand);
+        const n = tvCount(T, k);
+        const lines = ['On each monotone interval, f(x) = ' + k + ' has one solution exactly when ' + k + ' lies strictly between the limits of that piece; a turning point (or finite endpoint) with value ' + k + ' gives one more.'];
+        for (let i = 0; i < T.dirs.length; i++) {
+            const l = tvLeftLimit(T.cols, i), r = tvRightLimit(T.cols, i);
+            lines.push(M(ivTex(T.cols[i].x, T.cols[i + 1].x, false, false)) + ': ' + M(ivTex(Math.min(l, r), Math.max(l, r), false, false)) + (Math.min(l, r) < k && k < Math.max(l, r) ? ' contains ' + k + ' &rarr; 1 solution' : ' does not contain ' + k + ' &rarr; 0'));
+        }
+        const hit = T.cols.filter(c => c.kind !== 'pole' && isFinite(c.x) && c.v === k).length;
+        if (hit) lines.push('Points of the table with value ' + k + ': ' + hit + '.');
+        lines.push('Total: ' + n + '.');
+        return mkProblem({ tier: tier, categoryType: 'TV_SOLNUM', type: 'TEXT', tableHtml: tvHtml(T) + TV_LEGEND, _spec: { T: T, k: k },
+            prompt: 'Consider the table of variations of the function ' + M('f') + '. Determine the number of real solutions of the equation ' + M('f(x)=' + k) + '.',
+            solution: String(n), explain: expl(lines) });
+    }
+
+    function genTvCompare(tier, spec) {
+        const v = spec.v;
+        const T = genTable(v === 0 ? pick(['open2', 'pole']) : pick(['pole', 'open1']));
+        const poles = T.cols.filter(c => c.kind === 'pole').map(c => c.x);
+        const lo = Math.min.apply(null, T.cols.filter(c => isFinite(c.x)).map(c => c.x)) - 4;
+        const hi = Math.max.apply(null, T.cols.filter(c => isFinite(c.x)).map(c => c.x)) + 4;
+        let a, b, res, tries = 0;
+        const wantCannot = Math.random() < 0.4;
+        do {
+            [a, b] = ints(2, lo, hi); tries++;
+            res = (poles.includes(a) || poles.includes(b)) ? null : tvCompare(T, a, b);
+        } while ((res === null || (tries < 400 && (res === '?') !== wantCannot) || res === '=') && tries < 800);
+        if (res === null || res === '=') return genTvCompare(tier, spec);
+        const sym = { '<': String.raw`f(${a}) \lt f(${b})`, '>': String.raw`f(${a}) \gt f(${b})`, '=': String.raw`f(${a}) = f(${b})`, '?': String.raw`\text{They cannot be compared}` };
+        const key = sym[res];
+        const fakes = Object.keys(sym).filter(s => s !== res).map(s => sym[s]);
+        const lines = ['Two values can be compared only if both points lie in the same monotone interval, or if the sets of possible values of the two images are disjoint.',
+            res === '?' ? 'Here the possible values of f(' + a + ') and f(' + b + ') overlap and the points are in different intervals: no comparison is possible.' : 'Here the comparison is forced by the table: ' + M(key) + '.'];
+        return mcq(tier, 'TV_COMPARE', 'Consider the table of variations of the function ' + M('f') + '. Compare, if possible, ' + M(`f(${a})`) + ' and ' + M(`f(${b})`) + '.', '', key, fakes, [], expl(lines),
+            { tableHtml: tvHtml(T) + TV_LEGEND, _spec: { T: T, a: a, b: b } });
+    }
+
+    // ============================================================================
+    // IMAGE OF AN INTERVAL BY A QUADRATIC, CUBIC ROOT COUNT, INTERMEDIATE VALUE THEOREM
+    // ============================================================================
+    function quadImage(a, h, k, lo, hi, loC, hiC) {          // f(x) = a (x-h)^2 + k on the interval lo..hi
+        const f = (x) => a * (x - h) * (x - h) + k;
+        const cand = [];
+        const endVal = (x, closed, side) => {
+            if (!isFinite(x)) return { v: a > 0 ? Infinity : -Infinity, at: false };
+            return { v: f(x), at: closed };
+        };
+        cand.push(endVal(lo, loC), endVal(hi, hiC));
+        const vertexIn = (h > lo || (h === lo && loC)) && (h < hi || (h === hi && hiC));
+        if (vertexIn) cand.push({ v: k, at: true });
+        let mn = Infinity, mx = -Infinity;
+        cand.forEach(c => { mn = Math.min(mn, c.v); mx = Math.max(mx, c.v); });
+        const att = (val) => cand.some(c => c.v === val && c.at);
+        return { lo: mn, hi: mx, loC: isFinite(mn) && att(mn), hiC: isFinite(mx) && att(mx) };
+    }
+    function genImgQuad(tier, spec) {
+        const v = spec.v;
+        const a = pick([1, 2, -1, -2]), h = ri(-3, 4), k = ri(-5, 5);
+        let lo, hi;
+        for (let t = 0; t < 200; t++) {
+            lo = Math.random() < 0.2 ? -Infinity : h + ri(-4, 3);
+            hi = Math.random() < 0.2 ? Infinity : h + ri(-3, 5);
+            if (lo >= hi) continue;
+            const inside = (h > lo && h < hi);
+            if (v === 0 && inside) break;               // vertex inside the interval
+            if (v === 1 && !inside && h !== lo && h !== hi && !(lo === -Infinity && hi === Infinity)) break;
+        }
+        if (lo >= hi) { lo = h - 2; hi = h + 3; }
+        const loC = isFinite(lo) && Math.random() < 0.5, hiC = isFinite(hi) && Math.random() < 0.5;
+        const img = quadImage(a, h, k, lo, hi, loC, hiC);
+        const poly = [a * h * h + k, -2 * a * h, a];
+        const f = (x) => a * (x - h) * (x - h) + k;
+        const key = ivObjTex(img);
+        const flip = ivTex(img.lo, img.hi, isFinite(img.lo) ? !img.loC : false, isFinite(img.hi) ? !img.hiC : false);
+        const fl = isFinite(lo) ? f(lo) : (a > 0 ? Infinity : -Infinity), fh = isFinite(hi) ? f(hi) : (a > 0 ? Infinity : -Infinity);
+        const naive = ivTex(Math.min(fl, fh), Math.max(fl, fh), isFinite(Math.min(fl, fh)) && (Math.min(fl, fh) === fl ? loC : hiC), isFinite(Math.max(fl, fh)) && (Math.max(fl, fh) === fl ? loC : hiC));
+        const wholeR = a > 0 ? ivTex(k, Infinity, true, false) : ivTex(-Infinity, k, false, true);
+        const fakes = [flip, naive, wholeR, ivTex(img.lo, img.hi, true, true), ivTex(img.lo, img.hi, !img.loC && isFinite(img.lo), img.hiC)].concat(shiftFakes(img));
+        const I = ivTex(lo, hi, loC, hiC);
+        const ex = expl([
+            M(String.raw`f(x)=${a === 1 ? '' : (a === -1 ? '-' : a)}(x${polyTex(lin(h)).slice(1)})^2${k >= 0 ? '+' : ''}${k}`.replace('(x)', '(x)')) + String.raw`: the vertex is ${M(`(${h},${k})`)} and the parabola opens ${a > 0 ? 'upward' : 'downward'}.`,
+            (h > lo && h < hi) ? 'The vertex lies inside the interval, so the extreme value ' + M(String(k)) + ' is attained; compare with the values at the ends.' : 'The vertex is not inside the interval: f is strictly monotone on it, so only the endpoint values matter.',
+            'Image: ' + M(key) + '.'
+        ]);
+        return mcq(tier, 'IMG_QUAD', 'Determine the image by ' + M('f') + ' of the interval ' + M('I=' + I) + '.', String.raw`f(x) = ${polyTex(poly)}`, key, fakes, [TEX_R], ex, { _spec: { a: a, h: h, k: k, lo: lo, hi: hi, loC: loC, hiC: hiC } });
+    }
+
+    function countCubicRoots(M0, m0) {          // local max value M0, local min value m0 (M0 > m0)
+        if (M0 < 0 || m0 > 0) return 1;
+        if (M0 === 0 || m0 === 0) return 2;
+        return 3;
+    }
+    function genCubicRoots(tier, spec) {
+        const v = spec.v;
+        let poly, eqTex, Mx, mn, p1, p2;
+        const target = pick([1, 2, 3, 3]);
+        if (v === 0) {
+            const [r1, r2] = ints(2, -3, 3).sort((x, y) => x - y);
+            const g = (x) => 2 * x * x * x - 3 * (r1 + r2) * x * x + 6 * r1 * r2 * x;
+            const Mg = g(r1), mg = g(r2);
+            let k;
+            if (target === 3) k = ri(-Mg + 1, -mg - 1);
+            else if (target === 2) k = Math.random() < 0.5 ? -Mg : -mg;
+            else k = Math.random() < 0.5 ? -Mg + ri(1, 12) : -mg - ri(1, 12);
+            poly = [k, 6 * r1 * r2, -3 * (r1 + r2), 2];
+            Mx = Mg + k; mn = mg + k; p1 = r1; p2 = r2;
+        } else {
+            const s = ri(1, 3);
+            const lim = 2 * s * s * s;
+            let k;
+            if (target === 3) k = ri(-lim + 1, lim - 1);
+            else if (target === 2) k = Math.random() < 0.5 ? lim : -lim;
+            else k = (Math.random() < 0.5 ? 1 : -1) * (lim + ri(1, 10));
+            poly = [k, -3 * s * s, 0, 1];
+            Mx = 2 * s * s * s + k; mn = -2 * s * s * s + k; p1 = -s; p2 = s;
+        }
+        const n = countCubicRoots(Mx, mn);
+        const fp = v === 0 ? String.raw`f'(x)=6(x${polyTex(lin(p1)).slice(1)})(x${polyTex(lin(p2)).slice(1)})` : String.raw`f'(x)=3(x^2-${(p2) * (p2)})`;
+        const ex = expl([
+            M(fp) + ': local maximum at ' + M('x=' + p1) + ' with value ' + M(String(Mx)) + ', local minimum at ' + M('x=' + p2) + ' with value ' + M(String(mn)) + '.',
+            Mx < 0 || mn > 0 ? 'Both extreme values have the same sign: the curve crosses the x-axis only once.' :
+              (Mx === 0 || mn === 0 ? 'One extreme value is 0: the curve touches the axis there, giving exactly 2 solutions.' : 'The extreme values have opposite signs: 3 solutions.'),
+            'Number of real solutions: ' + n + '.'
+        ]);
+        return mkProblem({ tier: tier, categoryType: 'CUBIC_ROOTS', type: 'TEXT', equation: polyTex(poly) + ' = 0', solution: String(n), explain: ex,
+            prompt: 'Determine the number of real solutions of the equation:', _spec: { poly: poly } });
+    }
+
+    function genIvt(tier, spec) {
+        const v = spec.v;
+        let poly, n;
+        for (let t = 0; t < 500; t++) {
+            const p = ri(1, 4), q = ri(-30, 30);
+            poly = v === 0 ? [q, p, 0, 1] : [q, p, 0, 0, 0, 1];
+            const f = (x) => poly.reduce((s, c, i) => s + c * Math.pow(x, i), 0);
+            n = null;
+            for (let x = -4; x < 4; x++) { if (f(x) < 0 && f(x + 1) > 0) { n = x; break; } }
+            if (n !== null) break;
+        }
+        const f = (x) => poly.reduce((s, c, i) => s + c * Math.pow(x, i), 0);
+        const iv = (m) => String.raw`[${m},\,${m + 1}]`;
+        const key = iv(n);
+        const fakes = [iv(n - 1), iv(n + 1), iv(n - 2), iv(n + 2)];
+        const ex = expl([
+            M('f') + ' is continuous, and strictly increasing (its derivative is positive), so it has at most one root.',
+            M(`f(${n})=${f(n)}`) + ' and ' + M(`f(${n + 1})=${f(n + 1)}`) + ' have opposite signs: by the intermediate value theorem the root lies in ' + M(key) + '.'
+        ]);
+        return mcq(tier, 'IVT_INTERVAL', 'Using the intermediate value theorem, in which interval does the equation ' + M(`f(x)=0`) + ' have its solution? (the function is strictly increasing)',
+            String.raw`f(x) = ${polyTex(poly)}`, key, fakes, [iv(n + 3)], ex, { _spec: { poly: poly, n: n } });
+    }
+
+    // ============================================================================
+    // INVERSE FUNCTIONS
+    // ============================================================================
+    function xlin(p, q) { return polyTex([q, p]); }                // "px+q" compact
+    function genInvExpr(tier, spec) {
+        const v = spec.v;
+        if (v === 0) {                                              // f(x) = ax + b
+            const a = pick([2, 3, 4, -1, -2, -3, 5]), b = ri(-6, 6);
+            const frac = (num, den) => den === 1 ? num : String.raw`\frac{${num}}{${den}}`;
+            const key = a > 0 ? frac(xlin(1, -b), a) : frac(xlin(-1, b), -a);
+            const fakes = [String.raw`\frac{1}{${xlin(a, b)}}`, xlin(a, -b)];
+            if (b !== 0) fakes.push(frac(xlin(1, b), a));
+            if (Math.abs(a) !== 1) fakes.push(a + '(' + xlin(1, -b) + ')');
+            if (b !== 0) fakes.push(String.raw`\frac{x}{${a}}${b > 0 ? '-' : '+'}${Math.abs(b)}`);
+            const ex = expl([M('y=' + xlin(a, b)) + ': solve for ' + M('x') + ': ' + M(String.raw`x=\frac{y${b > 0 ? '-' : '+'}${Math.abs(b)}}{${a}}`) + '.', 'Swap the variables: ' + M(String.raw`f^{-1}(x)=${key}`) + '.']);
+            return mcq(tier, 'INV_EXPR', 'The function ' + M('f') + ' is defined over ' + M(String.raw`\mathbb{R}`) + ' by the expression below. Find the expression of ' + M(String.raw`f^{-1}(x)`) + '.',
+                'f(x) = ' + xlin(a, b), key, fakes.filter(f => f !== key), [], ex);
+        }
+        if (v === 1) {                                              // f(x) = x^3 + k
+            const k = until(() => ri(-6, 6), z => z !== 0);
+            const key = String.raw`\sqrt[3]{${xlin(1, -k)}}`;
+            const fakes = [String.raw`\sqrt[3]{${xlin(1, k)}}`, String.raw`\sqrt[3]{x}${k > 0 ? '-' : '+'}${Math.abs(k)}`, String.raw`x^3${k > 0 ? '-' : '+'}${Math.abs(k)}`, String.raw`\frac{1}{x^3${k > 0 ? '+' : '-'}${Math.abs(k)}}`];
+            const ex = expl([M(String.raw`y=x^3${k > 0 ? '+' : '-'}${Math.abs(k)} \Rightarrow x^3=y${k > 0 ? '-' : '+'}${Math.abs(k)}`) + ', so ' + M(String.raw`x=\sqrt[3]{y${k > 0 ? '-' : '+'}${Math.abs(k)}}`) + '.']);
+            return mcq(tier, 'INV_EXPR', 'The function ' + M('f') + ' is defined over ' + M(String.raw`\mathbb{R}`) + ' by the expression below. Find the expression of ' + M(String.raw`f^{-1}(x)`) + '.',
+                'f(x) = x^3' + (k > 0 ? '+' : '-') + Math.abs(k), key, fakes, [], ex);
+        }
+        let h, k;
+        do { h = ri(-3, 4); k = ri(-4, 4); } while (h === 0 && k === 0);        // f(x) = (x-h)^2 + k on [h, +inf[
+        const sqForm = (hh, kk, sgn) => { const root = String.raw`\sqrt{${xlin(1, kk)}}`; return hh === 0 ? (sgn < 0 ? '-' : '') + root : hh + (sgn < 0 ? '-' : '+') + root; };
+        const key = sqForm(h, -k, 1);
+        const fakes = [sqForm(h, -k, -1), sqForm(h, k, 1), sqForm(-h, -k, 1), String.raw`\sqrt{${xlin(1, -k)}}`, (k === 0 ? String.raw`x^2+1` : String.raw`x^2${k > 0 ? '-' : '+'}${Math.abs(k)}`)];
+        if (h !== 0) fakes.push(String.raw`\sqrt{${xlin(1, -k)}}${h > 0 ? '-' : '+'}${Math.abs(h)}`);
+        const ex = expl([M(String.raw`f(x)=(${xlin(1, -h)})^2${k >= 0 ? '+' : ''}${k}`) + ': on ' + M(String.raw`[${h},+\infty[`) + ' we have ' + M(xlin(1, -h) + String.raw`\ge 0`) + ', so f is increasing and one-to-one.',
+            M(String.raw`y=(${xlin(1, -h)})^2${k >= 0 ? '+' : ''}${k}`) + ' gives ' + M(String.raw`${xlin(1, -h)}=\sqrt{y${k > 0 ? '-' : '+'}${Math.abs(k)}}`) + ' (positive root), hence ' + M(String.raw`f^{-1}(x)=${key}`) + '.']);
+        return mcq(tier, 'INV_EXPR', 'The function ' + M('f') + ' is defined over ' + M(String.raw`[${h},+\infty[`) + ' by the expression below. Find the expression of ' + M(String.raw`f^{-1}(x)`) + '.',
+            'f(x) = ' + polyTex([h * h + k, -2 * h, 1]), key, fakes.filter(f => f !== key), [String.raw`\sqrt{x}`, String.raw`-\sqrt{x}`], ex);
+    }
+
+    function mobius() {
+        let a, b, c, d;
+        do { a = pick([1, 2, 3, -1, -2, 4]); b = ri(-5, 5); c = pick([1, 2, 3, -1, -2]); d = ri(-5, 5); } while (a * d - b * c === 0 || a + d === 0);          // a + d = 0 would make f its own inverse
+        return { a: a, b: b, c: c, d: d };
+    }
+    function mobTex(m) { return String.raw`\frac{${xlin(m.a, m.b)}}{${xlin(m.c, m.d)}}`; }
+    function exclTex(n, d) { return String.raw`\mathbb{R}\setminus\left\{${fracTex(n, d)}\right\}`; }
+    function genInvDomain(tier, spec) {
+        const v = spec.v;
+        const m = mobius();
+        const { a, b, c, d } = m;
+        const eq = 'f(x) = ' + mobTex(m);
+        if (v === 0) {
+            const key = exclTex(a, c);
+            const fakes = [exclTex(-d, c), exclTex(d, c), exclTex(c, a), exclTex(-a, c), TEX_R, exclTex(d, a), exclTex(-b, c), String.raw`\mathbb{R}\setminus\left\{${fracTex(-d, c)},\,${fracTex(a, c)}\right\}`];
+            const ex = expl([M(eq) + ' is defined for ' + M(String.raw`x\ne ${fracTex(-d, c)}`) + ' and its range is ' + M(exclTex(a, c)) + ' (the horizontal asymptote ' + M('y=' + fracTex(a, c)) + ' is never reached).',
+                'The domain of ' + M(String.raw`f^{-1}`) + ' is the range of ' + M('f') + ': ' + M(key) + '.']);
+            return mcq(tier, 'INV_DOMAIN', 'The function ' + M('f') + ' below has an inverse over its domain. Determine the domain of ' + M(String.raw`f^{-1}`) + '.', eq, key, fakes.filter(f => f !== key), [], ex);
+        }
+        const key = String.raw`\frac{${xlin(d, -b)}}{${xlin(-c, a)}}`;
+        const fakes = [String.raw`\frac{${xlin(d, b)}}{${xlin(c, a)}}`, String.raw`\frac{${xlin(d, -b)}}{${xlin(c, a)}}`, mobTex(m), String.raw`\frac{${xlin(c, d)}}{${xlin(a, b)}}`, String.raw`\frac{${xlin(a, -b)}}{${xlin(-c, d)}}`, String.raw`\frac{${xlin(d, -b)}}{${xlin(c, -a)}}`, String.raw`\frac{${xlin(d, b)}}{${xlin(-c, a)}}`];
+        const keyEq = (s) => s === key;
+        const ex = expl([M(String.raw`y=${mobTex(m)} \Rightarrow y(${xlin(c, d)})=${xlin(a, b)}`) + ', so ' + M(String.raw`x(${polyTex([0, c]).replace(/^/, '')}y-${a}) = -${b}-${d}y`.replace(/.*/, String.raw`x\,(${xlin(c, 0).replace('x', 'y')}-${a})=-${d}y${b >= 0 ? '-' : '+'}${Math.abs(b)}`)) + '.',
+            'Swap the variables: ' + M(String.raw`f^{-1}(x)=${key}`) + '.']);
+        return mcq(tier, 'INV_DOMAIN', 'The function ' + M('f') + ' below has an inverse over its domain. Find the expression of ' + M(String.raw`f^{-1}(x)`) + '.', eq, key, fakes.filter(f => !keyEq(f)), [], ex, { _spec: { m: m } });
+    }
+
+    function genInvDeriv(tier, spec) {
+        const v = spec.v;
+        if (v === 0) {
+            const p = ri(1, 4), q = ri(-6, 6), a0 = ri(-3, 3);
+            const bv = a0 * a0 * a0 + p * a0 + q;
+            const fp = (x) => 3 * x * x + p;
+            const key = F(1, fp(a0));
+            const fakes = [F(fp(a0)), F(1, fp(bv)), F(-1, fp(a0)), F(1, 3 * a0 + p)].map(fTex);
+            const ex = expl([M(String.raw`f'(x)=3x^2+${p}>0`) + ': f is strictly increasing, so it has an inverse.',
+                'Solve ' + M(`f(a)=${bv}`) + ': ' + M(`a=${a0}`) + '. Then ' + M(String.raw`(f^{-1})'(${bv})=\frac{1}{f'(${a0})}=\frac{1}{${fp(a0)}}`) + '.']);
+            return mcq(tier, 'INV_DERIV', 'The function ' + M('f') + ' below has an inverse. Calculate ' + M(String.raw`(f^{-1})'(${bv})`) + '.',
+                String.raw`f(x) = ${polyTex([q, p, 0, 1])}`, fTex(key), fakes, GENERIC_NUM_FILLERS, ex, { _spec: { p: p, q: q, a0: a0, b: bv } });
+        }
+        const m = mobius();
+        let y0;
+        do { y0 = ri(-5, 6); } while (m.c * y0 === m.a);
+        const det = m.a * m.d - m.b * m.c;
+        const key = F(det, (m.a - m.c * y0) * (m.a - m.c * y0));
+        const fakes = [fdiv(F1, key), F(-det, (m.a - m.c * y0) * (m.a - m.c * y0)), F(det, (m.a + m.c * y0) * (m.a + m.c * y0)), F(det, (m.c * y0 + m.d) * (m.c * y0 + m.d))].map(fTex);
+        const ex = expl(['Explicit inverse: ' + M(String.raw`f^{-1}(x)=\frac{${xlin(m.d, -m.b)}}{${xlin(-m.c, m.a)}}`) + '.',
+            'Its derivative is ' + M(String.raw`\frac{${det}}{(${xlin(-m.c, m.a)})^2}`) + ', so at ' + M('x=' + y0) + ' we get ' + M(fTex(key)) + '.']);
+        return mcq(tier, 'INV_DERIV', 'The function ' + M('f') + ' below has an inverse over its domain. Calculate ' + M(String.raw`(f^{-1})'(${y0})`) + '.',
+            'f(x) = ' + mobTex(m), fTex(key), fakes, GENERIC_NUM_FILLERS, ex, { _spec: { m: m, y0: y0 } });
+    }
+
+    function genInvTangent(tier, spec) {
+        const v = spec.v;
+        let a0, bv, slope, eq, fpA, label;
+        if (v === 0) {
+            const p = ri(1, 4), q = ri(-6, 6);
+            a0 = ri(-3, 3); bv = a0 * a0 * a0 + p * a0 + q;
+            fpA = F(3 * a0 * a0 + p); slope = fdiv(F1, fpA);
+            eq = String.raw`f(x) = ${polyTex([q, p, 0, 1])}`;
+        } else {
+            const m = mobius();
+            let y0; do { y0 = ri(-5, 6); } while (m.c * y0 === m.a);
+            bv = y0; a0 = fdiv(F(m.d * y0 - m.b), F(m.a - m.c * y0));
+            const det = m.a * m.d - m.b * m.c;
+            slope = F(det, (m.a - m.c * y0) * (m.a - m.c * y0));
+            fpA = fdiv(F1, slope);
+            eq = 'f(x) = ' + mobTex(m);
+        }
+        const a0F = typeof a0 === 'number' ? F(a0) : a0;
+        const bF = F(bv);
+        const key = lineTex(slope, fsub(a0F, fmul(slope, bF)));
+        const fakes = [lineTex(fpA, fsub(bF, fmul(fpA, a0F))),                       // tangent to f itself
+            lineTex(slope, fsub(bF, fmul(slope, a0F))),                              // coordinates swapped
+            lineTex(fneg(slope), fsub(a0F, fmul(fneg(slope), bF))),                  // sign error on the slope
+            lineTex(fpA, fsub(a0F, fmul(fpA, bF))),                                  // slope not inverted
+            lineTex(slope, fneg(fsub(a0F, fmul(slope, bF)))),                        // sign error on the intercept
+            lineTex(slope, F0),                                                      // forgot the intercept
+            lineTex(slope, fadd(fsub(a0F, fmul(slope, bF)), F1))];                   // arithmetic slip on the intercept
+        const ex = expl(['The point of the inverse curve above ' + M('x=' + bv) + ' is ' + M(String.raw`(${bv},\,${fTex(a0F)})`) + ' because ' + M(`f(${fTex(a0F)})=${bv}`) + '.',
+            'Slope: ' + M(String.raw`(f^{-1})'(${bv})=\frac{1}{f'(${fTex(a0F)})}=${fTex(slope)}`) + '.',
+            'Tangent: ' + M(String.raw`y-${fTex(a0F)}=${fTex(slope)}(x-${bv})`.replace('--', '+')) + ' &rArr; ' + M(key) + '.']);
+        return mcq(tier, 'INV_TANGENT', 'The function ' + M('f') + ' below has an inverse over its domain. Find the equation of the tangent to the curve of ' + M(String.raw`f^{-1}`) + ' at the point of abscissa ' + M('x=' + bv) + '.',
+            eq, key, fakes, [lineTex(fadd(slope, F1), fsub(a0F, fmul(fadd(slope, F1), bF))), lineTex(fsub(slope, F1), fsub(a0F, fmul(fsub(slope, F1), bF))), lineTex(fmul(slope, F(2)), fsub(a0F, fmul(fmul(slope, F(2)), bF)))], ex, { _spec: { v: v, a0: a0F, b: bv, slope: slope } });
+    }
+
+    function genInvInterval(tier, spec) {
+        const v = spec.v;
+        if (v === 0) {
+            const a = pick([1, 2, -1, -2]), h = ri(-3, 4), k = ri(-5, 5);
+            let c; do { c = ri(h - 4, h + 4); } while (c === h);
+            const key = c > h ? String.raw`[${h},+\infty[` : String.raw`]-\infty,${h}]`;
+            const fakes = [c > h ? String.raw`]-\infty,${h}]` : String.raw`[${h},+\infty[`, c > h ? String.raw`]${h},+\infty[` : String.raw`]-\infty,${h}[`, TEX_R, String.raw`[${c},+\infty[`];
+            const ex = expl([M(String.raw`f'(x)=${2 * a}(x${polyTex(lin(h)).slice(1)})`) + ' changes sign at ' + M('x=' + h) + '.',
+                'f is strictly monotone on ' + M(String.raw`]-\infty,${h}]`) + ' and on ' + M(String.raw`[${h},+\infty[`) + '; the interval containing ' + M('x=' + c) + ' is ' + M(key) + '.']);
+            return mcq(tier, 'INV_INTERVAL', 'The function ' + M('f') + ' is not one-to-one over ' + M(String.raw`\mathbb{R}`) + '. Determine the largest interval containing ' + M('x=' + c) + ' over which ' + M('f') + ' admits an inverse function.',
+                String.raw`f(x) = ${polyTex([a * h * h + k, -2 * a * h, a])}`, key, fakes.filter(f => f !== key), [], ex);
+        }
+        const s = ri(1, 3), q = ri(-5, 5);
+        let c; do { c = ri(-2 * s - 2, 2 * s + 2); } while (Math.abs(c) === s);
+        const regions = [String.raw`]-\infty,${-s}]`, String.raw`[${-s},${s}]`, String.raw`[${s},+\infty[`];
+        const idx = c < -s ? 0 : (c < s ? 1 : 2);
+        const key = regions[idx];
+        const fakes = regions.filter((r, i) => i !== idx).concat([TEX_R, String.raw`]${-s},${s}[`]);
+        const ex = expl([M(String.raw`f'(x)=3(x^2-${s * s})=3(x-${s})(x+${s})`) + ': critical points ' + M(String.raw`x=\pm ${s}`) + '.',
+            'f is strictly monotone on each of ' + regions.map(r => M(r)).join(', ') + '; the one containing ' + M('x=' + c) + ' is ' + M(key) + '.']);
+        return mcq(tier, 'INV_INTERVAL', 'The function ' + M('f') + ' is not one-to-one over ' + M(String.raw`\mathbb{R}`) + '. Determine the largest interval containing ' + M('x=' + c) + ' over which ' + M('f') + ' admits an inverse function.',
+            String.raw`f(x) = ${polyTex([q, -3 * s * s, 0, 1])}`, key, fakes, [], ex);
+    }
+
+    // ============================================================================
+    // DOMAIN OF A COMPOSITE FUNCTION  f o g
+    //   LIN(a,b): ax+b     RAD(a,b): sqrt(ax+b)     RAT(a,b,c,d): (ax+b)/(cx+d)     RAT2(m,k): mx/(x^2-k^2)
+    // ============================================================================
+    function fnTex(g) {
+        if (g.t === 'LIN') return xlin(g.a, g.b);
+        if (g.t === 'RAD') return String.raw`\sqrt{${xlin(g.a, g.b)}}`;
+        if (g.t === 'RAT') return String.raw`\frac{${xlin(g.a, g.b)}}{${xlin(g.c, g.d)}}`;
+        return String.raw`\frac{${g.m === 1 ? '' : g.m}x}{x^2-${g.k * g.k}}`;
+    }
+    function normNM(n, m) { if (m < 0) { n = -n; m = -m; } const g = gcd(n, m) || 1; return { n: n / g, m: m / g }; }
+    function outerDesc(f) {          // conditions on the input u of the OUTER function
+        if (f.t === 'LIN') return { t: 'all' };
+        if (f.t === 'RAD') { const r = normNM(-f.b, f.a); return { t: f.a > 0 ? 'lower' : 'upper', n: r.n, m: r.m }; }
+        if (f.t === 'RAT') { const r = normNM(-f.d, f.c); return { t: 'excl', pts: [r] }; }
+        return { t: 'excl', pts: [{ n: -f.k, m: 1 }, { n: f.k, m: 1 }] };
+    }
+    function innerDomainCons(g) {
+        if (g.t === 'LIN' || g.t === 'RAT2') return [];
+        if (g.t === 'RAD') return [{ num: [[g.b, g.a]], den: [], op: '>=' }];
+        return [{ num: [[g.d, g.c], [g.d, g.c]], den: [], op: '>' }];
+    }
+    function preimageCons(desc, g) {
+        if (desc.t === 'all') return [];
+        const pts = desc.t === 'excl' ? desc.pts : [{ n: desc.n, m: desc.m }];
+        const out = [];
+        pts.forEach(pt => {
+            const n = pt.n, m = pt.m;
+            const op = desc.t === 'lower' ? '>=' : (desc.t === 'upper' ? '<=' : '>');
+            if (g.t === 'LIN') {
+                const P = [m * g.b - n, m * g.a];
+                out.push(desc.t === 'excl' ? { num: [P, P], den: [], op: '>' } : { num: [P], den: [], op: op });
+            } else if (g.t === 'RAD') {
+                const P = [m * m * g.b - n * n, m * m * g.a];
+                if (desc.t === 'lower') { if (n > 0) out.push({ num: [P], den: [], op: '>=' }); }
+                else if (desc.t === 'upper') { if (n < 0) out.push({ num: [[-1]], den: [], op: '>=' }); else out.push({ num: [P], den: [], op: '<=' }); }
+                else if (n >= 0) out.push({ num: [P, P], den: [], op: '>' });
+            } else {
+                const N = [m * g.b - n * g.d, m * g.a - n * g.c];
+                if (desc.t === 'excl') out.push({ num: [N, N], den: [], op: '>' });
+                else out.push({ num: [N], den: [[g.d, g.c]], op: op });
+            }
+        });
+        return out;
+    }
+    function compositeCons(f, g) { return innerDomainCons(g).concat(preimageCons(outerDesc(f), g)); }
+    const asInner = (f) => f.t === 'RAT2' ? null : f;
+
+    function randFn(t) {
+        if (t === 'LIN') return { t: 'LIN', a: pick([1, 2, 3, -1, -2]), b: ri(-5, 5) };
+        if (t === 'RAD') return { t: 'RAD', a: pick([1, 1, 2, 3, -1, -2]), b: ri(-6, 9) };
+        if (t === 'RAT') { let g; do { g = { t: 'RAT', a: pick([1, 2, 3, -1]), b: ri(-5, 5), c: pick([1, 2, -1]), d: ri(-5, 5) }; } while (g.a * g.d - g.b * g.c === 0); return g; }
+        if (t === 'RAT1') { const k = ri(-3, 4); return { t: 'RAT', a: 0, b: pick([1, 1, 2, 3]), c: 1, d: -k }; }
+        if (t === 'RATX') { const k = ri(-3, 4); let m; do { m = ri(-3, 3); } while (m === 0 || m === -k); return { t: 'RAT', a: 1, b: m, c: 1, d: -k }; }   // m = -k would cancel the fraction
+        if (t === 'RADK') { const k = ri(-3, 4); return { t: 'RAD', a: 1, b: -k }; }
+        if (t === 'RADN') { const k = ri(2, 9); return { t: 'RAD', a: -1, b: k }; }
+        return { t: 'RAT2', m: pick([1, 2, 3]), k: ri(2, 4) };
+    }
+    const COMP_SPECS = {
+        E: [['RAT1', 'LIN'], ['RADK', 'LIN']],
+        M: [['RAT1', 'RAD'], ['RADK', 'RAT'], ['RATX', 'RAT']],
+        H: [['RADN', 'RAD'], ['RAT2', 'RAD'], ['RATX', 'RAT']]
+    };
+    function genComposite(tier, spec, level) {
+        const [ft, gt] = COMP_SPECS[level][spec.v];
+        let f, g, res, cons, tries = 0;
+        do {
+            f = randFn(ft); g = randFn(gt); tries++;
+            cons = compositeCons(f, g);
+            res = solveSet(cons).tex;
+        } while (tries < 300 && (res === TEX_EMPTY || res === TEX_R));
+        const dg = solveSet(innerDomainCons(g)).tex;
+        const df = solveSet(preimageCons(outerDesc(f), { t: 'LIN', a: 1, b: 0 })).tex;
+        const cand = [];
+        cand.push(dg);                                                           // forgot the condition g(x) in D_f
+        if (innerDomainCons(g).length) cand.push(solveSet(preimageCons(outerDesc(f), g)).tex);   // forgot the domain of g
+        cand.push(df);                                                           // domain of f itself
+        const fi = asInner(f);
+        if (fi) cand.push(solveSet(compositeCons(g, fi)).tex);                   // domain of g o f instead of f o g
+        [STRICT_FLIP, DIR_FLIP].forEach(m => cand.push(solveSet(cons.map(c => ({ num: c.num, den: c.den, op: m[c.op] }))).tex));
+        const fakes = Array.from(new Set(cand)).filter(t => t !== res);
+        const ex = expl([
+            'Domain of ' + M('g') + ': ' + M(dg) + '.',
+            'Condition ' + M('g(x)') + ' must belong to the domain of ' + M('f') + ' (' + M('f') + ' alone is defined for ' + M(df) + ').',
+            'Combining both conditions: ' + M(res) + '.'
+        ]) + (cons.length ? explainHtml(cons, 'x', 'and') : '');
+        const eq = String.raw`f(x) = ${fnTex(f)} \quad \text{and} \quad g(x) = ${fnTex(g)}`;
+        const p = mkProblem({ tier: tier, categoryType: 'COMP_' + level, type: 'MCQ', prompt: 'Find the domain of definition of ' + M(String.raw`f\circ g`) + '.', equation: eq,
+            pool: buildChoices(res, fakes, [TEX_R, TEX_EMPTY, String.raw`[0,+\infty[`]), solution: res, explain: ex, _cons: cons, _spec: { f: f, g: g } });
+        return p;
+    }
+
+    // ============================================================================
+    // QUESTION CATALOG (category, variant, tier) + NO-REPEAT PLANNER
+    // ============================================================================
+    const CAT_LABELS = {
+        LIM_INF: 'Limit at infinity', LIM_FACTOR: "Limit (0/0, L'H\u00F4pital)", LIM_RADICAL: 'Limit with radicals / derivative',
+        INFL_COUNT: 'Inflection points (f\'\')', CONC_POLY: 'Concavity of a polynomial', INFL_POINT: 'Inflection point coordinates',
+        INFL_RATIONAL: 'Inflection of a rational function', CONC_RATIONAL: 'Concavity of a rational function',
+        COMP_E: 'Domain of f\u2218g', COMP_M: 'Domain of f\u2218g', COMP_H: 'Domain of f\u2218g',
+        INV_EXPR: 'Inverse function expression', INV_DOMAIN: 'Inverse of a homographic function', INV_DERIV: 'Derivative of an inverse',
+        INV_TANGENT: 'Tangent to the inverse curve', INV_INTERVAL: 'Existence of an inverse',
+        IMG_QUAD: 'Image of an interval', TV_IMAGE: 'Table of variations: image', TV_SOLNUM: 'Table of variations: solutions',
+        TV_COMPARE: 'Table of variations: comparison', CUBIC_ROOTS: 'Number of real roots', IVT_INTERVAL: 'Intermediate value theorem'
+    };
+    function buildSpecCatalog() {
+        const specs = [];
+        const add = (cat, n, tier) => { for (let v = 0; v < n; v++) specs.push({ cat: cat, v: v, concept: cat + v, tier: tier }); };
+        add('LIM_INF', 3, 'easy'); add('LIM_FACTOR', 3, 'easy'); add('INFL_COUNT', 3, 'easy'); add('CONC_POLY', 2, 'easy'); add('COMP_E', 2, 'easy'); add('INV_EXPR', 3, 'easy');
+        add('LIM_RADICAL', 4, 'medium'); add('INFL_POINT', 3, 'medium'); add('COMP_M', 3, 'medium'); add('INV_DOMAIN', 2, 'medium');
+        add('IMG_QUAD', 2, 'medium'); add('TV_IMAGE', 3, 'medium'); add('INV_DERIV', 2, 'medium'); add('INV_INTERVAL', 2, 'medium');
+        add('INFL_RATIONAL', 2, 'hard'); add('CONC_RATIONAL', 2, 'hard'); add('TV_SOLNUM', 3, 'hard'); add('TV_COMPARE', 2, 'hard');
+        add('INV_TANGENT', 2, 'hard'); add('COMP_H', 3, 'hard'); add('CUBIC_ROOTS', 2, 'hard'); add('IVT_INTERVAL', 2, 'hard');
+        return specs;
+    }
+    function pickQuizSpecs() {
+        const catalog = buildSpecCatalog();
+        const chosen = { easy: [], medium: [], hard: [] };
+        const usedKeys = new Set(), catCount = {};
+        ['easy', 'medium', 'hard'].forEach(tier => {
+            for (let n = 0; n < APP_LIMITS.tiers[tier]; n++) {
+                let pool = catalog.filter(s => s.tier === tier && !usedKeys.has(s.cat + ':' + s.v));
+                if (!pool.length) pool = catalog.filter(s => s.tier === tier);
+                const least = Math.min.apply(null, pool.map(s => catCount[s.cat] || 0));
+                const best = pool.filter(s => (catCount[s.cat] || 0) === least);
+                const pk = best[Math.floor(Math.random() * best.length)];
+                chosen[tier].push(pk); usedKeys.add(pk.cat + ':' + pk.v); catCount[pk.cat] = (catCount[pk.cat] || 0) + 1;
+            }
+        });
+        return chosen;
+    }
+    function constructMathProblem(tier, spec) {
+        switch (spec.cat) {
+            case 'LIM_INF': return genLimInf(tier, spec);
+            case 'LIM_FACTOR': return genLimFactor(tier, spec);
+            case 'LIM_RADICAL': return genLimRadical(tier, spec);
+            case 'INFL_COUNT': return genInflCount(tier, spec);
+            case 'CONC_POLY': return genConcPoly(tier, spec);
+            case 'INFL_POINT': return genInflPoint(tier, spec);
+            case 'INFL_RATIONAL': return genInflRational(tier, spec);
+            case 'CONC_RATIONAL': return genConcRational(tier, spec);
+            case 'COMP_E': return genComposite(tier, spec, 'E');
+            case 'COMP_M': return genComposite(tier, spec, 'M');
+            case 'COMP_H': return genComposite(tier, spec, 'H');
+            case 'INV_EXPR': return genInvExpr(tier, spec);
+            case 'INV_DOMAIN': return genInvDomain(tier, spec);
+            case 'INV_DERIV': return genInvDeriv(tier, spec);
+            case 'INV_TANGENT': return genInvTangent(tier, spec);
+            case 'INV_INTERVAL': return genInvInterval(tier, spec);
+            case 'IMG_QUAD': return genImgQuad(tier, spec);
+            case 'TV_IMAGE': return genTvImage(tier, spec);
+            case 'TV_SOLNUM': return genTvSolNum(tier, spec);
+            case 'TV_COMPARE': return genTvCompare(tier, spec);
+            case 'CUBIC_ROOTS': return genCubicRoots(tier, spec);
+            case 'IVT_INTERVAL': return genIvt(tier, spec);
+        }
+        throw new Error('Unknown category ' + spec.cat);
+    }
+    function generateEntireQuizSuite() {
+        const specs = pickQuizSpecs();
+        const build = tier => specs[tier].map(spec => constructMathProblem(tier, spec));
+        const arrange = list => {
+            let best = null;
+            for (let t = 0; t < 500; t++) {
+                const cand = shuffleList(list);
+                let clashes = 0;
+                for (let i = 1; i < cand.length; i++) if (cand[i].categoryType.replace(/_[EMH]$/, '') === cand[i - 1].categoryType.replace(/_[EMH]$/, '') || cand[i].categoryType.slice(0, 3) === cand[i - 1].categoryType.slice(0, 3)) clashes++;
+                if (!best || clashes < best.clashes) best = { list: cand, clashes: clashes };
+                if (clashes === 0) break;
+            }
+            return best.list;
+        };
+        generatedSuite = [...arrange(build('easy')), ...arrange(build('medium')), ...arrange(build('hard'))];
+    }
+
+
+    // ========================================== -->
+    // PART 4A: INTERFACE DISPLAY SYNC ENGINE     -->
+    // ========================================== -->
+
+    function renderMath(el) {
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(el, {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: '\\(', right: '\\)', display: false }
+                ],
+                throwOnError: false
+            });
+        }
+    }
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+
+        let equationBlock = activeProblem.equation ? `
+        <div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; line-height: 1.4;">
+            $$${activeProblem.equation}$$
+        </div>
+        ` : "";
+
+        let problemMarkup = `
+        <div style="font-size:1.15rem; line-height:1.6; text-align:center; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; width:100%; padding: 0 10px;">
+            <p style="margin-bottom: 4px; color: var(--text-main); font-weight: 500;">
+                ${activeProblem.prompt}
+            </p>
+            ${activeProblem.tableHtml || ''}
+            ${equationBlock}
+        </div>
+        `;
+
+        document.getElementById('math-prompt-container').innerHTML = problemMarkup;
+
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+        document.getElementById('box-text').classList.add('hidden');
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+            activeProblem.pool.forEach(choice => {
+                const buttonElement = document.createElement('button');
+                buttonElement.className = `opt-btn ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+                buttonElement.setAttribute("style", "display: flex; justify-content: center; align-items: center; text-align: center; width: 100%; padding: 10px 12px; min-height: auto; height: auto; line-height: 1.2; margin: 0;");
+                buttonElement.innerHTML = `\\(${choice}\\)`;
+                buttonElement.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    buttonElement.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(buttonElement);
+            });
+            renderMath(mcqContainer);
+        }
+        else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        } else if (activeProblem.type === 'TEXT') {
+            document.getElementById('box-text').classList.remove('hidden');
+            const targetInput = document.getElementById('manual-text-input');
+            targetInput.value = storedResponses[traversalIndex] || "";
+            targetInput.placeholder = "Type a whole number (e.g., 2)";
+            targetInput.oninput = (e) => recordInput(e.target.value);
+        }
+
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+
+        renderMath(document.getElementById('math-prompt-container'));
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; }
+
+    // ========================================== -->
+    // PART 4B: METRIC TIMERS & EVALUATION ENGINES -->
+    // ========================================== -->
+
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            let m = Math.floor(timeTrackingRemaining / 60);
+            let s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            let dynamicPercentage = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${dynamicPercentage}%`;
+
+            if (dynamicPercentage < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (dynamicPercentage < 50) progress.style.backgroundColor = '#d97706';
+            else progress.style.backgroundColor = '';
+        }
+        pulse();
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    function isCorrect(problem, raw) {
+        if (raw === undefined || raw === null || String(raw).trim() === '') return false;
+        if (problem.type === 'TEXT') {
+            const norm = s => String(s).trim().replace(/\s+/g, '').replace(/^\+/, '').replace(/−/g, '-');
+            const a = norm(raw), b = norm(problem.solution);
+            return a === b || (a !== '' && !isNaN(Number(a)) && Number(a) === Number(b));
+        }
+        return String(raw) === String(problem.solution);
+    }
+
+    // Core Metrics Verification & Score Reporter
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limits reached. Compiling final diagnostic report sheet now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+        const renderAnswer = (problem, rawStr) => {
+            if (rawStr === undefined || rawStr === null || String(rawStr).trim() === '') return '<span style="color:var(--error); font-weight:500;">Unanswered</span>';
+            if (problem.type === 'MCQ') {
+                try { return window.katex ? window.katex.renderToString(String(rawStr), { throwOnError: false, displayMode: false }) : escapeHtml(rawStr); }
+                catch (e) { return escapeHtml(rawStr); }
+            }
+            return escapeHtml(rawStr);
+        };
+
+        generatedSuite.forEach((problem, index) => {
+            const outcomeState = isCorrect(problem, storedResponses[index]);
+            if (outcomeState) tallyCorrect++;
+
+            let itemScoreBadge = outcomeState ?
+                `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>` :
+                `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+
+            const userAnsView = renderAnswer(problem, storedResponses[index]);
+            const correctAnsView = renderAnswer(problem, problem.solution);
+            const label = CAT_LABELS[problem.categoryType] || problem.categoryType;
+
+            compilationHtml += `
+                <div class="report-item ${outcomeState ? 'pass' : 'fail'}" style="position: relative; overflow: auto;">
+                    ${itemScoreBadge}
+                    <strong>Question ${index + 1} &middot; ${escapeHtml(label)}</strong>
+                    ${problem.equation ? `<div style="margin: 12px 0; font-size:1.05rem; text-align: center;">$$${problem.equation}$$</div>` : ''}
+                    <p style="font-size:0.9rem; margin: 8px 0 4px; color:var(--text-muted);">Prompt: <em>${problem.prompt}</em></p>
+                    ${problem.tableHtml || ''}
+                    <p style="display: flex; align-items: center; flex-wrap: wrap; margin: 4px 0; gap: 6px;"><strong>Your Answer:</strong> <span>${userAnsView}</span></p>
+                    <p style="display: flex; align-items: center; flex-wrap: wrap; margin: 4px 0; gap: 6px;"><strong>Correct Reference Answer:</strong> <span>${correctAnsView}</span></p>
+                    ${problem.explain ? `<div class="explanation-pane"><strong>Worked solution</strong>${problem.explain}</div>` : ''}
+                </div>
+            `;
+        });
+
+        document.getElementById('lbl-score-obtained').innerText = tallyCorrect;
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = escapeHtml(document.getElementById('student-name').value.trim());
+        const sectionTitle = escapeHtml(document.getElementById('student-section').value.trim());
+
+        let structuralHeaderHtml = `
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 20px; line-height: 1.5; font-size: 0.95rem; color: var(--text-main);">
+                <div style="text-align: center; font-size: 1.15rem; font-weight: 800; color: var(--text-main); border-bottom: 2px solid var(--primary); padding-bottom: 8px; margin-bottom: 10px;"><span style="font-size:0.75rem; font-weight:700; letter-spacing:0.08em; color: var(--text-muted); text-transform: uppercase; display:block; margin-bottom:2px;">Quiz Title</span>${QUIZ_TITLE}</div>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px; margin-bottom: 8px;">
+                    <div><strong>Student Full Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+                    <div><strong>Assigned Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+                </div>
+                <div><strong>Examination Start Time:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+            </div>
+        `;
+
+        const zone = document.getElementById('report-injection-zone');
+        zone.innerHTML = structuralHeaderHtml + compilationHtml;
+        renderMath(zone);
+    }
+
+    // Action Form Click Handlers
+    let formattedQuizStartTimeStamp = "";
+    let quizStartDateObj = null;
+
+    document.getElementById('action-start').onclick = () => {
+        const user = document.getElementById('student-name').value.trim();
+        const sect = document.getElementById('student-section').value.trim();
+        if (!user || !sect) {
+            alert("Please provide credential values to unlock the examination matrix.");
+            return;
+        }
+
+        const rightNow = new Date();
+        quizStartDateObj = rightNow;
+        formattedQuizStartTimeStamp = rightNow.toLocaleDateString() + " @ " + rightNow.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        storedResponses = {};
+        traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Are you confident you want to finalize and process this quiz?")) {
+                compileFinalPerformanceReport();
+            }
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) {
+            traversalIndex--;
+            synchroniseQuestionIndex();
+        }
+    };
+
+    document.getElementById('action-pdf').onclick = () => { triggerDirectPdfDownload(); };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {};
+        traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+    // Opens the browser's print dialog. Choose "Save as PDF" as the printer.
+    // The page title becomes "<student name> - <quiz title> - <date>", which browsers use as the suggested file name.
+    function triggerDirectPdfDownload() {
+        const clean = s => String(s).replace(/[\\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim();
+        const d = quizStartDateObj || new Date();
+        const p2 = n => String(n).padStart(2, '0');
+        const dateText = d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()) + ' ' + p2(d.getHours()) + '-' + p2(d.getMinutes());
+        const studentName = document.getElementById('student-name').value.trim() || 'Student';
+
+        const originalTitle = document.title;
+        document.title = clean(studentName + ' - ' + QUIZ_TITLE + ' - ' + dateText);
+
+        const restore = () => { document.title = originalTitle; window.removeEventListener('afterprint', restore); };
+        window.addEventListener('afterprint', restore);
+        window.print();
+        setTimeout(restore, 60000);   // safety net for browsers that never fire afterprint
+    }
+
+</script>
+</body>
+</html>
