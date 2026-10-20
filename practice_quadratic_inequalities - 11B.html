@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadratic Inequalities - Math Practice Quiz</title>
+<!-- KaTeX Auto-Render Extension with Custom Delimiter Config -->
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #16a34a;
+            --error: #dc2626;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --bg-canvas: #f9fafb;
+            --bg-card: #ffffff;
+            --border-ui: #e5e7eb;
+            --bg-surface: #ffffff;
+            --border-color: #e5e7eb;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .quiz-card {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-ui);
+        }
+        .hidden { display: none !important; }
+        /* 3mm Visual Meter Tracker */
+        .time-bar-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--border-ui);
+        }
+        .time-bar-fill {
+            height: 3mm;
+            width: 100%;
+            background-color: var(--primary);
+            transition: width 1s linear, background-color 0.3s ease;
+        }
+        h1, h2, h3 {
+            color: var(--text-main);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-field { margin-bottom: 18px; }
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-ui);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--primary); }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: var(--primary-hover); }
+        .panel-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+        .clock-lbl { font-weight: 700; color: var(--text-main); }
+        .math-statement {
+            font-size: 1.15rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .options-stack { display: flex; flex-direction: column; gap: 12px; }
+        .opt-btn {
+            background-color: #fcfcfd;
+            border: 1px solid var(--border-ui);
+            color: var(--text-main);
+            text-align: left;
+            padding: 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .opt-btn.active {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .tf-row { display: flex; gap: 14px; }
+        .tf-row button { flex: 1; text-align: center; }
+        .controls-row { margin-top: 28px; display: flex; gap: 14px; }
+        .btn-secondary { background-color: #e5e7eb; color: var(--text-main); }
+        .btn-secondary:hover { background-color: #d1d5db; }
+
+        /* Report Screen Components */
+        .score-badge-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #f0fdf4;
+            border: 4px solid var(--success);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+        }
+        .score-large { font-size: 2.2rem; font-weight: 800; color: var(--success); }
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 24px 0; text-align: center; }
+        .metric-box { background: var(--bg-canvas); padding: 12px; border-radius: 8px; border: 1px solid var(--border-ui); }
+        .metric-val { font-size: 1.25rem; font-weight: 700; }
+        .metric-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+        .report-item { padding: 14px; background: var(--bg-canvas); border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #9ca3af; text-align: left;}
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+        .explanation-pane { margin-top: 8px; padding: 8px 12px; background: #ffffff; border: 1px dashed var(--border-ui); font-size: 0.9rem; border-radius: 6px; }
+
+
+        /* Sign-analysis table (report) */
+        .sign-table { border-collapse: collapse; margin: 8px auto 2px; font-size: 0.85rem; }
+        .sign-table th, .sign-table td { border: 1px solid var(--border-ui); padding: 3px 9px; text-align: center; min-width: 30px; }
+        .sign-table th { background: var(--bg-canvas); font-weight: 600; text-align: left; white-space: nowrap; }
+        .sg-pos { color: var(--success); font-weight: 700; }
+        .sg-neg { color: var(--error); font-weight: 700; }
+        .sg-zero { font-weight: 700; }
+        .sg-ok { background: #f0fdf4; color: var(--success); font-weight: 700; }
+        .explanation-pane strong:first-child { display:block; margin-bottom:4px; color: var(--text-muted); font-size:0.8rem; text-transform:uppercase; letter-spacing:.05em; }
+
+        @media print {
+            html, body { height: auto !important; overflow: visible !important; }
+            body { background: #ffffff; display: block; padding: 0; }
+            .quiz-card { overflow: visible !important; }
+            #stage-auth, #stage-engine, #meter-container { display: none !important; }
+            #stage-summary { display: block !important; }
+            .quiz-card { border: none; box-shadow: none; max-width: 100%; padding: 0; }
+            .no-print { display: none !important; }
+            .report-item { page-break-inside: avoid; background: #ffffff; border: 1px solid var(--border-ui); }
+        }
+    </style>
+</head>
+<body>
+<div class="quiz-card">
+    <div id="meter-container" class="time-bar-wrapper hidden">
+        <div id="meter-progress" class="time-bar-fill"></div>
+    </div>
+
+    <!-- Stage A: Registration/Login Portal -->
+    <div id="stage-auth">
+        <h1>📚 Quadratic Inequalities</h1>
+        <h2>Math Practice Quiz</h2>
+        <p style="text-align:center; color: var(--text-muted); font-size:0.9rem; margin: -8px 0 20px;">20 questions &middot; 40 minutes &middot; solution sets use interval notation, e.g. \(\,]-2,1[\,\cup\,[3,+\infty[\,\)</p>
+        <div class="form-field">
+            <label for="student-name">Username</label>
+            <input type="text" id="student-name" placeholder="Enter student name...">
+        </div>
+        <div class="form-field">
+            <label for="student-section">Class Section</label>
+            <input type="text" id="student-section" placeholder="Enter class section...">
+        </div>
+        <button id="action-start">Start Quiz</button>
+    </div>
+
+    <!-- Stage B: Active Quiz Panel Interface -->
+    <div id="stage-engine" class="hidden">
+        <div class="panel-meta">
+            <div>Question <span id="idx-current">1</span> of <span id="idx-total">20</span></div>
+            <div id="clock-countdown" class="clock-lbl">25:00</div>
+        </div>
+
+        <div class="math-statement" id="math-prompt-container"></div>
+
+        <!-- Layout Formats Configurations -->
+        <div id="box-mcq" class="options-stack hidden"></div>
+
+        <div id="box-tf" class="tf-row options-stack hidden">
+            <button class="opt-btn flag-tf" data-core="True">True</button>
+            <button class="opt-btn flag-tf" data-core="False">False</button>
+        </div>
+
+        <div id="box-text" class="hidden">
+            <div class="form-field">
+                <input type="text" id="manual-text-input" placeholder="Type answer...">
+            </div>
+        </div>
+
+        <!-- RESTORED: The control buttons row container -->
+        <div class="controls-row" style="margin-top: 28px; display: flex; gap: 14px;">
+            <button id="action-back" class="btn-secondary no-print" style="flex: 1;">← Previous</button>
+            <button id="action-forward" class="no-print" style="flex: 1;">Next →</button>
+        </div>
+    </div>
+
+
+    <!-- Stage C: Performance Matrix & PDF Evaluation -->
+    <div id="stage-summary" class="hidden">
+        <h2>Quiz Complete! 🎉</h2>
+        <div class="score-badge-circle">
+            <span class="score-large" id="lbl-score-obtained">0</span>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">out of 20</span>
+        </div>
+        <p style="text-align:center; font-weight:500;">Great job! Keep practicing to improve.</p>
+        <h3 style="margin-top:24px; text-align:left; border-bottom:1px solid var(--border-ui); padding-bottom:6px;">Summary</h3>
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div class="metric-val" style="color:var(--success);" id="m-correct">0</div>
+                <div class="metric-lbl">Correct</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-val" style="color:var(--error);" id="m-incorrect">0</div>
+                <div class="metric-lbl">Incorrect</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-val" style="color:var(--primary);" id="m-percent">0%</div>
+                <div class="metric-lbl">Percentage</div>
+            </div>
+        </div>
+        <h3 style="text-align:left; margin-bottom:12px;">Detailed Report</h3>
+        <div id="report-injection-zone"></div>
+        <div class="controls-row no-print">
+            <button id="action-pdf" style="background-color:var(--success);">📥 Save as PDF</button>
+            <button id="action-retry" class="btn-secondary">🔄 Retake Quiz</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Universal Runtime Config Parameters
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 2400, // 40 minutes (sign studies take longer than equations)
+        tiers: { easy: 6, medium: 7, hard: 7 }
+    };
+
+    const QUIZ_TITLE = "Quadratic Inequalities - Math Practice Quiz";
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+
+    // ============================================================================
+    // 1. TEX CONSTANTS + SMALL UTILITIES
+    // ============================================================================
+    const EPS = 1e-9;
+    const NL = '\\\\';                                   // TeX line break
+    const INF_NEG = String.raw`-\infty`;
+    const INF_POS = String.raw`+\infty`;
+    const TEX_R = String.raw`\mathbb{R}`;
+    const TEX_EMPTY = String.raw`\varnothing`;
+    const OP_TEX = { '<': String.raw`\lt`, '<=': String.raw`\leq`, '>': String.raw`\gt`, '>=': String.raw`\geq` };
+    const OPS = ['<', '<=', '>', '>='];
+    const STRICT_FLIP = { '<': '<=', '<=': '<', '>': '>=', '>=': '>' };
+    const DIR_FLIP = { '<': '>', '>': '<', '<=': '>=', '>=': '<=' };
+    const COMPL = { '<': '>=', '>=': '<', '>': '<=', '<=': '>' };
+
+    const CAT_LABELS = {
+        QUAD_STD: 'Quadratic sign study', DOUBLE_ROOT: 'Double root', NO_REAL_ROOT: 'Negative discriminant',
+        SIGN_AT: 'Sign of an expression', INT_COUNT: 'Integer solutions', TF_CHECK: 'True / False',
+        FRAC_LINEAR: 'Quotient of linear terms', PRODUCT3: 'Product of factors', SQ_COMPARE: 'Comparing squares',
+        RATIONAL_QUAD: 'Rational inequality', ONE_FRAC: 'Fraction vs constant', SQUARED_DEN: 'Squared denominator',
+        QUAD_PRODUCT: 'Product of two quadratics', IRRATIONAL: 'Irrational roots',
+        SYSTEM: 'System of inequalities', SYS_RATIONAL: 'Mixed system', TWO_FRACTIONS: 'Two fractions',
+        SMALLEST_N: 'Natural number bound'
+    };
+
+    function ri(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function gcd(x, y) { x = Math.abs(x); y = Math.abs(y); while (y) { const t = y; y = x % y; x = t; } return x; }
+    function shuffleList(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+        return a;
+    }
+    function until(gen, ok) { for (let i = 0; i < 400; i++) { const g = gen(); if (ok(g)) return g; } return gen(); }
+    function ints(n, lo, hi) { const s = new Set(); while (s.size < n) s.add(ri(lo, hi)); return shuffleList(Array.from(s)); }
+
+    // Randomised options matrix (always plain strings, never a duplicate)
+    function buildShuffledChoices(correct, fakes) {
+        const options = [String(correct)];
+        const pool = fakes.slice();
+        while (options.length < 4 && pool.length > 0) {
+            const pick = String(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+            if (!options.includes(pick)) options.push(pick);
+        }
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+        return options;
+    }
+
+    // ============================================================================
+    // 2. POLYNOMIAL + EXACT ROOT FORMATTING  (coefficients stored low -> high: [c0, c1, c2])
+    // ============================================================================
+    function fracTex(n, d) {
+        const g = gcd(n, d) || 1; n /= g; d /= g;
+        if (d < 0) { n = -n; d = -d; }
+        if (d === 1) return String(n === 0 ? 0 : n);
+        return (n < 0 ? '-' : '') + String.raw`\frac{${Math.abs(n)}}{${d}}`;
+    }
+    function polyTex(c, v) {
+        v = v || 'x';
+        let s = '';
+        for (let i = c.length - 1; i >= 0; i--) {
+            const a = c[i];
+            if (!a) continue;
+            const abs = Math.abs(a);
+            let term;
+            if (i === 0) term = String(abs);
+            else term = (abs === 1 ? '' : String(abs)) + (i === 1 ? v : v + '^' + i);
+            s += (s === '' ? (a < 0 ? '-' : '') : (a < 0 ? '-' : '+')) + term;
+        }
+        return s || '0';
+    }
+    function facTex(p) { return (p.length === 2 && p[0] === 0 && p[1] === 1) ? 'x' : '(' + polyTex(p) + ')'; }
+    function lin(r) { return [-r, 1]; }
+    function quadFromInts(r1, r2, s) { s = s || 1; return [s * r1 * r2, -s * (r1 + r2), s]; }
+    function pv(p, x) { let r = 0; for (let i = p.length - 1; i >= 0; i--) r = r * x + p[i]; return r; }
+    function trimPoly(p) { const q = p.slice(); while (q.length && Math.abs(q[q.length - 1]) < EPS) q.pop(); return q; }
+
+    // Real roots with an exact TeX form (rational, or simplified radical)
+    function polyRoots(p) {
+        const q = trimPoly(p);
+        if (q.length <= 1) return [];
+        if (q.length === 2) return [{ v: -q[0] / q[1], tex: fracTex(-q[0], q[1]) }];
+        const a = q[2], b = q[1], c = q[0], D = b * b - 4 * a * c;
+        if (D < 0) return [];
+        const s = Math.round(Math.sqrt(D));
+        if (s * s === D) {
+            const out = [{ v: (-b - s) / (2 * a), tex: fracTex(-b - s, 2 * a) }];
+            if (s !== 0) out.push({ v: (-b + s) / (2 * a), tex: fracTex(-b + s, 2 * a) });
+            return out;
+        }
+        let sq = 1, d = D;
+        for (let k = Math.floor(Math.sqrt(D)); k >= 1; k--) { if (D % (k * k) === 0) { sq = k; d = D / (k * k); break; } }
+        let m = -b, t = sq, e = 2 * a;
+        const g = gcd(gcd(m, t), e) || 1;
+        m /= g; t /= g; e /= g;
+        if (e < 0) { e = -e; m = -m; }
+        const rad = (t === 1 ? '' : String(t)) + String.raw`\sqrt{${d}}`;
+        const mk = sgn => {
+            const num = m === 0 ? (sgn < 0 ? '-' : '') + rad : m + (sgn < 0 ? '-' : '+') + rad;
+            return e === 1 ? num : String.raw`\frac{${num}}{${e}}`;
+        };
+        const val = Math.sqrt(d) * t / e;
+        return [{ v: m / e - val, tex: mk(-1) }, { v: m / e + val, tex: mk(1) }];
+    }
+
+    // ============================================================================
+    // 3. SIGN-ANALYSIS SOLVER
+    //    constraint = { num:[poly,...], den:[poly,...], op }   meaning  (prod num)/(prod den)  op  0
+    // ============================================================================
+    function gatherCrits(cons) {
+        const all = [];
+        cons.forEach(c => c.num.concat(c.den).forEach(p => polyRoots(p).forEach(r => all.push(r))));
+        all.sort((a, b) => a.v - b.v);
+        const out = [];
+        all.forEach(r => { if (!out.length || Math.abs(r.v - out[out.length - 1].v) > 1e-9) out.push(r); });
+        return out;
+    }
+    function conState(c, x) {
+        for (const p of c.den) { if (Math.abs(pv(p, x)) < EPS) return 'undef'; }
+        let sign = 1, zero = false;
+        for (const p of c.num) { const v = pv(p, x); if (Math.abs(v) < EPS) zero = true; else if (v < 0) sign = -sign; }
+        for (const p of c.den) { if (pv(p, x) < 0) sign = -sign; }
+        return zero ? 'zero' : (sign > 0 ? 'pos' : 'neg');
+    }
+    function opOk(op, st) {
+        if (st === 'undef') return false;
+        if (op === '<') return st === 'neg';
+        if (op === '<=') return st === 'neg' || st === 'zero';
+        if (op === '>') return st === 'pos';
+        return st === 'pos' || st === 'zero';
+    }
+    function holds(cons, x, mode) {
+        const r = cons.map(c => opOk(c.op, conState(c, x)));
+        return mode === 'or' ? r.some(Boolean) : r.every(Boolean);
+    }
+    function seqPoints(cr) {
+        const n = cr.length, seq = [];
+        if (n === 0) { seq.push({ t: 'I', i: 0, x: 0 }); return seq; }
+        for (let i = 0; i <= n; i++) {
+            const x = i === 0 ? cr[0].v - 1 : (i === n ? cr[n - 1].v + 1 : (cr[i - 1].v + cr[i].v) / 2);
+            seq.push({ t: 'I', i: i, x: x });
+            if (i < n) seq.push({ t: 'P', i: i, x: cr[i].v });
+        }
+        return seq;
+    }
+
+    // Returns the exact interval-notation TeX plus numeric intervals (used for self-tests)
+    function solveSet(cons, mode) {
+        mode = mode || 'and';
+        const cr = gatherCrits(cons), n = cr.length;
+        const seq = seqPoints(cr);
+        seq.forEach(e => { e.ok = holds(cons, e.x, mode); });
+        const groups = []; let cur = null;
+        seq.forEach(e => {
+            if (e.ok) { if (!cur) cur = { first: e, last: e }; else cur.last = e; }
+            else if (cur) { groups.push(cur); cur = null; }
+        });
+        if (cur) groups.push(cur);
+        const numeric = [];
+        const parts = groups.map(g => {
+            const f = g.first, l = g.last;
+            if (f === l && f.t === 'P') { numeric.push({ lo: cr[f.i].v, hi: cr[f.i].v, loC: true, hiC: true }); return String.raw`\{` + cr[f.i].tex + String.raw`\}`; }
+            let lo, loC, hi, hiC, nlo, nhi;
+            if (f.t === 'I') { lo = f.i === 0 ? INF_NEG : cr[f.i - 1].tex; nlo = f.i === 0 ? -Infinity : cr[f.i - 1].v; loC = false; }
+            else { lo = cr[f.i].tex; nlo = cr[f.i].v; loC = true; }
+            if (l.t === 'I') { hi = l.i === n ? INF_POS : cr[l.i].tex; nhi = l.i === n ? Infinity : cr[l.i].v; hiC = false; }
+            else { hi = cr[l.i].tex; nhi = cr[l.i].v; hiC = true; }
+            numeric.push({ lo: nlo, hi: nhi, loC: loC, hiC: hiC });
+            if (lo === INF_NEG && hi === INF_POS) return TEX_R;
+            return (loC ? '[' : ']') + lo + ',' + hi + (hiC ? ']' : '[');
+        });
+        return { tex: parts.length ? parts.join(String.raw` \cup `) : TEX_EMPTY, crits: cr, numeric: numeric };
+    }
+
+    // ---- Distractors: the mistakes students really make ----
+    function mirrorPoly(p) { return p.map((v, i) => (i % 2 ? -v : v)); }
+    function distractorSets(cons, mode) {
+        const mapOps = f => cons.map(c => ({ num: c.num, den: c.den, op: f[c.op] }));
+        const out = [];
+        [STRICT_FLIP, DIR_FLIP, COMPL].forEach(f => out.push(solveSet(mapOps(f), mode).tex));       // wrong endpoints / wrong direction / complement
+        out.push(solveSet(cons.map(c => ({ num: c.num.map(mirrorPoly), den: c.den.map(mirrorPoly), op: c.op })), mode).tex);   // sign error x -> -x
+        out.push(solveSet(cons.map(c => ({ num: c.num, den: [], op: c.op })), mode).tex);            // forgot the excluded values
+        if (cons.length > 1) {
+            cons.forEach(c => out.push(solveSet([c], 'and').tex));                                    // answered only one inequality
+            out.push(solveSet(cons, 'or').tex);                                                       // union instead of intersection
+            cons.forEach((c, i) => out.push(solveSet(cons.map((d, j) => j === i ? { num: d.num, den: d.den, op: DIR_FLIP[d.op] } : d), 'and').tex));
+        }
+        return out;
+    }
+    function mcqFromCons(cons, mode) {
+        mode = mode || 'and';
+        const correct = solveSet(cons, mode).tex;
+        const uniq = Array.from(new Set(distractorSets(cons, mode))).filter(t => t !== correct);
+        const picks = shuffleList(uniq).slice(0, 3);
+        const fillers = [TEX_R, TEX_EMPTY, String.raw`\{0\}`, String.raw`]-1,1[`];
+        for (const f of shuffleList(fillers)) { if (picks.length >= 3) break; if (f !== correct && !picks.includes(f)) picks.push(f); }
+        return { correct: correct, pool: buildShuffledChoices(correct, picks) };
+    }
+
+    // ---- Worked sign table shown in the final report (same style as the PDF solved examples) ----
+    function explainHtml(cons, varName, mode) {
+        const cr = gatherCrits(cons), n = cr.length;
+        if (!n) return '';
+        mode = mode || 'and';
+        const seq = seqPoints(cr);
+        const sym = (st, t) => {
+            if (st === 'pos') return '<span class="sg-pos">+</span>';
+            if (st === 'neg') return '<span class="sg-neg">&minus;</span>';
+            if (st === 'zero') return '<span class="sg-zero">0</span>';
+            return '<span class="sg-zero">&#8214;</span>';
+        };
+        let html = '<div style="overflow-x:auto"><table class="sign-table"><tr><th>' + varName + '</th>';
+        seq.forEach(e => {
+            if (e.t === 'P') html += '<td>\\(' + cr[e.i].tex + '\\)</td>';
+            else html += '<td>' + (e.i === 0 ? '\\(' + INF_NEG + '\\)' : (e.i === n ? '\\(' + INF_POS + '\\)' : '')) + '</td>';
+        });
+        html += '</tr>';
+        cons.forEach((c, k) => {
+            html += '<tr><th>' + (cons.length > 1 ? 'E<sub>' + (k + 1) + '</sub>' : 'E') + '</th>';
+            seq.forEach(e => { html += '<td>' + sym(conState(c, e.x), e.t) + '</td>'; });
+            html += '</tr>';
+        });
+        html += '<tr><th>Solution</th>';
+        seq.forEach(e => { html += '<td class="' + (holds(cons, e.x, mode) ? 'sg-ok' : '') + '">' + (holds(cons, e.x, mode) ? '&#10003;' : '') + '</td>'; });
+        html += '</tr></table></div>';
+        return html;
+    }
+
+    // ============================================================================
+    // 4. EXPRESSION BUILDERS (each returns { tex, cons })
+    // ============================================================================
+    function randRootPair() {          // root m/d written as (d x - m), always in lowest terms
+        const d = pick([1, 1, 1, 2, 3]);
+        let m;
+        do { m = d === 1 ? ri(-5, 5) : pick([-5, -4, -2, -1, 1, 2, 4, 5]); } while (gcd(Math.abs(m), d) !== 1 && !(m === 0 && d === 1));
+        return [m, d];
+    }
+    function polyFromPairs(p1, p2, s) { return [s * p1[0] * p2[0], -s * (p1[0] * p2[1] + p2[0] * p1[1]), s * p1[1] * p2[1]]; }
+    function distinctPairs() {
+        let a, b;
+        do { a = randRootPair(); b = randRootPair(); } while (a[0] * b[1] === b[0] * a[1]);
+        return [a, b];
+    }
+    const ineq = (expr, op) => expr + ' ' + OP_TEX[op] + ' 0';
+
+    function bQuadPairs(s, op) {
+        const [p1, p2] = distinctPairs();
+        const poly = polyFromPairs(p1, p2, s);
+        return { tex: ineq(polyTex(poly), op), cons: [{ num: [poly], den: [], op: op }] };
+    }
+    function bFracLin(op) {
+        let n, m;
+        do { n = randRootPair(); m = randRootPair(); } while (n[0] * m[1] === m[0] * n[1]);
+        const num = [-n[0], n[1]], den = [-m[0], m[1]];
+        return { tex: String.raw`\frac{${polyTex(num)}}{${polyTex(den)}} ${OP_TEX[op]} 0`, cons: [{ num: [num], den: [den], op: op }] };
+    }
+    function bFracInt(op) {
+        const [a, b] = ints(2, -5, 6);
+        return { tex: String.raw`\frac{${polyTex(lin(a))}}{${polyTex(lin(b))}} ${OP_TEX[op]} 0`, cons: [{ num: [lin(a)], den: [lin(b)], op: op }], a: a, b: b };
+    }
+    function bProd3(op, negLead) {
+        const [r0, r1, r2] = ints(3, -5, 5);
+        const first = negLead ? [r0, -1] : lin(r0);
+        const q = quadFromInts(r1, r2);
+        return { tex: facTex(first) + facTex(q) + ' ' + OP_TEX[op] + ' 0', cons: [{ num: [first, q], den: [], op: op }] };
+    }
+    function bProdLin(op) {
+        let r1, e;
+        do { r1 = ri(-3, 4); e = ri(-4, 6); } while (r1 === e);
+        return { tex: facTex(lin(r1)) + facTex([e, -1]) + ' ' + OP_TEX[op] + ' 0', cons: [{ num: [lin(r1), [e, -1]], den: [], op: op }] };
+    }
+    function bRatQuad(op) {
+        const [p1, p2, q1, q2] = ints(4, -5, 6);
+        const nq = quadFromInts(p1, p2), dq = quadFromInts(q1, q2);
+        return { tex: String.raw`\frac{${polyTex(nq)}}{${polyTex(dq)}} ${OP_TEX[op]} 0`, cons: [{ num: [nq], den: [dq], op: op }] };
+    }
+    function bFracQuadDen(op) {
+        const [r, c, d] = ints(3, -6, 6);
+        const dq = quadFromInts(c, d);
+        return { tex: String.raw`\frac{${polyTex(lin(r))}}{${polyTex(dq)}} ${OP_TEX[op]} 0`, cons: [{ num: [lin(r)], den: [dq], op: op }] };
+    }
+    function bQuadLin(op) {
+        const [p, q, s] = ints(3, -5, 5);
+        const nq = quadFromInts(p, q);
+        return { tex: String.raw`\frac{${polyTex(nq)}}{${polyTex(lin(s))}} ${OP_TEX[op]} 0`, cons: [{ num: [nq], den: [lin(s)], op: op }] };
+    }
+    function bSqDen(op) {
+        const [p1, p2, r] = ints(3, -5, 5);
+        const nq = quadFromInts(p1, p2);
+        return { tex: String.raw`\frac{${polyTex(nq)}}{(${polyTex(lin(r))})^2} ${OP_TEX[op]} 0`, cons: [{ num: [nq], den: [lin(r), lin(r)], op: op }] };
+    }
+    function bQuadProd(op) {
+        const [a, b, c, d] = ints(4, -5, 5);
+        const q1 = quadFromInts(a, b), q2 = quadFromInts(c, d);
+        return { tex: facTex(q1) + facTex(q2) + ' ' + OP_TEX[op] + ' 0', cons: [{ num: [q1, q2], den: [], op: op }] };
+    }
+    function bOneFrac(op, k) {
+        let a, b, c, d, N;
+        do {
+            a = ri(1, 3); c = pick([1, 1, 2]); b = ri(-5, 5); d = ri(-5, 5);
+            N = [b - k * d, a - k * c];
+        } while (N[1] === 0 || c * b === a * d || N[0] * c === N[1] * d);
+        const num = [b, a], den = [d, c];
+        return { tex: String.raw`\frac{${polyTex(num)}}{${polyTex(den)}} ${OP_TEX[op]} ${k}`, cons: [{ num: [N], den: [den], op: op }] };
+    }
+    function sysTex(parts) { return String.raw`\begin{cases} ${parts.join(' ' + NL + ' ')} \end{cases}`; }
+
+    // ============================================================================
+    // 5. PROBLEM FACTORY
+    // ============================================================================
+    function mkProblem(o) {
+        return Object.assign({ tier: '', type: 'MCQ', pool: [], solution: '', alternativeSolution: '', prompt: '', equation: '', explain: '', graphData: null, _cons: null, _mode: 'and' }, o);
+    }
+    function setProblem(tier, cat, prompt, eq, cons, opts) {
+        opts = opts || {};
+        const mode = opts.mode || 'and';
+        const r = mcqFromCons(cons, mode);
+        return mkProblem({ tier: tier, categoryType: cat, type: 'MCQ', prompt: prompt, equation: eq, pool: r.pool, solution: r.correct,
+            explain: explainHtml(cons, opts.varName || 'x', mode), _cons: cons, _mode: mode });
+    }
+
+    function constructMathProblem(tier, spec) {
+        const cat = spec.cat, v = spec.v;
+        const P_SOLVE = 'Solve the inequality in ' + String.raw`\(\mathbb{R}\)` + ' and choose the solution set:';
+
+        // ------------------------------------------------ EASY
+        if (cat === 'QUAD_STD') {
+            const s = v === 2 ? -1 : 1;
+            const op = v === 0 ? pick(['>=', '>']) : v === 1 ? pick(['<=', '<']) : pick(OPS);
+            const b = bQuadPairs(s, op);
+            return setProblem(tier, cat, P_SOLVE, b.tex, b.cons);
+        }
+        if (cat === 'DOUBLE_ROOT') {
+            const [m, d] = until(randRootPair, p => p[0] !== 0);
+            const poly = [m * m, -2 * m * d, d * d];
+            const op = ['>', '<=', '>=', '<'][v];
+            const cons = [{ num: [poly], den: [], op: op }];
+            return setProblem(tier, cat, 'The quadratic is a perfect square. ' + P_SOLVE, ineq(polyTex(poly), op), cons);
+        }
+        if (cat === 'NO_REAL_ROOT') {
+            let a, b, c;
+            do { a = ri(1, 3); b = ri(-6, 6); c = ri(1, 9); } while (b * b - 4 * a * c >= 0);
+            const s = pick([1, -1]);
+            const poly = [s * c, s * b, s * a];
+            const wantAll = v === 0;
+            const op = (wantAll === (s > 0)) ? pick(['>', '>=']) : pick(['<', '<=']);
+            const cons = [{ num: [poly], den: [], op: op }];
+            return setProblem(tier, cat, 'Check the discriminant first. ' + P_SOLVE, ineq(polyTex(poly), op), cons);
+        }
+        if (cat === 'SIGN_AT') {
+            let tex, cons;
+            if (v === 0) {
+                const [r0, r1, r2] = ints(3, -5, 5);
+                const q = quadFromInts(r1, r2);
+                tex = String.raw`P(x) = ${facTex(lin(r0))}${facTex(q)}`;
+                cons = [{ num: [lin(r0), q], den: [], op: '>' }];
+            } else if (v === 1) {
+                const [a, b, c] = ints(3, -5, 5);
+                tex = String.raw`P(x) = \frac{${facTex(lin(a))}${facTex(lin(b))}}{(${polyTex(lin(c))})^2}`;
+                cons = [{ num: [lin(a), lin(b)], den: [lin(c), lin(c)], op: '>' }];
+            } else {
+                const [b, c, d] = until(() => ints(3, -5, 5), t => t.every(z => z !== 0));
+                const dq = quadFromInts(c, d);
+                tex = String.raw`P(x) = \frac{x${facTex(lin(b))}}{${polyTex(dq)}}`;
+                cons = [{ num: [lin(0), lin(b)], den: [dq], op: '>' }];
+            }
+            const cr = gatherCrits(cons), n = cr.length;
+            const idx = ri(0, n);
+            const x = idx === 0 ? cr[0].v - 1 : (idx === n ? cr[n - 1].v + 1 : (cr[idx - 1].v + cr[idx].v) / 2);
+            const lo = idx === 0 ? INF_NEG : cr[idx - 1].tex, hi = idx === n ? INF_POS : cr[idx].tex;
+            const st = conState(cons[0], x);
+            const POS = String.raw`\text{Positive}`, NEG = String.raw`\text{Negative}`;
+            const correct = st === 'pos' ? POS : NEG;
+            const fakes = [st === 'pos' ? NEG : POS, String.raw`\text{Zero}`, String.raw`\text{Not defined}`];
+            const prompt = String.raw`Study the sign of \(P(x)\). What is the sign of \(P(x)\) when \(x\in\,]${lo},${hi}[\,\)?`;
+            return mkProblem({ tier: tier, categoryType: cat, type: 'MCQ', prompt: prompt, equation: tex, pool: buildShuffledChoices(correct, fakes), solution: correct,
+                explain: explainHtml(cons, 'x', 'and').replace('<th>Solution</th>', '<th>P(x) &gt; 0</th>'), _cons: null });
+        }
+        if (cat === 'INT_COUNT') {
+            let r1, r2;
+            do { [r1, r2] = ints(2, -7, 8).sort((a, b) => a - b); } while (r2 - r1 < 3 || (v === 1 && r1 + r2 === 0));
+            const s = v === 0 ? -1 : 1;
+            const poly = quadFromInts(r1, r2, s);
+            const op = v === 0 ? pick(['>', '>=']) : pick(['<', '<=']);
+            const cons = [{ num: [poly], den: [], op: op }];
+            let cnt = 0, sum = 0;
+            for (let x = -60; x <= 60; x++) if (holds(cons, x, 'and')) { cnt++; sum += x; }
+            const prompt = v === 0 ? 'How many integers satisfy the inequality?' : 'Find the sum of all the integers that satisfy the inequality.';
+            return mkProblem({ tier: tier, categoryType: cat, type: 'TEXT', prompt: prompt, equation: ineq(polyTex(poly), op),
+                solution: String(v === 0 ? cnt : sum), explain: explainHtml(cons, 'x', 'and'), _cons: cons });
+        }
+        if (cat === 'TF_CHECK') {
+            if (v === 0) {
+                const b = bQuadPairs(pick([1, -1]), pick(OPS));
+                const correct = solveSet(b.cons).tex;
+                const cands = Array.from(new Set(distractorSets(b.cons, 'and'))).filter(t => t !== correct);
+                const claim = (Math.random() < 0.5 || !cands.length) ? correct : pick(cands);
+                return mkProblem({ tier: tier, categoryType: cat, type: 'TF', equation: b.tex,
+                    prompt: String.raw`True or False: the solution set of the inequality is \(S=${claim}\).`,
+                    solution: claim === correct ? 'True' : 'False', explain: explainHtml(b.cons, 'x', 'and'), _cons: b.cons });
+            }
+            const b = bFracInt(pick(OPS));
+            const x0 = pick([b.a, b.b, ri(-5, 6)]);
+            const truth = holds(b.cons, x0, 'and');
+            return mkProblem({ tier: tier, categoryType: cat, type: 'TF', equation: b.tex,
+                prompt: String.raw`True or False: \(x=${x0}\) is a solution of the inequality.`,
+                solution: truth ? 'True' : 'False', explain: explainHtml(b.cons, 'x', 'and'), _cons: b.cons });
+        }
+
+        // ------------------------------------------------ MEDIUM
+        if (cat === 'FRAC_LINEAR') {
+            const b = bFracLin(v === 0 ? '<' : v === 1 ? '>=' : pick(['<=', '>']));
+            return setProblem(tier, cat, P_SOLVE, b.tex, b.cons);
+        }
+        if (cat === 'PRODUCT3') {
+            const b = bProd3(v === 0 ? '>=' : v === 1 ? '<' : pick(['>', '<=']), v === 2);
+            return setProblem(tier, cat, P_SOLVE, b.tex, b.cons);
+        }
+        if (cat === 'SQ_COMPARE') {
+            let a, bb, c, r1, r2;
+            do {
+                a = ri(-5, 5); bb = pick([2, 3, 4, -2, -3]); c = ri(-5, 5);
+                r1 = (a + c) / (1 - bb); r2 = (a - c) / (1 + bb);
+            } while (Math.abs(r1 - r2) < 1e-9 || c === 0 || a === 0);
+            const op = v === 0 ? '>=' : v === 1 ? '<' : pick(['>', '<=']);
+            const cons = [{ num: [[-a - c, 1 - bb], [-a + c, 1 + bb]], den: [], op: op }];
+            const eq = String.raw`(${polyTex(lin(a))})^2 ${OP_TEX[op]} (${polyTex([c, bb])})^2`;
+            return setProblem(tier, cat, 'Move everything to one side and factor with a difference of squares. ' + P_SOLVE, eq, cons);
+        }
+        if (cat === 'RATIONAL_QUAD') {
+            const b = bRatQuad(v === 0 ? '<' : v === 1 ? '>=' : pick(['<=', '>']));
+            return setProblem(tier, cat, 'Remember the values that make the denominator zero. ' + P_SOLVE, b.tex, b.cons);
+        }
+        if (cat === 'ONE_FRAC') {
+            const spec3 = [{ k: 1, op: '<=' }, { k: 2, op: '>' }, { k: -1, op: '>=' }][v];
+            const b = bOneFrac(spec3.op, spec3.k);
+            return setProblem(tier, cat, 'Bring everything to one side before studying the sign. ' + P_SOLVE, b.tex, b.cons);
+        }
+        if (cat === 'SQUARED_DEN') {
+            const b = bSqDen(v === 0 ? '<=' : v === 1 ? '>' : pick(['>=', '<']));
+            return setProblem(tier, cat, 'The denominator is a square: it is never negative, but it can vanish. ' + P_SOLVE, b.tex, b.cons);
+        }
+        if (cat === 'QUAD_PRODUCT') {
+            const b = bQuadProd(v === 0 ? '<' : '>=');
+            return setProblem(tier, cat, P_SOLVE, b.tex, b.cons);
+        }
+        if (cat === 'IRRATIONAL') {
+            let a, b, c;
+            do { a = pick([1, 1, 2]); b = ri(-6, 6); c = ri(-6, 2); const D = b * b - 4 * a * c; var okD = D > 0 && Math.pow(Math.round(Math.sqrt(D)), 2) !== D; } while (!okD || b === 0);
+            const op = v === 0 ? pick(['>=', '>']) : pick(['<', '<=']);
+            const poly = [c, b, a];
+            return setProblem(tier, cat, 'The roots are not integers: give them in exact form. ' + P_SOLVE, ineq(polyTex(poly), op), [{ num: [poly], den: [], op: op }]);
+        }
+        // ------------------------------------------------ HARD
+        if (cat === 'SYSTEM') {
+            const opsets = [['<', '<'], ['>=', '>='], ['>', '<='], ['<=', '<']][v];
+            const gen = () => {
+                const [a1, a2] = distinctPairs(), [b1, b2] = distinctPairs();
+                const s1 = pick([1, -1]), s2 = pick([1, -1]);
+                const p1 = polyFromPairs(a1, a2, s1), p2 = polyFromPairs(b1, b2, s2);
+                const vals = [a1, a2, b1, b2].map(p => p[0] / p[1]);
+                return { p1: p1, p2: p2, vals: vals };
+            };
+            const g = until(gen, t => {
+                const distinct = new Set(t.vals.map(z => z.toFixed(6))).size === 4;
+                if (!distinct) return false;
+                const tex = solveSet([{ num: [t.p1], den: [], op: opsets[0] }, { num: [t.p2], den: [], op: opsets[1] }]).tex;
+                return tex !== TEX_EMPTY && tex !== TEX_R;
+            });
+            const cons = [{ num: [g.p1], den: [], op: opsets[0] }, { num: [g.p2], den: [], op: opsets[1] }];
+            const eq = sysTex([ineq(polyTex(g.p1), opsets[0]), ineq(polyTex(g.p2), opsets[1])]);
+            return setProblem(tier, cat, 'Solve the system of inequalities (both must hold at the same time):', eq, cons);
+        }
+        if (cat === 'SYS_RATIONAL') {
+            const build = () => {
+                if (v === 0) return [bOneFrac(pick(['<=', '<']), 1), bQuadLin(pick(['>=', '>']))];
+                if (v === 1) return [bFracInt(pick(['>=', '>'])), bProdLin(pick(['<', '<=']))];
+                return [bProd3(pick(['>=', '>']), true), bFracQuadDen(pick(['<', '<=']))];
+            };
+            const parts = until(build, ps => {
+                const cons = ps[0].cons.concat(ps[1].cons);
+                const t = solveSet(cons).tex;
+                return t !== TEX_EMPTY && t !== TEX_R;
+            });
+            const cons = parts[0].cons.concat(parts[1].cons);
+            return setProblem(tier, cat, 'Solve the system of inequalities (both must hold at the same time):', sysTex([parts[0].tex, parts[1].tex]), cons);
+        }
+        if (cat === 'TWO_FRACTIONS') {
+            let a, b, c, d, N;
+            const gen = () => {
+                if (v === 0) { [a, b] = ints(2, -5, 5); c = b; d = a; }     // reciprocal pair
+                else { [a, b, c, d] = ints(4, -5, 5); }
+                N = [a * d - c * b, b + c - a - d];
+            };
+            do { gen(); } while (N[1] === 0 || Math.abs(pv(N, b)) < EPS || Math.abs(pv(N, d)) < EPS || b === d);
+            const op = v === 0 ? pick(['>', '<']) : v === 1 ? pick(['<', '<=']) : pick(['>=', '>']);
+            const cons = [{ num: [N], den: [lin(b), lin(d)], op: op }];
+            const eq = String.raw`\frac{${polyTex(lin(a))}}{${polyTex(lin(b))}} ${OP_TEX[op]} \frac{${polyTex(lin(c))}}{${polyTex(lin(d))}}`;
+            return setProblem(tier, cat, 'Never cross-multiply blindly: move everything to one side first. ' + P_SOLVE, eq, cons);
+        }
+        if (cat === 'SMALLEST_N') {
+            let a, b, c, ans = 0, tex, prompt, poly;
+            if (v === 0) {
+                a = pick([1, 2, 3]); b = ri(1, 6); c = pick([200, 300, 500, 800, 1000, 1200, 1500]) + ri(0, 9);
+                poly = [-c, -b, a];
+                while (pv(poly, ans) < 0) ans++;
+                tex = polyTex(poly, 'n') + String.raw` \geq 0`;
+                prompt = 'Find the smallest natural number ' + String.raw`\(n\)` + ' satisfying the inequality:';
+            } else {
+                a = 1; b = ri(1, 6); c = pick([200, 300, 500, 800, 1000]) + ri(0, 9);
+                poly = [-c, b, 1];
+                while (pv(poly, ans + 1) < 0) ans++;
+                tex = polyTex(poly, 'n') + String.raw` \lt 0`;
+                prompt = 'Find the largest natural number ' + String.raw`\(n\)` + ' satisfying the inequality:';
+            }
+            const rts = polyRoots(poly).map(r => r.v.toFixed(2));
+            return mkProblem({ tier: tier, categoryType: cat, type: 'TEXT', prompt: prompt, equation: tex, solution: String(ans),
+                explain: '<p style="margin-bottom:4px">The roots of the quadratic are approximately <strong>n = ' + rts.join('</strong> and <strong>n = ') + '</strong>; then check the nearest natural numbers.</p>' });
+        }
+        throw new Error('Unknown category ' + cat);
+    }
+
+    // ============================================================================
+    // 6. NO-REPEAT QUESTION PLANNER
+    // Every question is a (category, variant) "spec" chosen BEFORE any numbers are generated,
+    // so the same kind of problem can never come up twice with different numbers.
+    // ============================================================================
+    function buildSpecCatalog() {
+        const specs = [];
+        const add = (cat, v, concept, tier) => specs.push({ cat: cat, v: v, concept: concept, tier: tier });
+        // EASY
+        ['qs-out', 'qs-in', 'qs-neg'].forEach((c, v) => add('QUAD_STD', v, c, 'easy'));
+        ['dr-pos', 'dr-le', 'dr-all', 'dr-none'].forEach((c, v) => add('DOUBLE_ROOT', v, c, 'easy'));
+        ['nr-all', 'nr-none'].forEach((c, v) => add('NO_REAL_ROOT', v, c, 'easy'));
+        ['sa-cubic', 'sa-sqden', 'sa-ratquad'].forEach((c, v) => add('SIGN_AT', v, c, 'easy'));
+        ['ic-count', 'ic-sum'].forEach((c, v) => add('INT_COUNT', v, c, 'easy'));
+        ['tf-set', 'tf-member'].forEach((c, v) => add('TF_CHECK', v, c, 'easy'));
+        // MEDIUM
+        ['fl-neg', 'fl-ge', 'fl-le'].forEach((c, v) => add('FRAC_LINEAR', v, c, 'medium'));
+        ['p3-ge', 'p3-lt', 'p3-neg'].forEach((c, v) => add('PRODUCT3', v, c, 'medium'));
+        ['sq-ge', 'sq-lt', 'sq-gt'].forEach((c, v) => add('SQ_COMPARE', v, c, 'medium'));
+        ['rq-lt', 'rq-ge', 'rq-le'].forEach((c, v) => add('RATIONAL_QUAD', v, c, 'medium'));
+        ['of-1', 'of-2', 'of-3'].forEach((c, v) => add('ONE_FRAC', v, c, 'medium'));
+        ['sd-le', 'sd-gt', 'sd-ge'].forEach((c, v) => add('SQUARED_DEN', v, c, 'medium'));
+        ['qp-lt', 'qp-ge'].forEach((c, v) => add('QUAD_PRODUCT', v, c, 'medium'));
+        ['ir-out', 'ir-in'].forEach((c, v) => add('IRRATIONAL', v, c, 'medium'));
+        // HARD
+        ['sy-1', 'sy-2', 'sy-3', 'sy-4'].forEach((c, v) => add('SYSTEM', v, c, 'hard'));
+        ['sr-1', 'sr-2', 'sr-3'].forEach((c, v) => add('SYS_RATIONAL', v, c, 'hard'));
+        ['tf-recip', 'tf-gen', 'tf-gen2'].forEach((c, v) => add('TWO_FRACTIONS', v, c, 'hard'));
+        ['sn-small', 'sn-large'].forEach((c, v) => add('SMALLEST_N', v, c, 'hard'));
+        return specs;
+    }
+
+    function pickQuizSpecs() {
+        const catalog = buildSpecCatalog();
+        const chosen = { easy: [], medium: [], hard: [] };
+        const usedKeys = new Set(), usedConcepts = new Set(), catCount = {};
+        const keyOf = s => s.cat + ':' + s.v;
+        ['easy', 'medium', 'hard'].forEach(tier => {
+            for (let n = 0; n < APP_LIMITS.tiers[tier]; n++) {
+                const inTier = catalog.filter(s => s.tier === tier && !usedKeys.has(keyOf(s)));
+                const attempts = [
+                    inTier.filter(s => !usedConcepts.has(s.concept)),
+                    inTier,
+                    catalog.filter(s => s.tier === tier)
+                ];
+                const pool = attempts.find(p => p.length > 0);
+                const least = Math.min.apply(null, pool.map(s => catCount[s.cat] || 0));
+                const best = pool.filter(s => (catCount[s.cat] || 0) === least);     // spread evenly over the question types
+                const pk = best[Math.floor(Math.random() * best.length)];
+                chosen[tier].push(pk);
+                usedKeys.add(keyOf(pk)); usedConcepts.add(pk.concept);
+                catCount[pk.cat] = (catCount[pk.cat] || 0) + 1;
+            }
+        });
+        return chosen;
+    }
+
+    function generateEntireQuizSuite() {
+        const specs = pickQuizSpecs();
+        const build = tier => specs[tier].map(spec => constructMathProblem(tier, spec));
+        const easy = build('easy'), medium = build('medium'), hard = build('hard');
+        // keep easy -> medium -> hard, shuffle inside each tier, never put two questions of the same type side by side
+        const arrange = list => {
+            let best = null;
+            for (let t = 0; t < 500; t++) {
+                const candidate = shuffleList(list);
+                let clashes = 0;
+                for (let i = 1; i < candidate.length; i++) if (candidate[i].categoryType === candidate[i - 1].categoryType) clashes++;
+                if (!best || clashes < best.clashes) best = { list: candidate, clashes: clashes };
+                if (clashes === 0) break;
+            }
+            return best.list;
+        };
+        generatedSuite = [...arrange(easy), ...arrange(medium), ...arrange(hard)];
+    }
+
+
+    // ========================================== -->
+    // PART 4A: INTERFACE DISPLAY SYNC ENGINE     -->
+    // ========================================== -->
+
+    function renderMath(el) {
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(el, {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: '\\(', right: '\\)', display: false }
+                ],
+                throwOnError: false
+            });
+        }
+    }
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+
+        let equationBlock = activeProblem.equation ? `
+        <div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; line-height: 1.4;">
+            $$${activeProblem.equation}$$
+        </div>
+        ` : "";
+
+        let problemMarkup = `
+        <div style="font-size:1.15rem; line-height:1.6; text-align:center; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; width:100%; padding: 0 10px;">
+            <p style="margin-bottom: 4px; color: var(--text-main); font-weight: 500;">
+                ${activeProblem.prompt}
+            </p>
+            ${equationBlock}
+        </div>
+        `;
+
+        document.getElementById('math-prompt-container').innerHTML = problemMarkup;
+
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+        document.getElementById('box-text').classList.add('hidden');
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+            activeProblem.pool.forEach(choice => {
+                const buttonElement = document.createElement('button');
+                buttonElement.className = `opt-btn ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+                buttonElement.setAttribute("style", "display: flex; justify-content: center; align-items: center; text-align: center; width: 100%; padding: 10px 12px; min-height: auto; height: auto; line-height: 1.2; margin: 0;");
+                buttonElement.innerHTML = `\\(${choice}\\)`;
+                buttonElement.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    buttonElement.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(buttonElement);
+            });
+            renderMath(mcqContainer);
+        }
+        else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        } else if (activeProblem.type === 'TEXT') {
+            document.getElementById('box-text').classList.remove('hidden');
+            const targetInput = document.getElementById('manual-text-input');
+            targetInput.value = storedResponses[traversalIndex] || "";
+            targetInput.placeholder = "Type a whole number (e.g., 7)";
+            targetInput.oninput = (e) => recordInput(e.target.value);
+        }
+
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+
+        renderMath(document.getElementById('math-prompt-container'));
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; }
+
+    // ========================================== -->
+    // PART 4B: METRIC TIMERS & EVALUATION ENGINES -->
+    // ========================================== -->
+
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            let m = Math.floor(timeTrackingRemaining / 60);
+            let s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            let dynamicPercentage = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${dynamicPercentage}%`;
+
+            if (dynamicPercentage < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (dynamicPercentage < 50) progress.style.backgroundColor = '#d97706';
+            else progress.style.backgroundColor = '';
+        }
+        pulse();
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    function isCorrect(problem, raw) {
+        if (raw === undefined || raw === null || String(raw).trim() === '') return false;
+        if (problem.type === 'TEXT') {
+            const norm = s => String(s).trim().replace(/\s+/g, '').replace(/^\+/, '').replace(/−/g, '-');
+            const a = norm(raw), b = norm(problem.solution);
+            return a === b || (a !== '' && !isNaN(Number(a)) && Number(a) === Number(b));
+        }
+        return String(raw) === String(problem.solution);
+    }
+
+    // Core Metrics Verification & Score Reporter
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limits reached. Compiling final diagnostic report sheet now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+        const renderAnswer = (problem, rawStr) => {
+            if (rawStr === undefined || rawStr === null || String(rawStr).trim() === '') return '<span style="color:var(--error); font-weight:500;">Unanswered</span>';
+            if (problem.type === 'MCQ') {
+                try { return window.katex ? window.katex.renderToString(String(rawStr), { throwOnError: false, displayMode: false }) : escapeHtml(rawStr); }
+                catch (e) { return escapeHtml(rawStr); }
+            }
+            return escapeHtml(rawStr);
+        };
+
+        generatedSuite.forEach((problem, index) => {
+            const outcomeState = isCorrect(problem, storedResponses[index]);
+            if (outcomeState) tallyCorrect++;
+
+            let itemScoreBadge = outcomeState ?
+                `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>` :
+                `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+
+            const userAnsView = renderAnswer(problem, storedResponses[index]);
+            const correctAnsView = renderAnswer(problem, problem.solution);
+            const label = CAT_LABELS[problem.categoryType] || problem.categoryType;
+
+            compilationHtml += `
+                <div class="report-item ${outcomeState ? 'pass' : 'fail'}" style="position: relative; overflow: auto;">
+                    ${itemScoreBadge}
+                    <strong>Question ${index + 1} &middot; ${escapeHtml(label)}</strong>
+                    ${problem.equation ? `<div style="margin: 12px 0; font-size:1.05rem; text-align: center;">$$${problem.equation}$$</div>` : ''}
+                    <p style="font-size:0.9rem; margin: 8px 0 4px; color:var(--text-muted);">Prompt: <em>${problem.prompt}</em></p>
+                    <p style="display: flex; align-items: center; flex-wrap: wrap; margin: 4px 0; gap: 6px;"><strong>Your Answer:</strong> <span>${userAnsView}</span></p>
+                    <p style="display: flex; align-items: center; flex-wrap: wrap; margin: 4px 0; gap: 6px;"><strong>Correct Reference Answer:</strong> <span>${correctAnsView}</span></p>
+                    ${problem.explain ? `<div class="explanation-pane"><strong>Sign analysis</strong>${problem.explain}</div>` : ''}
+                </div>
+            `;
+        });
+
+        document.getElementById('lbl-score-obtained').innerText = tallyCorrect;
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = escapeHtml(document.getElementById('student-name').value.trim());
+        const sectionTitle = escapeHtml(document.getElementById('student-section').value.trim());
+
+        let structuralHeaderHtml = `
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 20px; line-height: 1.5; font-size: 0.95rem; color: var(--text-main);">
+                <div style="text-align: center; font-size: 1.15rem; font-weight: 800; color: var(--text-main); border-bottom: 2px solid var(--primary); padding-bottom: 8px; margin-bottom: 10px;"><span style="font-size:0.75rem; font-weight:700; letter-spacing:0.08em; color: var(--text-muted); text-transform: uppercase; display:block; margin-bottom:2px;">Quiz Title</span>${QUIZ_TITLE}</div>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px; margin-bottom: 8px;">
+                    <div><strong>Student Full Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+                    <div><strong>Assigned Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+                </div>
+                <div><strong>Examination Start Time:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+            </div>
+        `;
+
+        const zone = document.getElementById('report-injection-zone');
+        zone.innerHTML = structuralHeaderHtml + compilationHtml;
+        renderMath(zone);
+    }
+
+    // Action Form Click Handlers
+    let formattedQuizStartTimeStamp = "";
+    let quizStartDateObj = null;
+
+    document.getElementById('action-start').onclick = () => {
+        const user = document.getElementById('student-name').value.trim();
+        const sect = document.getElementById('student-section').value.trim();
+        if (!user || !sect) {
+            alert("Please provide credential values to unlock the examination matrix.");
+            return;
+        }
+
+        const rightNow = new Date();
+        quizStartDateObj = rightNow;
+        formattedQuizStartTimeStamp = rightNow.toLocaleDateString() + " @ " + rightNow.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        storedResponses = {};
+        traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Are you confident you want to finalize and process this quiz?")) {
+                compileFinalPerformanceReport();
+            }
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) {
+            traversalIndex--;
+            synchroniseQuestionIndex();
+        }
+    };
+
+    document.getElementById('action-pdf').onclick = () => { triggerDirectPdfDownload(); };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {};
+        traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+    // Opens the browser's print dialog. Choose "Save as PDF" as the printer.
+    // The page title becomes "<student name> - <quiz title> - <date>", which browsers use as the suggested file name.
+    function triggerDirectPdfDownload() {
+        const clean = s => String(s).replace(/[\\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim();
+        const d = quizStartDateObj || new Date();
+        const p2 = n => String(n).padStart(2, '0');
+        const dateText = d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()) + ' ' + p2(d.getHours()) + '-' + p2(d.getMinutes());
+        const studentName = document.getElementById('student-name').value.trim() || 'Student';
+
+        const originalTitle = document.title;
+        document.title = clean(studentName + ' - ' + QUIZ_TITLE + ' - ' + dateText);
+
+        const restore = () => { document.title = originalTitle; window.removeEventListener('afterprint', restore); };
+        window.addEventListener('afterprint', restore);
+        window.print();
+        setTimeout(restore, 60000);   // safety net for browsers that never fire afterprint
+    }
+
+</script>
+</body>
+</html>
