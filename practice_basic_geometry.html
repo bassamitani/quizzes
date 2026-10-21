@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Geometry Properties - Math Practice Quiz</title>
+<!-- KaTeX Auto-Render Extension with Custom Delimiter Config -->
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #16a34a;
+            --error: #dc2626;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --bg-canvas: #f9fafb;
+            --bg-card: #ffffff;
+            --border-ui: #e5e7eb;
+            --bg-surface: #ffffff;
+            --border-color: #e5e7eb;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .quiz-card {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-ui);
+        }
+        .hidden { display: none !important; }
+        /* 3mm Visual Meter Tracker */
+        .time-bar-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--border-ui);
+        }
+        .time-bar-fill {
+            height: 3mm;
+            width: 100%;
+            background-color: var(--primary);
+            transition: width 1s linear, background-color 0.3s ease;
+        }
+        h1, h2, h3 {
+            color: var(--text-main);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-field { margin-bottom: 18px; }
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border-ui);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--primary); }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: var(--primary-hover); }
+        .panel-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+        .clock-lbl { font-weight: 700; color: var(--text-main); }
+        .math-statement {
+            font-size: 1.15rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .options-stack { display: flex; flex-direction: column; gap: 12px; }
+        .opt-btn {
+            background-color: #fcfcfd;
+            border: 1px solid var(--border-ui);
+            color: var(--text-main);
+            text-align: left;
+            padding: 14px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .opt-btn.active {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .tf-row { display: flex; gap: 14px; }
+        .tf-row button { flex: 1; text-align: center; }
+        .controls-row { margin-top: 28px; display: flex; gap: 14px; }
+        .btn-secondary { background-color: #e5e7eb; color: var(--text-main); }
+        .btn-secondary:hover { background-color: #d1d5db; }
+
+        /* Report Screen Components */
+        .score-badge-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #f0fdf4;
+            border: 4px solid var(--success);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+        }
+        .score-large { font-size: 2.2rem; font-weight: 800; color: var(--success); }
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 24px 0; text-align: center; }
+        .metric-box { background: var(--bg-canvas); padding: 12px; border-radius: 8px; border: 1px solid var(--border-ui); }
+        .metric-val { font-size: 1.25rem; font-weight: 700; }
+        .metric-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+        .report-item { padding: 14px; background: var(--bg-canvas); border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #9ca3af; text-align: left;}
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+        .explanation-pane { margin-top: 8px; padding: 8px 12px; background: #ffffff; border: 1px dashed var(--border-ui); font-size: 0.9rem; border-radius: 6px; }
+
+
+        /* Figures + explanations */
+        .fig-wrap { text-align: center; margin: 10px auto 2px; }
+        .fig-wrap svg { max-width: 100%; height: auto; background: #fff; border: 1px solid var(--border-ui); border-radius: 10px; }
+        .explanation-pane strong:first-child { display:block; margin-bottom:4px; color: var(--text-muted); font-size:0.8rem; text-transform:uppercase; letter-spacing:.05em; }
+
+        @media print {
+            html, body { height: auto !important; overflow: visible !important; }
+            body { background: #ffffff; display: block; padding: 0; }
+            .quiz-card { overflow: visible !important; }
+            #stage-auth, #stage-engine, #meter-container { display: none !important; }
+            #stage-summary { display: block !important; }
+            .quiz-card { border: none; box-shadow: none; max-width: 100%; padding: 0; }
+            .no-print { display: none !important; }
+            .report-item { page-break-inside: avoid; background: #ffffff; border: 1px solid var(--border-ui); }
+        }
+    </style>
+</head>
+<body>
+<div class="quiz-card">
+    <div id="meter-container" class="time-bar-wrapper hidden">
+        <div id="meter-progress" class="time-bar-fill"></div>
+    </div>
+
+    <!-- Stage A: Registration/Login Portal -->
+    <div id="stage-auth">
+        <h1>📐 Basic Geometry Properties</h1>
+        <h2>Math Practice Quiz</h2>
+        <p style="text-align:center; color: var(--text-muted); font-size:0.9rem; margin: -8px 0 20px;">20 questions drawn at random from a large question bank &middot; 30 minutes &middot; lengths in cm, angles in degrees</p>
+        <div class="form-field">
+            <label for="student-name">Username</label>
+            <input type="text" id="student-name" placeholder="Enter student name...">
+        </div>
+        <div class="form-field">
+            <label for="student-section">Class Section</label>
+            <input type="text" id="student-section" placeholder="Enter class section...">
+        </div>
+        <button id="action-start">Start Quiz</button>
+    </div>
+
+    <!-- Stage B: Active Quiz Panel Interface -->
+    <div id="stage-engine" class="hidden">
+        <div class="panel-meta">
+            <div>Question <span id="idx-current">1</span> of <span id="idx-total">20</span></div>
+            <div id="clock-countdown" class="clock-lbl">25:00</div>
+        </div>
+
+        <div class="math-statement" id="math-prompt-container"></div>
+
+        <!-- Layout Formats Configurations -->
+        <div id="box-mcq" class="options-stack hidden"></div>
+
+        <div id="box-tf" class="tf-row options-stack hidden">
+            <button class="opt-btn flag-tf" data-core="True">True</button>
+            <button class="opt-btn flag-tf" data-core="False">False</button>
+        </div>
+
+        <div id="box-text" class="hidden">
+            <div class="form-field">
+                <input type="text" id="manual-text-input" placeholder="Type answer...">
+            </div>
+        </div>
+
+        <!-- RESTORED: The control buttons row container -->
+        <div class="controls-row" style="margin-top: 28px; display: flex; gap: 14px;">
+            <button id="action-back" class="btn-secondary no-print" style="flex: 1;">← Previous</button>
+            <button id="action-forward" class="no-print" style="flex: 1;">Next →</button>
+        </div>
+    </div>
+
+
+    <!-- Stage C: Performance Matrix & PDF Evaluation -->
+    <div id="stage-summary" class="hidden">
+        <h2>Quiz Complete! 🎉</h2>
+        <div class="score-badge-circle">
+            <span class="score-large" id="lbl-score-obtained">0</span>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">out of 20</span>
+        </div>
+        <p style="text-align:center; font-weight:500;">Great job! Keep practicing to improve.</p>
+        <h3 style="margin-top:24px; text-align:left; border-bottom:1px solid var(--border-ui); padding-bottom:6px;">Summary</h3>
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div class="metric-val" style="color:var(--success);" id="m-correct">0</div>
+                <div class="metric-lbl">Correct</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-val" style="color:var(--error);" id="m-incorrect">0</div>
+                <div class="metric-lbl">Incorrect</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-val" style="color:var(--primary);" id="m-percent">0%</div>
+                <div class="metric-lbl">Percentage</div>
+            </div>
+        </div>
+        <h3 style="text-align:left; margin-bottom:12px;">Detailed Report</h3>
+        <div id="report-injection-zone"></div>
+        <div class="controls-row no-print">
+            <button id="action-pdf" style="background-color:var(--success);">📥 Save as PDF</button>
+            <button id="action-retry" class="btn-secondary">🔄 Retake Quiz</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // ============================================================================
+    // SVG FIGURE LIBRARY  (drawn on the fly, to scale from the actual numbers)
+    // Math coordinates have y pointing up; Scene converts them to the SVG frame.
+    // ============================================================================
+    const FIG = { navy: '#1e3a5f', fill: '#eaf0fa', orange: '#e8731a', teal: '#15919b', green: '#2e8b57', red: '#c0392b', grey: '#5a6b7d' };
+    const vAdd = (a, b) => [a[0] + b[0], a[1] + b[1]];
+    const vSub = (a, b) => [a[0] - b[0], a[1] - b[1]];
+    const vMul = (a, k) => [a[0] * k, a[1] * k];
+    const vLen = (a) => Math.hypot(a[0], a[1]);
+    const vUnit = (a) => { const l = vLen(a) || 1; return [a[0] / l, a[1] / l]; };
+    const vMid = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+    const vDist = (a, b) => vLen(vSub(a, b));
+    const vPerp = (a) => [-a[1], a[0]];
+    const rad = (d) => d * Math.PI / 180;
+    function footOnLine(P, A, B) { const u = vUnit(vSub(B, A)); const t = (P[0] - A[0]) * u[0] + (P[1] - A[1]) * u[1]; return vAdd(A, vMul(u, t)); }
+    function segInter(P, d, A, B) {              // intersection of ray P + t d with segment AB (or null)
+        const e = vSub(B, A), den = d[0] * e[1] - d[1] * e[0];
+        if (Math.abs(den) < 1e-12) return null;
+        const w = vSub(A, P);
+        const t = (w[0] * e[1] - w[1] * e[0]) / den, s = (w[0] * d[1] - w[1] * d[0]) / den;
+        return (t >= 0 && s >= -1e-9 && s <= 1 + 1e-9) ? vAdd(P, vMul(d, t)) : null;
+    }
+    function triFromSides(a, b, c) {             // BC = a, CA = b, AB = c ; B at the origin, C on the x-axis
+        const x = (a * a + c * c - b * b) / (2 * a), y = Math.sqrt(Math.max(c * c - x * x, 0));
+        return { A: [x, y], B: [0, 0], C: [a, 0] };
+    }
+    function triFromAngles(A, B, C) {            // angles in degrees (vertex angles)
+        const a = Math.sin(rad(A)), b = Math.sin(rad(B)), c = Math.sin(rad(C));
+        return triFromSides(a, b, c);
+    }
+
+    function Scene() { this.items = []; this.pts = []; }
+    Scene.prototype.ext = function (p, r) { r = r || 0; this.pts.push([p[0] - r, p[1] - r], [p[0] + r, p[1] + r]); };
+    Scene.prototype.line = function (a, b, o) { this.ext(a); this.ext(b); this.items.push({ t: 'line', a: a, b: b, o: o || {} }); return this; };
+    Scene.prototype.poly = function (pts, o) { pts.forEach(p => this.ext(p)); this.items.push({ t: 'poly', pts: pts, o: o || {} }); return this; };
+    Scene.prototype.circle = function (c, r, o) { this.ext(c, r); this.items.push({ t: 'circle', c: c, r: r, o: o || {} }); return this; };
+    Scene.prototype.dot = function (p, o) { this.ext(p); this.items.push({ t: 'dot', p: p, o: o || {} }); return this; };
+    Scene.prototype.text = function (p, s, o) { this.ext(p); this.items.push({ t: 'text', p: p, s: s, o: o || {} }); return this; };
+    Scene.prototype.right = function (P, toA, toB, px) { this.items.push({ t: 'right', P: P, u: vUnit(vSub(toA, P)), v: vUnit(vSub(toB, P)), px: px || 11 }); return this; };
+    Scene.prototype.arc = function (P, toA, toB, rpx, o, label) { this.items.push({ t: 'arc', P: P, a: toA, b: toB, r: rpx, o: o || {}, label: label }); return this; };
+    Scene.prototype.circArc = function (c, r, deg1, deg2, o) { this.ext(c, r); this.items.push({ t: 'circarc', c: c, r: r, d1: deg1, d2: deg2, o: o || {} }); return this; };
+    Scene.prototype.tick = function (a, b, n) { this.items.push({ t: 'tick', a: a, b: b, n: n || 1 }); return this; };
+    Scene.prototype.render = function (W, H, margin, forceScale) {
+        W = W || 320; H = H || 240; margin = margin === undefined ? 36 : margin;
+        let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+        this.pts.forEach(p => { minx = Math.min(minx, p[0]); maxx = Math.max(maxx, p[0]); miny = Math.min(miny, p[1]); maxy = Math.max(maxy, p[1]); });
+        const bw = Math.max(maxx - minx, 1e-9), bh = Math.max(maxy - miny, 1e-9);
+        const s = forceScale || Math.min((W - 2 * margin) / bw, (H - 2 * margin) / bh);
+        const ox = (W - bw * s) / 2, oy = (H - bh * s) / 2;
+        const T = (p) => [ox + (p[0] - minx) * s, H - (oy + (p[1] - miny) * s)];
+        const f = (n) => Math.round(n * 100) / 100;
+        const sw = (o) => (o.w || 2);
+        let out = '';
+        this.items.forEach(it => {
+            const o = it.o || {};
+            if (it.t === 'poly') out += `<polygon points="${it.pts.map(p => T(p).map(f).join(',')).join(' ')}" fill="${o.fill || FIG.fill}" stroke="${o.stroke || FIG.navy}" stroke-width="${sw(o)}" stroke-linejoin="round"/>`;
+            else if (it.t === 'circle') { const c = T(it.c); out += `<circle cx="${f(c[0])}" cy="${f(c[1])}" r="${f(it.r * s)}" fill="${o.fill === undefined ? FIG.fill : o.fill}" stroke="${o.stroke || FIG.navy}" stroke-width="${sw(o)}"${o.dash ? ` stroke-dasharray="${o.dash}"` : ''}/>`; }
+            else if (it.t === 'line') { const a = T(it.a), b = T(it.b); out += `<line x1="${f(a[0])}" y1="${f(a[1])}" x2="${f(b[0])}" y2="${f(b[1])}" stroke="${o.stroke || FIG.navy}" stroke-width="${sw(o)}"${o.dash ? ` stroke-dasharray="${o.dash}"` : ''} stroke-linecap="round"/>`; }
+            else if (it.t === 'dot') { const p = T(it.p); out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="${o.r || 3.6}" fill="${o.fill || FIG.navy}"/>`; }
+            else if (it.t === 'text') {
+                const p = T(it.p); let dx = o.dx || 0, dy = o.dy || 0;
+                if (o.from) { const q = T(o.from); const u = vUnit([p[0] - q[0], p[1] - q[1]]); const d = o.d || 15; dx += u[0] * d; dy += u[1] * d; }
+                out += `<text x="${f(p[0] + dx)}" y="${f(p[1] + dy + 5)}" text-anchor="middle" font-size="${o.size || 15}" font-weight="${o.bold ? 700 : 500}" font-style="${o.italic === false ? 'normal' : 'italic'}" fill="${o.fill || FIG.navy}">${it.s}</text>`;
+            } else if (it.t === 'right') {
+                const p = T(it.P); const u = [it.u[0], -it.u[1]], v = [it.v[0], -it.v[1]], k = it.px;
+                const p1 = [p[0] + u[0] * k, p[1] + u[1] * k], p2 = [p1[0] + v[0] * k, p1[1] + v[1] * k], p3 = [p[0] + v[0] * k, p[1] + v[1] * k];
+                out += `<polyline points="${[p1, p2, p3].map(q => q.map(f).join(',')).join(' ')}" fill="none" stroke="${FIG.orange}" stroke-width="2"/>`;
+            } else if (it.t === 'arc') {
+                const p = T(it.P), A = T(it.a), B = T(it.b);
+                let t1 = Math.atan2(-(A[1] - p[1]), A[0] - p[0]), t2 = Math.atan2(-(B[1] - p[1]), B[0] - p[0]);
+                let d = t2 - t1; while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+                if (d < 0) { const tmp = t1; t1 = t2; t2 = tmp; d = -d; }
+                const r = it.r, p1 = [p[0] + r * Math.cos(t1), p[1] - r * Math.sin(t1)], p2 = [p[0] + r * Math.cos(t1 + d), p[1] - r * Math.sin(t1 + d)];
+                out += `<path d="M ${f(p1[0])} ${f(p1[1])} A ${r} ${r} 0 ${d > Math.PI ? 1 : 0} 0 ${f(p2[0])} ${f(p2[1])}" fill="none" stroke="${o.stroke || FIG.red}" stroke-width="2"/>`;
+                if (it.label) { const m = t1 + d / 2, rr = r + (o.lr || 15); out += `<text x="${f(p[0] + rr * Math.cos(m))}" y="${f(p[1] - rr * Math.sin(m) + 5)}" text-anchor="middle" font-size="${o.size || 13}" font-weight="600" fill="${o.stroke || FIG.red}">${it.label}</text>`; }
+            } else if (it.t === 'circarc') {
+                const c = T(it.c), r = it.r * s, a1 = rad(it.d1), a2 = rad(it.d2);
+                const p1 = [c[0] + r * Math.cos(a1), c[1] - r * Math.sin(a1)], p2 = [c[0] + r * Math.cos(a2), c[1] - r * Math.sin(a2)];
+                const d = ((it.d2 - it.d1) % 360 + 360) % 360;
+                out += `<path d="M ${f(p1[0])} ${f(p1[1])} A ${f(r)} ${f(r)} 0 ${d > 180 ? 1 : 0} 0 ${f(p2[0])} ${f(p2[1])}" fill="none" stroke="${o.stroke || FIG.orange}" stroke-width="${o.w || 5}" stroke-linecap="round"/>`;
+            } else if (it.t === 'tick') {
+                const a = T(it.a), b = T(it.b), m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], u = vUnit([b[0] - a[0], b[1] - a[1]]), nrm = [-u[1], u[0]];
+                for (let k = 0; k < it.n; k++) { const c = [m[0] + u[0] * (k - (it.n - 1) / 2) * 5, m[1] + u[1] * (k - (it.n - 1) / 2) * 5]; out += `<line x1="${f(c[0] - nrm[0] * 6)}" y1="${f(c[1] - nrm[1] * 6)}" x2="${f(c[0] + nrm[0] * 6)}" y2="${f(c[1] + nrm[1] * 6)}" stroke="${FIG.orange}" stroke-width="2"/>`; }
+            }
+        });
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:100%;height:auto;font-family:'Segoe UI',Arial,sans-serif" role="img" aria-label="geometry figure">${out}</svg>`;
+    };
+    // length label next to the middle of a segment (outside, relative to a reference point)
+    function segLabel(sc, a, b, txt, away, o) { sc.text(vMid(a, b), txt, Object.assign({ from: away, d: 14, fill: FIG.orange, bold: true, italic: false, size: 14 }, o || {})); }
+    function vertexLabels(sc, pts, names, center) { pts.forEach((p, i) => sc.text(p, names[i], { from: center, d: 16, bold: true })); }
+    function sqr(x) { return x * x; }
+
+    // ---- triangle with its three angles (value or '?')
+    function figTriAngles(A, B, C, labels) {
+        const P = triFromAngles(A, B, C), sc = new Scene();
+        const cen = [(P.A[0] + P.B[0] + P.C[0]) / 3, (P.A[1] + P.B[1] + P.C[1]) / 3];
+        sc.poly([P.A, P.B, P.C]);
+        sc.arc(P.A, P.B, P.C, 22, {}, labels[0]); sc.arc(P.B, P.A, P.C, 26, {}, labels[1]); sc.arc(P.C, P.A, P.B, 26, {}, labels[2]);
+        vertexLabels(sc, [P.A, P.B, P.C], ['A', 'B', 'C'], cen);
+        return sc.render();
+    }
+    // ---- triangle with its three side lengths
+    function figTriSides(a, b, c, labels, rightAt) {
+        const P = triFromSides(a, b, c), sc = new Scene();
+        const cen = [(P.A[0] + P.B[0] + P.C[0]) / 3, (P.A[1] + P.B[1] + P.C[1]) / 3];
+        sc.poly([P.A, P.B, P.C]);
+        segLabel(sc, P.B, P.C, labels[0], cen); segLabel(sc, P.C, P.A, labels[1], cen); segLabel(sc, P.A, P.B, labels[2], cen);
+        vertexLabels(sc, [P.A, P.B, P.C], ['A', 'B', 'C'], cen);
+        return sc.render();
+    }
+    // ---- right triangle at A (AB horizontal, AC vertical), optional median AM
+    function figRight(ab, ac, labels, median) {
+        const A = [0, 0], B = [ab, 0], C = [0, ac], sc = new Scene();
+        const cen = [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3];
+        sc.poly([A, B, C]); sc.right(A, B, C);
+        vertexLabels(sc, [A, B, C], ['A', 'B', 'C'], cen);
+        segLabel(sc, A, B, labels.AB, cen); segLabel(sc, A, C, labels.AC, cen); segLabel(sc, B, C, labels.BC, cen);
+        if (median) {
+            const M = vMid(B, C); sc.line(A, M, { stroke: FIG.teal, w: 2.5 }); sc.dot(M); sc.text(M, 'M', { from: cen, d: 15, bold: true });
+            sc.tick(B, M, 1); sc.tick(M, C, 1);
+            if (labels.AM) sc.text(vMid(A, M), labels.AM, { dx: 4, dy: 14, fill: FIG.teal, bold: true, italic: false, size: 14 });
+        }
+        return sc.render();
+    }
+    function figIsoHeight(x, half, labels) {
+        const h = Math.sqrt(x * x - half * half), A = [0, h], B = [-half, 0], C = [half, 0], H = [0, 0], sc = new Scene();
+        const cen = [0, h / 3];
+        sc.poly([A, B, C]); sc.line(A, H, { dash: '5 4', stroke: FIG.teal, w: 2.5 }); sc.right(H, A, C); sc.dot(H);
+        vertexLabels(sc, [A, B, C], ['A', 'B', 'C'], cen); sc.text(H, 'H', { dx: -13, dy: -9, bold: true });
+        segLabel(sc, A, B, labels.side, cen); segLabel(sc, A, C, labels.side, cen); segLabel(sc, B, C, labels.base, [0, h]);
+        sc.text(vMid(A, H), labels.h, { dx: 14, fill: FIG.teal, bold: true, italic: false, size: 14 });
+        return sc.render();
+    }
+    // ---- special right triangles
+    function figSpecial45(labels) {
+        const a = 1, A = [0, 0], B = [a, 0], C = [0, a], sc = new Scene(), cen = [0.33, 0.33];
+        sc.poly([A, B, C]); sc.right(A, B, C); sc.arc(B, A, C, 24, {}, '45°'); sc.arc(C, A, B, 24, {}, '45°');
+        vertexLabels(sc, [A, B, C], ['A', 'B', 'C'], cen);
+        segLabel(sc, A, B, labels[0], cen); segLabel(sc, A, C, labels[1], cen); segLabel(sc, B, C, labels[2], cen);
+        return sc.render();
+    }
+    function figSpecial3060(labels) {         // right angle at H, 60 at B, 30 at A ; labels = [BH short, HA long, BA hypotenuse]
+        const B = [0, 0], H = [1, 0], A = [1, Math.sqrt(3)], sc = new Scene(), cen = [0.66, 0.58];
+        sc.poly([B, H, A]); sc.right(H, B, A); sc.arc(B, H, A, 26, {}, '60°'); sc.arc(A, B, H, 28, {}, '30°');
+        vertexLabels(sc, [A, B, H], ['A', 'B', 'H'], cen);
+        segLabel(sc, B, H, labels[0], cen); segLabel(sc, H, A, labels[1], cen); segLabel(sc, B, A, labels[2], cen);
+        return sc.render(320, 250);
+    }
+    function figEquilateral(label, hlabel) {
+        const A = [0, Math.sqrt(3) / 2], B = [-0.5, 0], C = [0.5, 0], H = [0, 0], sc = new Scene(), cen = [0, 0.29];
+        sc.poly([A, B, C]); sc.line(A, H, { dash: '5 4', stroke: FIG.teal, w: 2.5 }); sc.right(H, A, C); sc.dot(H);
+        vertexLabels(sc, [A, B, C], ['A', 'B', 'C'], cen); sc.text(H, 'H', { dx: -13, dy: -9, bold: true });
+        segLabel(sc, B, C, label, [0, 0.8]); sc.tick(A, B, 1); sc.tick(A, C, 1); sc.tick(B, C, 1);
+        if (hlabel) sc.text(vMid(A, H), hlabel, { dx: 16, fill: FIG.teal, bold: true, italic: false, size: 14 });
+        return sc.render();
+    }
+    function figSquareDiag(labelSide, labelDiag) {
+        const A = [0, 0], B = [1, 0], C = [1, 1], D = [0, 1], sc = new Scene(), cen = [0.5, 0.5];
+        sc.poly([A, B, C, D]); sc.line(A, C, { dash: '5 4', stroke: FIG.teal, w: 2.5 }); sc.right(A, B, D);
+        vertexLabels(sc, [A, B, C, D], ['A', 'B', 'C', 'D'], cen);
+        segLabel(sc, A, B, labelSide, cen); sc.text(vMid(A, C), labelDiag, { dx: -8, dy: -12, fill: FIG.teal, bold: true, italic: false, size: 14 });
+        return sc.render(320, 250);
+    }
+    // ---- medians and centroid
+    function figCentroid(labels) {
+        const A = [2.1, 3.6], B = [0, 0], C = [5, 0], sc = new Scene(), cen = [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3];
+        const A1 = vMid(B, C), B1 = vMid(A, C), C1 = vMid(A, B), G = cen;
+        sc.poly([A, B, C]);
+        sc.line(A, A1, { stroke: FIG.teal, w: 2.2 }); sc.line(B, B1, { stroke: FIG.teal, w: 2.2 }); sc.line(C, C1, { stroke: FIG.teal, w: 2.2 });
+        sc.dot(G, { fill: FIG.orange, r: 4.5 }); [A1, B1, C1].forEach(p => sc.dot(p, { r: 3 }));
+        sc.text(A, 'A', { from: G, d: 16, bold: true }); sc.text(B, 'B', { from: G, d: 16, bold: true }); sc.text(C, 'C', { from: G, d: 16, bold: true });
+        sc.text(A1, "A'", { from: G, d: 17, bold: true }); sc.text(B1, "B'", { from: G, d: 17, bold: true }); sc.text(C1, "C'", { from: G, d: 17, bold: true });
+        sc.text(G, 'G', { dx: 13, dy: 12, fill: FIG.orange, bold: true });
+        const lab = labels || {};
+        if (lab.AG) sc.text(vMid(A, G), lab.AG, { dx: -14, dy: 0, fill: FIG.orange, bold: true, italic: false, size: 13 });
+        if (lab.GA) sc.text(vMid(G, A1), lab.GA, { dx: -14, dy: 4, fill: FIG.orange, bold: true, italic: false, size: 13 });
+        if (lab.BG) sc.text(vMid(B, G), lab.BG, { dx: -2, dy: 15, fill: FIG.orange, bold: true, italic: false, size: 13 });
+        if (lab.GB) sc.text(vMid(G, B1), lab.GB, { dx: 12, dy: -6, fill: FIG.orange, bold: true, italic: false, size: 13 });
+        return sc.render();
+    }
+    // ---- which line is drawn in the triangle ?
+    function figLineInTriangle(kind) {
+        const A = [1.7, 3.2], B = [0, 0], C = [5, 0], sc = new Scene(), cen = [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3];
+        sc.poly([A, B, C]); vertexLabels(sc, [A, B, C], ['A', 'B', 'C'], cen);
+        const dashed = { stroke: FIG.teal, w: 2.6, dash: '6 4' };
+        if (kind === 'median') {
+            const D = vMid(B, C); sc.line(A, D, dashed); sc.dot(D); sc.tick(B, D, 1); sc.tick(D, C, 1); sc.text(D, 'D', { dy: 19, bold: true });
+        } else if (kind === 'altitude') {
+            const D = footOnLine(A, B, C); sc.line(A, D, dashed); sc.dot(D); sc.right(D, A, C); sc.text(D, 'D', { dy: 19, bold: true });
+        } else if (kind === 'bisector') {
+            const t = vDist(A, B) / (vDist(A, B) + vDist(A, C)), D = vAdd(B, vMul(vSub(C, B), t));
+            sc.line(A, D, dashed); sc.dot(D); sc.text(D, 'D', { dy: 19, bold: true });
+            sc.arc(A, B, D, 26, { stroke: FIG.orange }, ''); sc.arc(A, D, C, 34, { stroke: FIG.orange }, '');
+        } else {
+            const M = vMid(B, C), top = segInter(M, [0, 1], A, C) || segInter(M, [0, 1], A, B);
+            sc.line(M, top, dashed); sc.dot(M); sc.right(M, top, C); sc.tick(B, M, 1); sc.tick(M, C, 1); sc.text(M, 'M', { dy: 19, bold: true });
+        }
+        return sc.render();
+    }
+    // ---- circle and a line at distance d from the center
+    function figCircleLine(r, d, rl, dl) {
+        const O = [0, 0], sc = new Scene(), H = [0, -d], L = Math.max(r, d) * 1.5;
+        sc.circle(O, r); sc.dot(O); sc.text(O, 'O', { dx: -12, dy: -10, bold: true });
+        sc.line([-L, -d], [L, -d], { w: 2.4, stroke: FIG.teal });
+        sc.line(O, H, { dash: '5 4', stroke: FIG.orange, w: 2.2 }); sc.right(H, O, [1, -d]); sc.dot(H, { fill: FIG.orange });
+        sc.text(vMid(O, H), dl, { dx: 24, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        const q = vMul([Math.cos(rad(40)), Math.sin(rad(40))], r); sc.line(O, q, { w: 2 }); sc.dot(q, { r: 3 });
+        sc.text(vMid(O, q), rl, { dx: -4, dy: -12, bold: true, italic: false, size: 14 });
+        if (d < r - 1e-9) { const x = Math.sqrt(r * r - d * d); sc.dot([x, -d], { fill: FIG.red }); sc.dot([-x, -d], { fill: FIG.red }); }
+        return sc.render();
+    }
+    // ---- tangent at A, point B on the tangent
+    function figTangentRadius(r, AB, labels) {
+        const O = [0, 0], A = [0, -r], B = [AB, -r], sc = new Scene();
+        sc.circle(O, r); sc.line([-0.55 * AB - 0.2 * r, -r], [AB * 1.12, -r], { w: 2.4, stroke: FIG.teal });
+        sc.line(O, A, { w: 2 }); sc.line(O, B, { w: 2 }); if (labels.rights) sc.right(A, O, B);
+        const E = vMul(vUnit(B), r); sc.dot(E, { fill: FIG.red });
+        [O, A, B].forEach(p => sc.dot(p));
+        sc.text(O, 'O', { dx: -12, dy: -10, bold: true }); sc.text(A, 'A', { dx: -6, dy: 18, bold: true }); sc.text(B, 'B', { dx: 8, dy: 18, bold: true }); sc.text(E, 'E', { from: O, d: 14, bold: true, fill: FIG.red });
+        sc.text([-0.45 * AB, -r], '(d)', { dy: -12, fill: FIG.teal, bold: true });
+        if (labels.r) sc.text(vMid(O, A), labels.r, { dx: -14, bold: true, italic: false, size: 14 });
+        if (labels.AB) sc.text(vMid(A, B), labels.AB, { dy: 20, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        if (labels.OB) sc.text(vMid(O, B), labels.OB, { dx: 6, dy: -10, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        return sc.render();
+    }
+    // ---- one tangent PT from an external point P
+    function figTangentFromP(OP, r, labels) {
+        const O = [0, 0], P = [OP, 0], phi = Math.acos(r / OP), T = vMul([Math.cos(phi), Math.sin(phi)], r), sc = new Scene();
+        sc.circle(O, r); sc.line(O, P, { w: 2 }); sc.line(O, T, { w: 2 }); sc.line(T, P, { w: 2.6, stroke: FIG.teal }); if (labels.rights) sc.right(T, O, P);
+        [O, P, T].forEach(p => sc.dot(p));
+        sc.text(O, 'O', { dx: -12, dy: 16, bold: true }); sc.text(P, 'P', { dx: 12, dy: 16, bold: true }); sc.text(T, 'T', { dx: -4, dy: -14, bold: true });
+        if (labels.r) sc.text(vMid(O, T), labels.r, { dx: -14, dy: -2, bold: true, italic: false, size: 14 });
+        if (labels.PT) sc.text(vMid(T, P), labels.PT, { dx: 12, dy: -8, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        if (labels.OP) sc.text(vMid(O, P), labels.OP, { dy: 20, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        if (labels.K) { const K = footOnLine(T, O, P); sc.line(T, K, { dash: '5 4', stroke: FIG.red, w: 2 }); sc.right(K, T, P, 9); sc.dot(K, { fill: FIG.red }); sc.text(K, 'K', { dy: 18, bold: true, fill: FIG.red }); if (labels.TK) sc.text(vMid(T, K), labels.TK, { dx: -14, fill: FIG.red, bold: true, italic: false, size: 14 }); }
+        return sc.render();
+    }
+    // ---- two tangents PA, PB
+    function figTwoTangents(OP, r, o) {
+        o = o || {};
+        const O = [0, 0], P = [OP, 0], phi = Math.acos(r / OP), A = vMul([Math.cos(phi), Math.sin(phi)], r), B = [A[0], -A[1]], H = [r * r / OP, 0], sc = new Scene();
+        sc.circle(O, r); sc.line(O, P, { w: 2 }); sc.line(O, A, { w: 2 }); sc.line(O, B, { w: 2 }); sc.line(A, P, { w: 2.6, stroke: FIG.teal }); sc.line(B, P, { w: 2.6, stroke: FIG.teal });
+        if (o.chord) { sc.line(A, B, { dash: '5 4', stroke: FIG.red, w: 2.2 }); sc.dot(H, { fill: FIG.red }); sc.text(H, 'H', { dx: -11, dy: 16, bold: true, fill: FIG.red }); if (o.rights) sc.right(H, A, P, 9); }
+        if (o.rights) { sc.right(A, O, P); sc.right(B, O, P); }
+        [O, P, A, B].forEach(p => sc.dot(p));
+        sc.text(O, 'O', { dx: -12, dy: 4, bold: true }); sc.text(P, 'P', { dx: 12, dy: 4, bold: true }); sc.text(A, 'A', { dy: -13, bold: true }); sc.text(B, 'B', { dy: 20, bold: true });
+        if (o.angP) sc.arc(P, A, B, 34, {}, o.angP);
+        if (o.angO) sc.arc(O, A, B, 22, { stroke: FIG.green }, o.angO);
+        if (o.PA) sc.text(vMid(A, P), o.PA, { dx: 10, dy: -10, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        if (o.PB) sc.text(vMid(B, P), o.PB, { dx: 10, dy: 20, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        if (o.OP) sc.text(vMid(O, P), o.OP, { dy: 18, dx: -12, bold: true, italic: false, size: 14 });
+        if (o.r) sc.text(vMid(O, A), o.r, { dx: -14, dy: -4, bold: true, italic: false, size: 14 });
+        return sc.render();
+    }
+    // ---- central and inscribed angles
+    function figInscribed(theta, alphaLabel, thetaLabel, opts) {
+        opts = opts || {};
+        const O = [0, 0], A = [Math.cos(rad(-90 - theta / 2)), Math.sin(rad(-90 - theta / 2))], B = [Math.cos(rad(-90 + theta / 2)), Math.sin(rad(-90 + theta / 2))], C = [Math.cos(rad(80)), Math.sin(rad(80))], sc = new Scene();
+        sc.circle(O, 1); sc.circArc(O, 1, -90 - theta / 2, -90 + theta / 2, { stroke: FIG.orange, w: 5 });
+        sc.line(O, A, { w: 2, stroke: FIG.teal }); sc.line(O, B, { w: 2, stroke: FIG.teal });
+        if (!opts.noC) { sc.line(C, A, { w: 2 }); sc.line(C, B, { w: 2 }); sc.arc(C, A, B, 30, {}, alphaLabel); sc.dot(C); sc.text(C, 'C', { from: O, d: 15, bold: true }); }
+        if (opts.D) { const D = [Math.cos(rad(-20)), Math.sin(rad(-20))]; sc.line(D, A, { w: 2 }); sc.line(D, B, { w: 2 }); sc.arc(D, A, B, 26, { stroke: FIG.green }, opts.Dlabel !== undefined ? opts.Dlabel : alphaLabel); sc.dot(D); sc.text(D, 'D', { from: O, d: 15, bold: true }); }
+        if (thetaLabel !== null) sc.arc(O, A, B, 24, { stroke: FIG.green }, thetaLabel);
+        if (opts.oab !== undefined) { sc.line(A, B, { w: 2, stroke: FIG.teal }); sc.arc(A, O, B, 30, { stroke: FIG.red }, opts.oab); }
+        [O, A, B].forEach(p => sc.dot(p));
+        sc.text(O, 'O', { dx: 10, dy: -12, bold: true }); sc.text(A, 'A', { from: O, d: 15, bold: true }); sc.text(B, 'B', { from: O, d: 15, bold: true });
+        if (opts.arcLabel) sc.text(vMul([0, -1], 1), opts.arcLabel, { dy: 20, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        return sc.render(320, 260);
+    }
+    // ---- semicircle: [AB] diameter, C on the circle, angle CAB = gamma
+    function figSemicircle(gamma, labels) {
+        labels = labels || {};
+        const O = [0, 0], A = [-1, 0], B = [1, 0], C = [Math.cos(rad(2 * gamma)), Math.sin(rad(2 * gamma))], sc = new Scene();
+        sc.circle(O, 1); sc.poly([A, B, C], { fill: 'rgba(21,145,155,0.10)' }); if (labels.rights) sc.right(C, A, B);
+        [O, A, B, C].forEach(p => sc.dot(p));
+        sc.text(A, 'A', { dx: -12, dy: 4, bold: true }); sc.text(B, 'B', { dx: 12, dy: 4, bold: true }); sc.text(C, 'C', { from: O, d: 15, bold: true }); sc.text(O, 'O', { dy: 18, bold: true });
+        if (labels.A) sc.arc(A, B, C, 30, {}, labels.A); if (labels.B) sc.arc(B, A, C, 30, {}, labels.B);
+        if (labels.AB) sc.text(O, labels.AB, { dy: -9, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        if (labels.AC) segLabel(sc, A, C, labels.AC, O); if (labels.BC) segLabel(sc, B, C, labels.BC, O);
+        return sc.render(320, 250);
+    }
+    // ---- arc AB and its central angle
+    function figArcFig(theta, thetaLabel, arcLabel) {
+        const O = [0, 0], A = [Math.cos(rad(-theta / 2)), Math.sin(rad(-theta / 2))], B = [Math.cos(rad(theta / 2)), Math.sin(rad(theta / 2))], sc = new Scene();
+        sc.circle(O, 1); sc.circArc(O, 1, -theta / 2, theta / 2, { stroke: FIG.orange, w: 5 });
+        sc.line(O, A, { w: 2 }); sc.line(O, B, { w: 2 }); sc.arc(O, A, B, 26, { stroke: FIG.green }, thetaLabel);
+        [O, A, B].forEach(p => sc.dot(p)); sc.text(O, 'O', { dx: -12, dy: 4, bold: true }); sc.text(A, 'A', { from: O, d: 15, bold: true }); sc.text(B, 'B', { from: O, d: 15, bold: true });
+        if (arcLabel) sc.text(vMul([Math.cos(0), 0], 1), arcLabel, { dx: 38, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        return sc.render(320, 250);
+    }
+    // ---- midsegment
+    function figMidsegment(labels, full) {
+        labels = labels || {};
+        const A = [1.9, 3.4], B = [0, 0], C = [5, 0], M = vMid(A, B), N = vMid(A, C), P = vMid(B, C), sc = new Scene(), cen = [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3];
+        sc.poly([A, B, C]); sc.line(M, N, { stroke: FIG.orange, w: 3 });
+        if (full) { sc.line(M, P, { stroke: FIG.teal, w: 2.2, dash: '5 4' }); sc.line(N, P, { stroke: FIG.teal, w: 2.2, dash: '5 4' }); sc.dot(P); sc.text(P, 'P', { dy: -10, dx: 0, bold: true }); }
+        sc.dot(M); sc.dot(N); sc.tick(A, M, 1); sc.tick(M, B, 1); sc.tick(A, N, 2); sc.tick(N, C, 2);
+        vertexLabels(sc, [A, B, C], ['A', 'B', 'C'], cen); sc.text(M, 'M', { dx: -13, dy: 0, bold: true }); sc.text(N, 'N', { dx: 13, dy: 0, bold: true });
+        if (labels.BC) segLabel(sc, B, C, labels.BC, [2.5, 3], full ? { d: 30 } : {}); if (labels.MN) sc.text(vMid(M, N), labels.MN, { dy: -11, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        if (labels.AB) segLabel(sc, A, B, labels.AB, cen, { d: 24 }); if (labels.AC) segLabel(sc, A, C, labels.AC, cen, { d: 24 });
+        if (labels.angM) sc.arc(M, A, N, 22, {}, labels.angM);
+        return sc.render();
+    }
+    // ---- incircle of a triangle with sides a = BC, b = CA, c = AB
+    function figIncircle(a, b, c, labels, o) {
+        labels = labels || {}; o = o || {};
+        const P = triFromSides(a, b, c), p = (a + b + c) / 2, area = Math.sqrt(p * (p - a) * (p - b) * (p - c)), r = area / p;
+        const I = [(a * P.A[0] + b * P.B[0] + c * P.C[0]) / (a + b + c), (a * P.A[1] + b * P.B[1] + c * P.C[1]) / (a + b + c)];
+        const D = footOnLine(I, P.B, P.C), E = footOnLine(I, P.C, P.A), F = footOnLine(I, P.A, P.B), sc = new Scene(), cen = I;
+        sc.poly([P.A, P.B, P.C], { fill: 'rgba(234,240,250,0.9)' }); sc.circle(I, r, { fill: 'rgba(21,145,155,0.10)', stroke: FIG.teal });
+        [D, E, F].forEach(q => { sc.dot(q, { fill: FIG.orange }); sc.line(I, q, { dash: '3 3', stroke: FIG.grey, w: 1.3 }); }); sc.dot(I);
+        sc.text(P.A, 'A', { from: cen, d: 16, bold: true }); sc.text(P.B, 'B', { from: cen, d: 16, bold: true }); sc.text(P.C, 'C', { from: cen, d: 16, bold: true });
+        sc.text(D, 'D', { from: cen, d: 14, bold: true, fill: FIG.orange }); sc.text(E, 'E', { from: cen, d: 14, bold: true, fill: FIG.orange }); sc.text(F, 'F', { from: cen, d: 14, bold: true, fill: FIG.orange }); sc.text(I, 'I', { dx: 11, dy: 12, bold: true });
+        if (labels.a) segLabel(sc, P.B, P.C, labels.a, cen); if (labels.b) segLabel(sc, P.C, P.A, labels.b, cen); if (labels.c) segLabel(sc, P.A, P.B, labels.c, cen);
+        if (o.tangents) {      // equal tangent lengths marked x, y, z
+            const nm = (u, v, s) => sc.text(vMid(u, v), s, { from: cen, d: 13, fill: FIG.red, bold: true, italic: true, size: 13 });
+            const tl = o.tl || { x: 'x', y: 'y', z: 'z' };
+            nm(P.A, F, tl.x); nm(P.A, E, tl.x); nm(P.B, F, tl.y); nm(P.B, D, tl.y); nm(P.C, D, tl.z); nm(P.C, E, tl.z);
+        }
+        return sc.render(320, 250);
+    }
+    // ---- two circles (O; R) and (O'; r) with distance d between the centers, drawn to scale
+    function figTwoCircles(R, r, d, labels) {
+        labels = labels || {};
+        const O = [0, 0], Q = [d, 0], sc = new Scene();
+        sc.circle(O, R, { fill: 'rgba(234,240,250,0.9)' }); sc.circle(Q, r, { fill: 'rgba(21,145,155,0.14)', stroke: FIG.teal });
+        sc.dot(O); sc.dot(Q); sc.text(O, 'O', { dx: -2, dy: 18, bold: true }); sc.text(Q, "O'", { dx: 0, dy: 18, bold: true });
+        if (d > 1e-9) sc.line(O, Q, { dash: '5 4', stroke: FIG.orange, w: 2 });
+        if (labels.d && d > 1e-9) sc.text(vMid(O, Q), labels.d, { dy: -9, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        const u = [Math.cos(rad(125)), Math.sin(rad(125))], q = vMul(u, R);
+        sc.line(O, q, { w: 1.8 }); sc.text(vMid(O, q), labels.R || 'R', { dx: -10, dy: -6, bold: true, italic: false, size: 14 });
+        const w = [Math.cos(rad(60)), Math.sin(rad(60))], q2 = vAdd(Q, vMul(w, r));
+        sc.line(Q, q2, { w: 1.8, stroke: FIG.teal }); sc.text(vMid(Q, q2), labels.r || 'r', { dx: 9, dy: -6, bold: true, italic: false, size: 14, fill: FIG.teal });
+        if (labels.T) { sc.dot(labels.T, { fill: FIG.red, r: 4.5 }); sc.text(labels.T, 'T', { dy: -13, bold: true, fill: FIG.red }); }
+        return sc.render(340, 250);
+    }
+    // ---- common external tangent [AB] of (O; R) and (O'; r)
+    function figCommonTangent(R, r, d, labels) {
+        labels = labels || {};
+        const O = [0, 0], Q = [d, 0], ca = (R - r) / d, sa = Math.sqrt(1 - ca * ca), u = [ca, sa];
+        const A = vMul(u, R), B = vAdd(Q, vMul(u, r)), H = vSub(A, vMul(u, r)), sc = new Scene();
+        sc.circle(O, R, { fill: 'rgba(234,240,250,0.9)' }); sc.circle(Q, r, { fill: 'rgba(21,145,155,0.14)', stroke: FIG.teal });
+        sc.line(A, B, { w: 2.8, stroke: FIG.teal }); sc.line(O, A, { w: 2 }); sc.line(Q, B, { w: 2 }); sc.line(O, Q, { dash: '5 4', stroke: FIG.orange, w: 2 });
+        sc.line(Q, H, { dash: '4 3', stroke: FIG.red, w: 1.8 }); if (labels.rights) { sc.right(A, O, B, 10); sc.right(B, Q, A, 10); }
+        [O, Q, A, B, H].forEach(p => sc.dot(p));
+        sc.text(O, 'O', { dy: 18, bold: true }); sc.text(Q, "O'", { dy: 18, bold: true }); sc.text(A, 'A', { dx: -8, dy: -12, bold: true }); sc.text(B, 'B', { dx: 8, dy: -12, bold: true }); sc.text(H, 'H', { dx: 12, dy: 12, bold: true, fill: FIG.red });
+        if (labels.R) sc.text(vMid(O, A), labels.R, { dx: -16, dy: 4, bold: true, italic: false, size: 14 });
+        if (labels.r) sc.text(vMid(Q, B), labels.r, { dx: 12, dy: 2, bold: true, italic: false, size: 14, fill: FIG.teal });
+        if (labels.d) sc.text(vMid(O, Q), labels.d, { dy: 18, fill: FIG.orange, bold: true, italic: false, size: 14 });
+        if (labels.AB) sc.text(vMid(A, B), labels.AB, { dx: 4, dy: -12, fill: FIG.teal, bold: true, italic: false, size: 14 });
+        return sc.render(340, 250);
+    }
+
+    // ============================================================================
+    // HELPERS
+    // ============================================================================
+    const APP_LIMITS = { totalItems: 20, allocatedDurationSeconds: 1800, tiers: { easy: 0, medium: 0, hard: 0 } };
+    const QUIZ_TITLE = "Basic Geometry Properties - Math Practice Quiz";
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+
+    function ri(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function shuffleList(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+    function gcd(x, y) { x = Math.abs(x); y = Math.abs(y); while (y) { const t = y; y = x % y; x = t; } return x; }
+    const TX = (t) => String.raw`\(` + t + String.raw`\)`;                       // inline math
+    const ANG = (x) => TX(String.raw`\widehat{${x}}`);                           // angle  \widehat{ABC}
+    const numStr = (x) => String(Math.round(x * 1000) / 1000);
+    const DEG = '\u00B0';
+    function simpSqrt(n) {                                                       // sqrt(n) = k sqrt(m)
+        let k = 1, m = n;
+        for (let f = Math.floor(Math.sqrt(n)); f >= 2; f--) { if (n % (f * f) === 0) { k = f; m = n / (f * f); break; } }
+        return { k: k, m: m };
+    }
+    function sqrtTex(n) {                                                        // exact tex of sqrt(n)
+        const s = simpSqrt(n);
+        if (s.m === 1) return String(s.k);
+        return (s.k === 1 ? '' : String(s.k)) + String.raw`\sqrt{${s.m}}`;
+    }
+    function pyTriples(maxHyp) {
+        const base = [[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [20, 21, 29]], out = [];
+        base.forEach(t => { for (let k = 1; k * t[2] <= maxHyp; k++) out.push(t.map(v => v * k)); });
+        return out;
+    }
+    function distinctOpts(correct, wrongs, n) {                                  // correct + (n-1) distinct wrongs, shuffled
+        const seen = new Set([String(correct)]), out = [String(correct)];
+        shuffleList(wrongs.map(String)).forEach(w => { if (out.length < n && !seen.has(w)) { seen.add(w); out.push(w); } });
+        return shuffleList(out);
+    }
+    const LEVEL_NAME = { 1: 'easy', 2: 'medium', 3: 'hard' };
+    function mkProb(topic, level, o) {
+        return Object.assign({ tier: LEVEL_NAME[level], categoryType: topic, type: 'MCQ', pool: [], solution: '', alternativeSolution: '', prompt: '', equation: '', explain: '', figureHtml: '', _data: null }, o);
+    }
+    const expP = (t) => t ? '<p style="margin:2px 0; line-height:1.55;">' + t + '</p>' : '';
+
+    // ---- the bank
+    const BANK = [];
+    let _bankId = 0;
+    function addItem(topic, level, kind, w, build) { BANK.push({ id: 'Q' + (++_bankId), topic: topic, level: level, kind: kind, w: w, build: build }); }
+    function figOf(fig) { return typeof fig === 'function' ? fig() : (fig || ''); }
+    function TF(topic, level, text, truth, why, fig) {
+        addItem(topic, level, 'tf', 0.75, () => mkProb(topic, level, { type: 'TF', prompt: 'True or False: ' + text, solution: truth ? 'True' : 'False', explain: expP(why), figureHtml: figOf(fig) }));
+    }
+    function MC(topic, level, text, correct, wrongs, why, fig, nOpts) {
+        addItem(topic, level, 'mc', 1, () => mkProb(topic, level, { type: 'MCQ', prompt: text, pool: distinctOpts(correct, wrongs, nOpts || 4), solution: String(correct), explain: expP(why), figureHtml: figOf(fig) }));
+    }
+    function NUM(topic, level, text, answer, why, fig) {
+        addItem(topic, level, 'num', 1.1, () => mkProb(topic, level, { type: 'TEXT', prompt: text, solution: numStr(answer), explain: expP(why), figureHtml: figOf(fig) }));
+    }
+    function GEN(topic, level, w, fn) { addItem(topic, level, 'gen', w || 1.4, fn); }
+    // numeric answer (typed) / multiple choice answer produced by a generator
+    function genNum(topic, level, prompt, answer, why, fig, data) { return mkProb(topic, level, { type: 'TEXT', prompt: prompt, solution: numStr(answer), explain: expP(why), figureHtml: fig || '', _data: data || null }); }
+    function genMC(topic, level, prompt, correct, wrongs, why, fig, data, n) { return mkProb(topic, level, { type: 'MCQ', prompt: prompt, pool: distinctOpts(correct, wrongs, n || 4), solution: String(correct), explain: expP(why), figureHtml: fig || '', _data: data || null }); }
+
+    // ---- extra figures needed by the generators
+    function figExterior(A, B, labels) {
+        const C = 180 - A - B, P = triFromAngles(A, B, C), D = [P.C[0] + (P.C[0] - P.B[0]) * 0.55, 0], sc = new Scene();
+        const cen = [(P.A[0] + P.B[0] + P.C[0]) / 3, (P.A[1] + P.B[1] + P.C[1]) / 3];
+        sc.poly([P.A, P.B, P.C]); sc.line(P.C, D, { w: 2.2 });
+        sc.arc(P.A, P.B, P.C, 24, {}, labels[0]); sc.arc(P.B, P.A, P.C, 28, {}, labels[1]); sc.arc(P.C, P.A, D, 26, { stroke: FIG.orange }, labels[2]);
+        vertexLabels(sc, [P.A, P.B, P.C], ['A', 'B', 'C'], cen); sc.text(D, 'D', { dy: 18, bold: true }); sc.dot(D);
+        return sc.render();
+    }
+
+    // ============================================================================
+    // TOPIC 1 : TRIANGLES
+    // ============================================================================
+    const T1 = 'Triangles';
+    TF(T1, 1, 'Every equilateral triangle is also isosceles.', true, 'An equilateral triangle has three equal sides, so in particular it has two equal sides.');
+    TF(T1, 1, 'Every isosceles triangle is equilateral.', false, 'An isosceles triangle only needs two equal sides (for example 5, 5 and 8).');
+    TF(T1, 1, 'The sum of the angles of any triangle is 180' + DEG + '.', true, 'The angles of a triangle always add up to 180' + DEG + '.');
+    TF(T1, 1, 'In a right triangle, the hypotenuse is the side opposite the right angle.', true, 'The hypotenuse is opposite the 90' + DEG + ' angle.');
+    TF(T1, 1, 'A triangle can have two right angles.', false, 'Two right angles already make 180' + DEG + ', which leaves nothing for the third angle.');
+    TF(T1, 1, 'An obtuse triangle has one angle greater than 90' + DEG + '.', true, 'That is the definition of an obtuse triangle.');
+    TF(T1, 1, 'An acute triangle has all three angles less than 90' + DEG + '.', true, 'That is the definition of an acute triangle.');
+    TF(T1, 1, 'A scalene triangle has three different sides and three different angles.', true, 'No two sides (and no two angles) are equal in a scalene triangle.');
+    TF(T1, 2, 'The exterior angle of a triangle equals the sum of the two remote interior angles.', true, 'Exterior angle = sum of the 2 remote interior angles.');
+    TF(T1, 2, 'The exterior angle of a triangle equals the interior angle adjacent to it.', false, 'The exterior angle and the adjacent interior angle add up to 180' + DEG + '; the exterior angle equals the two remote angles.');
+    TF(T1, 2, 'A triangle can have two obtuse angles.', false, 'Two angles greater than 90' + DEG + ' would already add up to more than 180' + DEG + '.');
+    TF(T1, 2, 'In an isosceles triangle ' + TX('ABC') + ' with apex ' + TX('A') + ' (' + TX('AB=AC') + '), the base angles ' + ANG('B') + ' and ' + ANG('C') + ' are equal.', true, 'In an isosceles triangle the base angles are equal.');
+    MC(T1, 1, 'Each angle of an equilateral triangle measures:', '60' + DEG, ['30' + DEG, '45' + DEG, '90' + DEG, '120' + DEG], 'Three equal angles with a sum of 180' + DEG + ': 180 / 3 = 60' + DEG + '.');
+    MC(T1, 1, 'A triangle with three different sides is called:', 'scalene', ['isosceles', 'equilateral'], 'Scalene: three different sides and three different angles.', null, 3);
+    MC(T1, 1, 'A triangle with two equal sides (and a third different side) is called:', 'isosceles', ['scalene', 'equilateral'], 'Isosceles: two equal sides.', null, 3);
+    MC(T1, 1, 'A triangle with one angle equal to 90' + DEG + ' is called:', 'a right triangle', ['an acute triangle', 'an obtuse triangle', 'an equilateral triangle', 'a scalene triangle'], 'One right angle: right triangle.');
+    MC(T1, 1, 'A triangle with one angle greater than 90' + DEG + ' is called:', 'an obtuse triangle', ['an acute triangle', 'a right triangle', 'an equilateral triangle'], 'One angle greater than 90' + DEG + ': obtuse.', null, 4);
+    MC(T1, 1, 'In an isosceles triangle ' + TX('ABC') + ' with apex ' + TX('A') + ', which two angles are equal?', ANG('B') + ' and ' + ANG('C'), [ANG('A') + ' and ' + ANG('B'), ANG('A') + ' and ' + ANG('C'), 'none of them', 'all three'], 'The base angles (at the base [BC]) are equal.');
+    MC(T1, 1, 'In the notation of the course, ' + TX('[AB]') + ' denotes:', 'the segment AB', ['the line AB', 'the length AB', 'the angle at A', 'the arc AB'], 'Notation: [AB] segment, (AB) line, AB length, \u00C2 angle at A.');
+    MC(T1, 1, 'In the notation of the course, ' + TX('(AB)') + ' denotes:', 'the line AB', ['the segment AB', 'the length AB', 'the angle at A', 'the midpoint of AB'], 'Notation: (AB) is the line through A and B.');
+    MC(T1, 1, 'In the notation of the course, ' + TX('AB') + ' (without brackets) denotes:', 'the length AB', ['the line AB', 'the segment AB', 'the angle at A', 'the midpoint of AB'], 'AB is the length of the segment [AB].');
+    MC(T1, 2, 'The exterior angle of a triangle is equal to:', 'the sum of the two remote interior angles', ['the adjacent interior angle', '180' + DEG + ' minus the sum of the two remote angles', 'twice the adjacent interior angle', '90' + DEG], 'Exterior angle = sum of the 2 remote interior angles.');
+    MC(T1, 1, 'Which triangle has all three sides equal?', 'the equilateral triangle', ['the scalene triangle', 'the right triangle', 'the obtuse triangle'], 'Equilateral: AB = BC = CA.', null, 3);
+
+    GEN(T1, 1, 1.3, () => {                                               // third angle
+        let a, b, c; do { a = ri(30, 85); b = ri(30, 85); c = 180 - a - b; } while (c < 25 || c > 100 || a === b && b === c);
+        const unk = ri(0, 2), vals = [a, b, c], lab = vals.map((v, i) => i === unk ? '?' : v + DEG);
+        const known = vals.filter((v, i) => i !== unk), names = ['A', 'B', 'C'];
+        return genNum(T1, 1, 'In triangle ' + TX('ABC') + ' two angles are given. Find the angle marked ? (in degrees).', vals[unk],
+            'The three angles add up to 180' + DEG + ': ' + (180 - known[0] - known[1]) + DEG + ' = 180' + DEG + ' \u2212 ' + known[0] + DEG + ' \u2212 ' + known[1] + DEG + '.', figTriAngles(vals[0], vals[1], vals[2], lab), { gen: 'triThird', angles: vals, unk: unk });
+    });
+    GEN(T1, 1, 1.2, () => {                                               // kind by angles
+        const kind = pick(['acute', 'right', 'obtuse']); let v;
+        if (kind === 'right') { const x = ri(20, 70); v = [90, x, 90 - x]; }
+        else if (kind === 'obtuse') { const o = ri(95, 130), x = ri(15, 180 - o - 15); v = [o, x, 180 - o - x]; }
+        else { do { const a = ri(35, 80), b = ri(35, 80); v = [a, b, 180 - a - b]; } while (v[2] >= 90 || v[2] < 30 || (v[0] === 60 && v[1] === 60)); }
+        v = shuffleList(v);
+        const names = { acute: 'an acute triangle', right: 'a right triangle', obtuse: 'an obtuse triangle' };
+        return genMC(T1, 1, 'The three angles of a triangle are ' + v[0] + DEG + ', ' + v[1] + DEG + ' and ' + v[2] + DEG + '. This triangle is:', names[kind],
+            Object.keys(names).filter(k => k !== kind).map(k => names[k]).concat(['an equilateral triangle']),
+            kind === 'right' ? 'One angle equals 90' + DEG + ': right triangle.' : kind === 'obtuse' ? 'One angle is greater than 90' + DEG + ': obtuse triangle.' : 'All three angles are less than 90' + DEG + ': acute triangle.',
+            figTriAngles(v[0], v[1], v[2], v.map(x => x + DEG)), { gen: 'triKindAngles', angles: v, kind: kind });
+    });
+    GEN(T1, 1, 1.2, () => {                                               // kind by sides
+        const kind = pick(['equilateral', 'isosceles', 'scalene']); let s;
+        if (kind === 'equilateral') { const a = ri(3, 12); s = [a, a, a]; }
+        else if (kind === 'isosceles') { let a, t; do { a = ri(3, 12); t = ri(2, 2 * a - 1); } while (t === a); s = [a, a, t]; }
+        else { do { s = [ri(3, 14), ri(3, 14), ri(3, 14)]; s.sort((x, y) => x - y); } while (new Set(s).size < 3 || s[0] + s[1] <= s[2] || (s[0] * s[0] + s[1] * s[1] === s[2] * s[2])); }
+        s = shuffleList(s);
+        const names = { equilateral: 'equilateral', isosceles: 'isosceles but not equilateral', scalene: 'scalene' };
+        return genMC(T1, 1, 'A triangle has sides ' + s[0] + ' cm, ' + s[1] + ' cm and ' + s[2] + ' cm. It is:', names[kind], Object.keys(names).filter(k => k !== kind).map(k => names[k]),
+            kind === 'equilateral' ? 'Three equal sides.' : kind === 'isosceles' ? 'Exactly two equal sides.' : 'Three different sides.', figTriSides(s[0], s[1], s[2], s.map(String), null), { gen: 'triKindSides', sides: s, kind: kind }, 3);
+    });
+    GEN(T1, 2, 1.3, () => {                                               // isosceles angles
+        if (Math.random() < 0.5) {
+            const apex = pick([20, 30, 40, 50, 64, 70, 80, 90, 100, 110]), base = (180 - apex) / 2;
+            return genNum(T1, 2, 'The triangle ' + TX('ABC') + ' is isosceles with apex ' + TX('A') + ' and ' + ANG('A') + ' = ' + apex + DEG + '. Find ' + ANG('B') + ' (in degrees).', base,
+                'The base angles are equal: (180' + DEG + ' \u2212 ' + apex + DEG + ') / 2 = ' + base + DEG + '.', figTriAngles(apex, base, base, [apex + DEG, '?', base + DEG]), { gen: 'isoAngles', apex: apex, ask: 'base' });
+        }
+        const base = ri(25, 80), apex = 180 - 2 * base;
+        return genNum(T1, 2, 'The triangle ' + TX('ABC') + ' is isosceles with apex ' + TX('A') + ' and ' + ANG('B') + ' = ' + base + DEG + '. Find ' + ANG('A') + ' (in degrees).', apex,
+            'The base angles are equal, so ' + ANG('A') + ' = 180' + DEG + ' \u2212 2 \u00D7 ' + base + DEG + ' = ' + apex + DEG + '.', figTriAngles(apex, base, base, ['?', base + DEG, base + DEG]), { gen: 'isoAngles', base: base, ask: 'apex' });
+    });
+    GEN(T1, 2, 1.3, () => {                                               // exterior angle
+        const A = ri(30, 85), B = ri(30, 85), ext = A + B;
+        if (Math.random() < 0.55) return genNum(T1, 2, 'In triangle ' + TX('ABC') + ', the side [BC] is extended beyond C to D. ' + ANG('A') + ' = ' + A + DEG + ' and ' + ANG('B') + ' = ' + B + DEG + '. Find the exterior angle ' + ANG('ACD') + ' (in degrees).', ext,
+            'Exterior angle = sum of the 2 remote interior angles: ' + A + DEG + ' + ' + B + DEG + ' = ' + ext + DEG + '.', figExterior(A, B, [A + DEG, B + DEG, '?']), { gen: 'exterior', A: A, B: B });
+        return genNum(T1, 2, 'In triangle ' + TX('ABC') + ', the side [BC] is extended beyond C to D. The exterior angle ' + ANG('ACD') + ' = ' + ext + DEG + ' and ' + ANG('B') + ' = ' + B + DEG + '. Find ' + ANG('A') + ' (in degrees).', A,
+            'Exterior angle = sum of the 2 remote interior angles, so ' + ANG('A') + ' = ' + ext + DEG + ' \u2212 ' + B + DEG + ' = ' + A + DEG + '.', figExterior(A, B, ['?', B + DEG, ext + DEG]), { gen: 'exterior', A: A, B: B });
+    });
+
+    // ============================================================================
+    // TOPIC 2 : LINES IN A TRIANGLE
+    // ============================================================================
+    const T2 = 'Lines in a triangle';
+    MC(T2, 1, 'The line joining a vertex of a triangle to the midpoint of the opposite side is a:', 'median', ['altitude', 'perpendicular bisector', 'angle bisector']);
+    MC(T2, 1, 'The line through a vertex of a triangle, perpendicular to the opposite side, is an:', 'altitude', ['median', 'perpendicular bisector', 'angle bisector']);
+    MC(T2, 1, 'The line perpendicular to a side of a triangle at its midpoint is the:', 'perpendicular bisector', ['median', 'altitude', 'angle bisector']);
+    MC(T2, 1, 'The line that divides an angle of a triangle into two equal angles is the:', 'angle bisector', ['median', 'altitude', 'perpendicular bisector']);
+    MC(T2, 1, 'The three medians of a triangle meet at the:', 'centroid', ['orthocenter', 'circumcenter', 'incenter']);
+    MC(T2, 1, 'The three altitudes of a triangle meet at the:', 'orthocenter', ['centroid', 'circumcenter', 'incenter']);
+    MC(T2, 1, 'The three perpendicular bisectors of the sides of a triangle meet at the:', 'circumcenter', ['centroid', 'orthocenter', 'incenter']);
+    MC(T2, 1, 'The three angle bisectors of a triangle meet at the:', 'incenter', ['centroid', 'orthocenter', 'circumcenter']);
+    MC(T2, 1, 'The centroid of a triangle is the meeting point of its:', 'medians', ['altitudes', 'perpendicular bisectors', 'angle bisectors']);
+    MC(T2, 1, 'The orthocenter of a triangle is the meeting point of its:', 'altitudes', ['medians', 'perpendicular bisectors', 'angle bisectors']);
+    MC(T2, 1, 'The circumcenter of a triangle is the meeting point of its:', 'perpendicular bisectors', ['medians', 'altitudes', 'angle bisectors']);
+    MC(T2, 1, 'The incenter of a triangle is the meeting point of its:', 'angle bisectors', ['medians', 'altitudes', 'perpendicular bisectors']);
+    MC(T2, 2, 'Every point of the perpendicular bisector of a segment ' + TX('[AB]') + ' is:', 'equidistant from A and B', ['equidistant from A and the midpoint of [AB]', 'on the line (AB)', 'at distance AB from A']);
+    MC(T2, 2, 'Every point of the bisector of an angle is:', 'equidistant from the two sides of the angle', ['equidistant from the endpoints of the sides', 'at distance 1 from the vertex', 'on the median of the triangle']);
+    TF(T2, 1, 'The three medians of a triangle are concurrent.', true, 'Theorem: the three medians meet at one point, the centroid G.');
+    TF(T2, 1, 'The three altitudes of a triangle are concurrent.', true, 'The three altitudes meet at the orthocenter H.');
+    TF(T2, 1, 'A median joins a vertex to the midpoint of the opposite side.', true, 'That is the definition of a median.');
+    TF(T2, 1, 'An altitude joins a vertex to the midpoint of the opposite side.', false, 'That describes a median. An altitude is perpendicular to the opposite side.');
+    TF(T2, 2, 'The perpendicular bisector of a side of a triangle always passes through the opposite vertex.', false, 'It passes through the opposite vertex only in special cases (for example in an isosceles triangle). In general it does not.');
+    GEN(T2, 1, 1.5, () => {                                               // which line is drawn ?
+        const kind = pick(['median', 'altitude', 'bisector', 'perp']);
+        const names = { median: 'a median', altitude: 'an altitude', bisector: 'an angle bisector', perp: 'a perpendicular bisector' };
+        const why = { median: 'It joins vertex A to the midpoint D of [BC] (equal marks on [BD] and [DC]).', altitude: 'It goes through A and makes a right angle with (BC): it is an altitude.', bisector: 'It splits the angle at A into two equal angles.', perp: 'It is perpendicular to [BC] at its midpoint M (right angle and equal marks), and it does not need to pass through A.' };
+        return genMC(T2, 1, 'In triangle ' + TX('ABC') + ', the dashed line is:', names[kind], Object.keys(names).filter(k => k !== kind).map(k => names[k]), why[kind], figLineInTriangle(kind), { gen: 'lineId', kind: kind });
+    });
+
+    // ============================================================================
+    // TOPIC 3 : REMARKABLE POINTS
+    // ============================================================================
+    const T3 = 'Remarkable points';
+    MC(T3, 1, 'G is the centroid of triangle ' + TX('ABC') + ' and ' + TX("[AA']") + ' is a median. Then:', TX(String.raw`AG=\frac{2}{3}AA'`), [TX(String.raw`AG=\frac{1}{2}AA'`), TX(String.raw`AG=\frac{1}{3}AA'`), TX(String.raw`AG=AA'`)], 'The centroid is two-thirds of the way along each median, from the vertex.');
+    MC(T3, 1, 'The centroid divides each median in the ratio (vertex side : midpoint side):', '2 : 1', ['1 : 2', '1 : 1', '3 : 1'], 'AG = 2 \u00D7 GA\u2032, ratio 2 : 1.');
+    MC(T3, 1, 'The centroid is also called the:', 'center of gravity', ['center of the circumscribed circle', 'center of the inscribed circle', 'meeting point of the altitudes']);
+    MC(T3, 1, 'The circumcenter of a triangle is the center of the:', 'circumscribed circle', ['inscribed circle', 'circle having the longest side as diameter', 'circle through the midpoints of the sides'], 'O is equidistant from the three vertices: OA = OB = OC = R.');
+    MC(T3, 1, 'The incenter of a triangle is the center of the:', 'inscribed circle', ['circumscribed circle', 'circle having the longest side as diameter', 'circle through the midpoints of the sides'], 'I is equidistant from the three sides: ID = IE = IF = r.');
+    MC(T3, 2, 'A point O such that OA = OB = OC (A, B, C the vertices) is the:', 'circumcenter', ['centroid', 'orthocenter', 'incenter']);
+    MC(T3, 2, 'A point I inside the triangle at equal distances from the three sides is the:', 'incenter', ['centroid', 'orthocenter', 'circumcenter']);
+    TF(T3, 1, 'The centroid is always inside the triangle.', true, 'G is always inside the triangle.');
+    TF(T3, 1, 'The incenter is always inside the triangle.', true, 'The three angle bisectors meet inside the triangle.');
+    TF(T3, 1, 'The circumcenter of a right triangle is the midpoint of its hypotenuse.', true, 'Right triangle: the circumcenter is the midpoint of the hypotenuse.');
+    TF(T3, 1, 'The orthocenter of a right triangle is the vertex of the right angle.', true, 'The two legs are altitudes and meet at the right-angle vertex.');
+    TF(T3, 2, 'The orthocenter of an obtuse triangle lies outside the triangle.', true, 'Obtuse triangle: H is outside the triangle.');
+    TF(T3, 2, 'The circumcenter of an acute triangle lies outside the triangle.', false, 'Acute triangle: the circumcenter is inside.');
+    TF(T3, 2, 'In an equilateral triangle, the centroid, orthocenter, circumcenter and incenter coincide.', true, 'In an equilateral triangle the four points are the same point.');
+    TF(T3, 2, 'A median divides a triangle into two triangles of equal area.', true, 'A median splits the triangle into two triangles of equal area.');
+    TF(T3, 2, 'The three medians cut a triangle into six triangles of equal area.', true, 'The three medians cut the triangle into six triangles of equal area.');
+    TF(T3, 2, 'The three perpendicular bisectors of the sides of a triangle meet at the incenter.', false, 'They meet at the circumcenter. The incenter is where the angle bisectors meet.');
+    TF(T3, 2, 'The three angle bisectors of a triangle meet at the circumcenter.', false, 'They meet at the incenter.');
+    MC(T3, 2, 'The orthocenter of an obtuse triangle is:', 'outside the triangle', ['inside the triangle', 'the midpoint of the longest side', 'the vertex of the obtuse angle']);
+    MC(T3, 2, 'The circumcenter of an obtuse triangle is:', 'outside the triangle', ['inside the triangle', 'the midpoint of the longest side', 'the vertex of the obtuse angle']);
+    GEN(T3, 2, 1.4, () => {                                               // centroid lengths
+        const k = ri(2, 9), v = ri(0, 4);
+        const f = (AG, GA) => figCentroid({ AG: AG, GA: GA });
+        if (v === 0) return genNum(T3, 2, 'G is the centroid of triangle ' + TX('ABC') + ' and ' + TX("AA'") + ' = ' + 3 * k + ' cm. Find ' + TX('AG') + ' (in cm).', 2 * k, TX('AG=\\frac{2}{3}\\times ' + 3 * k + '=' + 2 * k), f('?', ''), { gen: 'centroid', v: v, k: k });
+        if (v === 1) return genNum(T3, 2, 'G is the centroid of triangle ' + TX('ABC') + ' and ' + TX("AA'") + ' = ' + 3 * k + ' cm. Find ' + TX("GA'") + ' (in cm).', k, TX("GA'=\\frac{1}{3}\\times " + 3 * k + '=' + k), f('', '?'), { gen: 'centroid', v: v, k: k });
+        if (v === 2) return genNum(T3, 2, 'G is the centroid of triangle ' + TX('ABC') + ' and ' + TX('BG') + ' = ' + 2 * k + ' cm. Find the length of the median ' + TX("[BB']") + ' (in cm).', 3 * k, TX("BG=\\frac{2}{3}BB' \\Rightarrow BB'=\\frac{3}{2}\\times " + 2 * k + '=' + 3 * k), figCentroid({ BG: String(2 * k) }), { gen: 'centroid', v: v, k: k });
+        if (v === 3) return genNum(T3, 2, 'G is the centroid of triangle ' + TX('ABC') + ' and ' + TX("GA'") + ' = ' + k + ' cm. Find ' + TX('AG') + ' (in cm).', 2 * k, TX('AG=2\\times GA\'=' + 2 * k), f('?', String(k)), { gen: 'centroid', v: v, k: k });
+        return genNum(T3, 2, 'G is the centroid of triangle ' + TX('ABC') + ' and ' + TX('AG') + ' = ' + 2 * k + ' cm. Find the median ' + TX("AA'") + ' (in cm).', 3 * k, TX("AA'=AG+GA'=" + 2 * k + '+' + k + '=' + 3 * k), f(String(2 * k), ''), { gen: 'centroid', v: v, k: k });
+    });
+    GEN(T3, 2, 1.3, () => {                                               // position of H and O
+        const tri = pick(['acute', 'right', 'obtuse']), pt = pick(['orthocenter', 'circumcenter']);
+        const pos = { acute: 'inside the triangle', obtuse: 'outside the triangle', right: pt === 'orthocenter' ? 'at the vertex of the right angle' : 'at the midpoint of the hypotenuse' }[tri];
+        const all = ['inside the triangle', 'outside the triangle', 'at the vertex of the right angle', 'at the midpoint of the hypotenuse'];
+        let v; if (tri === 'right') v = [90, ri(30, 60)]; else if (tri === 'acute') v = [ri(50, 70), ri(50, 70)]; else v = [ri(100, 120), ri(20, 35)];
+        v.push(180 - v[0] - v[1]);
+        return genMC(T3, 2, 'Where is the ' + pt + ' of ' + (tri === 'acute' ? 'an acute' : tri === 'right' ? 'a right' : 'an obtuse') + ' triangle?', pos, all.filter(x => x !== pos),
+            tri === 'right' ? (pt === 'orthocenter' ? 'Right triangle: H is the right-angle vertex.' : 'Right triangle: the circumcenter is the midpoint of the hypotenuse.') : tri === 'acute' ? 'Acute triangle: inside.' : 'Obtuse triangle: outside.', '', { gen: 'centerPos', tri: tri, pt: pt });
+    });
+
+    // ============================================================================
+    // TOPIC 4 : PYTHAGOREAN THEOREM
+    // ============================================================================
+    const T4 = 'Pythagorean theorem';
+    MC(T4, 1, TX('ABC') + ' is a right triangle with the right angle at ' + TX('A') + '. Which relation is true?', TX('BC^2=AB^2+AC^2'), [TX('AB^2=BC^2+AC^2'), TX('BC=AB+AC'), TX('AC^2=AB^2+BC^2')], 'The square of the hypotenuse [BC] equals the sum of the squares of the other two sides.');
+    MC(T4, 1, 'In a triangle ' + TX('ABC') + ', ' + TX('BC^2=AB^2+AC^2') + '. Then the triangle is:', 'right-angled at A', ['right-angled at B', 'right-angled at C', 'obtuse at A', 'equilateral'], 'Converse of the Pythagorean theorem: the right angle is opposite the side BC.');
+    MC(T4, 2, 'In a triangle whose longest side is ' + TX('c') + ' (the other sides are ' + TX('a') + ' and ' + TX('b') + '), if ' + TX(String.raw`c^2 \gt a^2+b^2`) + ' the triangle is:', 'obtuse', ['acute', 'right'], 'General rule: c\u00B2 = a\u00B2 + b\u00B2 right, c\u00B2 > a\u00B2 + b\u00B2 obtuse, c\u00B2 < a\u00B2 + b\u00B2 acute.', null, 3);
+    MC(T4, 2, 'In a triangle whose longest side is ' + TX('c') + ' (the other sides are ' + TX('a') + ' and ' + TX('b') + '), if ' + TX(String.raw`c^2 \lt a^2+b^2`) + ' the triangle is:', 'acute', ['obtuse', 'right'], 'General rule: c\u00B2 = a\u00B2 + b\u00B2 right, c\u00B2 > a\u00B2 + b\u00B2 obtuse, c\u00B2 < a\u00B2 + b\u00B2 acute.', null, 3);
+    TF(T4, 1, 'In a right triangle, the hypotenuse is the longest side.', true, 'BC\u00B2 = AB\u00B2 + AC\u00B2 is larger than AB\u00B2 and larger than AC\u00B2.');
+    TF(T4, 1, 'A triangle with sides 6 cm, 8 cm and 10 cm is right-angled.', true, '6\u00B2 + 8\u00B2 = 36 + 64 = 100 = 10\u00B2: the converse applies.');
+    TF(T4, 1, 'A triangle with sides 5 cm, 6 cm and 8 cm is right-angled.', false, '5\u00B2 + 6\u00B2 = 61 but 8\u00B2 = 64. Since 61 < 64, the triangle is obtuse, not right.');
+    TF(T4, 1, 'A triangle with sides 7 cm, 24 cm and 25 cm is right-angled.', true, '7\u00B2 + 24\u00B2 = 49 + 576 = 625 = 25\u00B2.');
+    TF(T4, 1, 'The numbers 8, 15 and 17 form a Pythagorean triple.', true, '8\u00B2 + 15\u00B2 = 64 + 225 = 289 = 17\u00B2.');
+    TF(T4, 2, 'A triangle with sides 4 cm, 5 cm and 6 cm is acute.', true, 'Longest side 6: 6\u00B2 = 36 < 4\u00B2 + 5\u00B2 = 41, so the triangle is acute.');
+    TF(T4, 2, 'If c\u00B2 > a\u00B2 + b\u00B2 for the longest side c, the triangle is acute.', false, 'If c\u00B2 > a\u00B2 + b\u00B2 the triangle is obtuse.');
+    GEN(T4, 1, 1.2, () => {                                               // which triple ?
+        const t = pick(pyTriples(40)), correct = '(' + t.join(', ') + ')', wrongs = [];
+        while (wrongs.length < 5) {
+            const w = [t[0] + ri(-1, 2), t[1] + ri(-1, 2), t[2] + ri(-1, 2)].sort((x, y) => x - y);
+            if (w[0] * w[0] + w[1] * w[1] !== w[2] * w[2] && w[0] > 0 && w.join() !== t.join()) wrongs.push('(' + w.join(', ') + ')');
+        }
+        return genMC(T4, 1, 'Which of these is a Pythagorean triple (the lengths of the sides of a right triangle)?', correct, wrongs, t[0] + '\u00B2 + ' + t[1] + '\u00B2 = ' + (t[0] * t[0] + t[1] * t[1]) + ' = ' + t[2] + '\u00B2.', '', { gen: 'triple', t: t });
+    });
+    GEN(T4, 1, 1.5, () => {                                               // hypotenuse
+        const t = pick(pyTriples(30)), legs = shuffleList([t[0], t[1]]);
+        return genNum(T4, 1, TX('ABC') + ' is right-angled at ' + TX('A') + ', ' + TX('AB') + ' = ' + legs[0] + ' cm and ' + TX('AC') + ' = ' + legs[1] + ' cm. Find ' + TX('BC') + ' (in cm).', t[2],
+            TX(`BC^2=${legs[0]}^2+${legs[1]}^2=${legs[0] ** 2 + legs[1] ** 2}`) + ', so ' + TX(`BC=${t[2]}`) + ' cm.', figRight(legs[0], legs[1], { AB: String(legs[0]), AC: String(legs[1]), BC: '?' }), { gen: 'pythHyp', legs: legs });
+    });
+    GEN(T4, 1, 1.5, () => {                                               // leg
+        const t = pick(pyTriples(30)), legs = shuffleList([t[0], t[1]]);
+        return genNum(T4, 1, TX('ABC') + ' is right-angled at ' + TX('A') + ', ' + TX('BC') + ' = ' + t[2] + ' cm and ' + TX('AB') + ' = ' + legs[0] + ' cm. Find ' + TX('AC') + ' (in cm).', legs[1],
+            TX(`AC^2=${t[2]}^2-${legs[0]}^2=${t[2] ** 2 - legs[0] ** 2}`) + ', so ' + TX(`AC=${legs[1]}`) + ' cm.', figRight(legs[0], legs[1], { AB: String(legs[0]), AC: '?', BC: String(t[2]) }), { gen: 'pythLeg', hyp: t[2], leg: legs[0] });
+    });
+    GEN(T4, 2, 1.5, () => {                                               // kind of triangle from the sides
+        const kind = pick(['right', 'acute', 'obtuse']); let s;
+        if (kind === 'right') s = pick(pyTriples(30));
+        else do { const a = ri(4, 13), b = ri(4, 13), lo = Math.max(a, b); const c = ri(lo, a + b - 1); s = [a, b, c].sort((x, y) => x - y); } while (s[0] + s[1] <= s[2] || (kind === 'acute' ? s[2] * s[2] >= s[0] * s[0] + s[1] * s[1] : s[2] * s[2] <= s[0] * s[0] + s[1] * s[1]) || s[2] === Math.max(s[0], s[1]) && false);
+        const sh = shuffleList(s), sum = s[0] * s[0] + s[1] * s[1], cc = s[2] * s[2];
+        const names = { right: 'right-angled', acute: 'acute', obtuse: 'obtuse' };
+        return genMC(T4, 2, 'A triangle has sides ' + sh[0] + ' cm, ' + sh[1] + ' cm and ' + sh[2] + ' cm. It is:', names[kind], Object.keys(names).filter(k => k !== kind).map(k => names[k]),
+            'Longest side ' + s[2] + ': ' + s[2] + '\u00B2 = ' + cc + ' and ' + s[0] + '\u00B2 + ' + s[1] + '\u00B2 = ' + sum + '. ' + (cc === sum ? 'Equal: right-angled.' : cc > sum ? cc + ' > ' + sum + ': obtuse.' : cc + ' < ' + sum + ': acute.'),
+            figTriSides(sh[0], sh[1], sh[2], sh.map(String), null), { gen: 'pythKind', sides: s, kind: kind }, 3);
+    });
+    GEN(T4, 2, 1.4, () => {                                               // height of an isosceles triangle
+        const t = pick(pyTriples(30)), x = t[2], half = t[0], h = t[1];
+        return genNum(T4, 2, 'In triangle ' + TX('ABC') + ', ' + TX('AB=AC') + ' = ' + x + ' cm and ' + TX('BC') + ' = ' + 2 * half + ' cm. ' + TX('H') + ' is the midpoint of ' + TX('[BC]') + '. Find the height ' + TX('AH') + ' (in cm).', h,
+            TX(`BH=${half}`) + ' and the triangle ' + TX('ABH') + ' is right at H: ' + TX(`AH=\\sqrt{${x}^2-${half}^2}=${h}`) + '.', figIsoHeight(x, half, { side: String(x), base: String(2 * half), h: '?' }), { gen: 'isoHeight', x: x, half: half });
+    });
+    GEN(T4, 2, 1.3, () => {                                               // irrational hypotenuse
+        let a, b, n; do { a = ri(1, 8); b = ri(1, 8); n = a * a + b * b; } while (Math.sqrt(n) % 1 === 0 || a === b);
+        const key = TX(sqrtTex(n)), wr = [TX(sqrtTex(Math.abs(a * a - b * b) || 1)), TX(String(a + b)), TX(sqrtTex(a + b)), TX(sqrtTex(n + a)), TX(sqrtTex(2 * n))];
+        return genMC(T4, 2, TX('ABC') + ' is right-angled at ' + TX('A') + ', ' + TX('AB') + ' = ' + a + ' cm and ' + TX('AC') + ' = ' + b + ' cm. The exact length of ' + TX('BC') + ' is:', key, wr,
+            TX(`BC^2=${a}^2+${b}^2=${n}`) + ', so ' + TX(`BC=${sqrtTex(n)}`) + ' cm.', figRight(a, b, { AB: String(a), AC: String(b), BC: '?' }), { gen: 'pythIrr', a: a, b: b });
+    });
+    GEN(T4, 3, 1.3, () => {                                               // diameter and angle in a semicircle (area)
+        const t = pick(pyTriples(40).filter(x => x[2] >= 13)), a = t[0], b = t[1], c = t[2];
+        const gamma = Math.acos(a / c) * 180 / Math.PI;
+        return genNum(T4, 3, TX('[AB]') + ' is a diameter of a circle, ' + TX('AB') + ' = ' + c + ' cm, and ' + TX('C') + ' is a point of the circle with ' + TX('AC') + ' = ' + a + ' cm. Find the area of triangle ' + TX('ABC') + ' (in cm\u00B2).', a * b / 2,
+            ANG('ACB') + ' = 90' + DEG + ' (angle in a semicircle), so ' + TX(`BC^2=${c}^2-${a}^2=${b * b}`) + ', ' + TX(`BC=${b}`) + '. Area = ' + TX(`\\frac{1}{2}\\times ${a}\\times ${b}=${a * b / 2}`) + ' cm\u00B2.',
+            figSemicircle(gamma, { AB: String(c), AC: String(a), BC: '?' }), { gen: 'semiArea', a: a, c: c });
+    });
+
+    // ============================================================================
+    // TOPIC 5 : SPECIAL RIGHT TRIANGLES
+    // ============================================================================
+    const T5 = 'Special right triangles';
+    MC(T5, 1, 'The sides of a right isosceles triangle with legs ' + TX('a') + ' are:', TX(String.raw`a,\ a,\ a\sqrt{2}`), [TX(String.raw`a,\ a,\ 2a`), TX(String.raw`a,\ a\sqrt{3},\ 2a`), TX(String.raw`a,\ a,\ a\sqrt{3}`)], 'BC\u00B2 = a\u00B2 + a\u00B2 = 2a\u00B2, so BC = a\u221A2.');
+    MC(T5, 1, 'The sides of a 30\u00B0\u201360\u00B0\u201390\u00B0 triangle are in the ratio:', TX(String.raw`a : a\sqrt{3} : 2a`), [TX(String.raw`a : a : a\sqrt{2}`), TX(String.raw`1 : 2 : 3`), TX(String.raw`a : 2a : 3a`)], 'Half of an equilateral triangle of side 2a: short leg a, hypotenuse 2a, long leg a\u221A3.');
+    MC(T5, 1, 'The height of an equilateral triangle of side ' + TX('s') + ' is:', TX(String.raw`\frac{s\sqrt{3}}{2}`), [TX(String.raw`\frac{s}{2}`), TX(String.raw`s\sqrt{3}`), TX(String.raw`\frac{s\sqrt{2}}{2}`)], 'h\u00B2 = s\u00B2 \u2212 (s/2)\u00B2 = 3s\u00B2/4.');
+    MC(T5, 1, 'The diagonal of a square of side ' + TX('a') + ' is:', TX(String.raw`a\sqrt{2}`), [TX('2a'), TX(String.raw`a\sqrt{3}`), TX(String.raw`\frac{a}{2}`)], 'A diagonal cuts the square into two right isosceles triangles with legs a.');
+    MC(T5, 1, 'In a 30\u00B0\u201360\u00B0\u201390\u00B0 triangle, the hypotenuse is ... the shortest leg:', 'twice', ['half of', 'three times', TX(String.raw`\sqrt{2}`) + ' times'], 'Short leg a, hypotenuse 2a.');
+    TF(T5, 1, 'In a right isosceles triangle with legs ' + TX('a') + ', the hypotenuse is equal to ' + TX('2a') + '.', false, 'The hypotenuse is a\u221A2, not 2a.');
+    TF(T5, 1, 'The acute angles of a right isosceles triangle both measure 45\u00B0.', true, 'Two equal acute angles that add up to 90\u00B0: 45\u00B0 each.');
+    TF(T5, 2, 'In a 30\u00B0\u201360\u00B0\u201390\u00B0 triangle, the long leg is equal to the short leg multiplied by ' + TX(String.raw`\sqrt{3}`) + '.', true, 'Sides a, a\u221A3, 2a.');
+    GEN(T5, 2, 1.4, () => {                                               // 45-45-90 : leg known
+        const a = ri(2, 12);
+        return genMC(T5, 2, 'A right isosceles triangle has legs of length ' + a + ' cm. Its hypotenuse is:', TX(`${a}\\sqrt{2}`) + ' cm', [TX(String.raw`${2 * a}`) + ' cm', TX(`${a}\\sqrt{3}`) + ' cm', TX(String.raw`\frac{${a}}{\sqrt{2}}`) + ' cm', TX(String.raw`${a}`) + ' cm'],
+            TX(`BC^2=${a}^2+${a}^2=${2 * a * a}`) + ', so ' + TX(`BC=${a}\\sqrt{2}`) + ' cm.', figSpecial45([String(a), String(a), '?']), { gen: 'spec45leg', a: a });
+    });
+    GEN(T5, 2, 1.4, () => {                                               // 45-45-90 : hypotenuse known
+        if (Math.random() < 0.5) {
+            const k = ri(2, 12);
+            return genNum(T5, 2, 'A right isosceles triangle has a hypotenuse of length ' + TX(`${k}\\sqrt{2}`) + ' cm. Find the length of a leg (in cm).', k, 'Hypotenuse = leg \u00D7 \u221A2, so the leg is ' + k + ' cm.', figSpecial45(['?', '?', k + '\u221A2']), { gen: 'spec45hyp', k: k });
+        }
+        const h = 2 * ri(2, 9);
+        return genMC(T5, 2, 'A right isosceles triangle has a hypotenuse of length ' + h + ' cm. The length of a leg is:', TX(`${h / 2}\\sqrt{2}`) + ' cm', [TX(`${h}\\sqrt{2}`) + ' cm', TX(String.raw`${h / 2}`) + ' cm', TX(`${h / 2}\\sqrt{3}`) + ' cm', TX(`${h}`) + ' cm'],
+            'leg = ' + TX(String.raw`\frac{${h}}{\sqrt{2}}=\frac{${h}\sqrt{2}}{2}=${h / 2}\sqrt{2}`) + ' cm.', figSpecial45(['?', '?', String(h)]), { gen: 'spec45hyp2', h: h });
+    });
+    GEN(T5, 2, 1.4, () => {                                               // 30-60-90 : hypotenuse known
+        const a = ri(2, 12);
+        if (Math.random() < 0.5) return genNum(T5, 2, 'In a 30\u00B0\u201360\u00B0\u201390\u00B0 triangle the hypotenuse is ' + 2 * a + ' cm. Find the length of the short leg (in cm).', a, 'The short leg is half the hypotenuse: ' + a + ' cm.', figSpecial3060(['?', '', String(2 * a)]), { gen: 'spec3060hyp', a: a, ask: 'short' });
+        return genMC(T5, 2, 'In a 30\u00B0\u201360\u00B0\u201390\u00B0 triangle the hypotenuse is ' + 2 * a + ' cm. The long leg is:', TX(`${a}\\sqrt{3}`) + ' cm', [TX(`${a}\\sqrt{2}`) + ' cm', TX(`${2 * a}\\sqrt{3}`) + ' cm', TX(`${a}`) + ' cm', TX(String.raw`\frac{${a}\sqrt{3}}{2}`) + ' cm'],
+            'Short leg ' + a + ', long leg ' + TX(`${a}\\sqrt{3}`) + ', hypotenuse ' + 2 * a + '.', figSpecial3060([String(a), '?', String(2 * a)]), { gen: 'spec3060hyp', a: a, ask: 'long' });
+    });
+    GEN(T5, 3, 1.4, () => {                                               // 30-60-90 : long leg known
+        const a = ri(2, 12), ask = pick(['short', 'hyp']);
+        return genNum(T5, 3, 'In a 30\u00B0\u201360\u00B0\u201390\u00B0 triangle the long leg is ' + TX(`${a}\\sqrt{3}`) + ' cm. Find the length of the ' + (ask === 'short' ? 'short leg' : 'hypotenuse') + ' (in cm).', ask === 'short' ? a : 2 * a,
+            'Sides: short leg ' + a + ', long leg ' + TX(`${a}\\sqrt{3}`) + ', hypotenuse ' + 2 * a + '.', figSpecial3060([ask === 'short' ? '?' : String(a), a + '\u221A3', ask === 'hyp' ? '?' : String(2 * a)]), { gen: 'spec3060long', a: a, ask: ask });
+    });
+    GEN(T5, 2, 1.3, () => {                                               // equilateral height
+        const s = ri(2, 14), even = s % 2 === 0;
+        const key = even ? TX(`${s / 2}\\sqrt{3}`) : TX(String.raw`\frac{${s}\sqrt{3}}{2}`);
+        const wr = [TX(`${s}\\sqrt{3}`), TX(String.raw`\frac{${s}}{2}`), TX(String.raw`\frac{${s}\sqrt{2}}{2}`), TX(`${s / 2}\\sqrt{2}`)];
+        return genMC(T5, 2, 'An equilateral triangle has sides of length ' + s + ' cm. Its height is:', key + ' cm', wr.map(w => w + ' cm'), 'h = ' + TX(String.raw`\frac{s\sqrt{3}}{2}=\frac{${s}\sqrt{3}}{2}`) + ' cm.', figEquilateral(String(s), '?'), { gen: 'equilH', s: s });
+    });
+    GEN(T5, 2, 1.2, () => {                                               // square diagonal
+        const s = ri(2, 12);
+        if (Math.random() < 0.6) return genMC(T5, 2, 'The diagonal of a square of side ' + s + ' cm is:', TX(`${s}\\sqrt{2}`) + ' cm', [TX(`${2 * s}`) + ' cm', TX(`${s}\\sqrt{3}`) + ' cm', TX(`${s}`) + ' cm', TX(String.raw`\frac{${s}\sqrt{2}}{2}`) + ' cm'],
+            'The diagonal is the hypotenuse of a right isosceles triangle with legs ' + s + ': ' + TX(`${s}\\sqrt{2}`) + '.', figSquareDiag(String(s), '?'), { gen: 'squareDiag', s: s });
+        return genNum(T5, 3, 'The diagonal of a square is ' + TX(`${s}\\sqrt{2}`) + ' cm. Find the side of the square (in cm).', s, 'diagonal = side \u00D7 \u221A2, so the side is ' + s + ' cm.', figSquareDiag('?', s + '\u221A2'), { gen: 'squareSide', s: s });
+    });
+
+    // ============================================================================
+    // TOPIC 6 : MEDIAN TO THE HYPOTENUSE
+    // ============================================================================
+    const T6 = 'Median to the hypotenuse';
+    MC(T6, 1, 'In a right triangle, the median relative to the hypotenuse is equal to:', 'half the hypotenuse', ['the hypotenuse', 'one third of the hypotenuse', 'the longer leg'], 'Theorem: the median to the hypotenuse equals half the hypotenuse (AM = BC/2).');
+    MC(T6, 1, 'The center of the circle circumscribed to a right triangle is:', 'the midpoint of the hypotenuse', ['the vertex of the right angle', 'the intersection of the altitudes', 'the midpoint of the shorter leg']);
+    MC(T6, 2, 'In a right triangle, the hypotenuse is ... of the circumscribed circle.', 'a diameter', ['a radius', 'a chord shorter than a diameter', 'a tangent']);
+    TF(T6, 1, 'If, in a triangle, a median is equal to half the side on which it falls, the triangle is right-angled.', true, 'Converse: if a median equals half its side, the triangle is right-angled.');
+    TF(T6, 1, TX('ABC') + ' is right-angled at ' + TX('A') + ' and ' + TX('M') + ' is the midpoint of ' + TX('[BC]') + '. Then ' + TX('MA=MB=MC') + '.', true, 'MA is the median to the hypotenuse, so MA = BC/2 = MB = MC.');
+    TF(T6, 2, 'In a right triangle, the median to the hypotenuse is equal to the hypotenuse.', false, 'It equals half of the hypotenuse.');
+    GEN(T6, 1, 1.6, () => {                                               // like the user's example
+        const m = ri(2, 15), h = 2 * m;
+        const wr = [h, 2 * h, m + 2, m - 1, h - 2, 3 * m, Math.max(m - 2, 1)].filter(x => x !== m);
+        return genMC(T6, 1, 'The hypotenuse of a right triangle has length ' + h + ' cm. The median relative to the hypotenuse has length:', m + ' cm', wr.map(x => x + ' cm'), 'The median to the hypotenuse is half the hypotenuse: ' + h + ' / 2 = ' + m + ' cm.', '', { gen: 'medHyp', h: h });
+    });
+    GEN(T6, 1, 1.4, () => {
+        const m = ri(3, 18);
+        return genNum(T6, 1, 'In a right triangle, the median relative to the hypotenuse is ' + m + ' cm long. Find the length of the hypotenuse (in cm).', 2 * m, 'The hypotenuse is twice the median: 2 \u00D7 ' + m + ' = ' + 2 * m + ' cm.', '', { gen: 'medHyp2', m: m });
+    });
+    GEN(T6, 3, 1.5, () => {                                               // legs known -> median / circumradius
+        const t = pick(pyTriples(40)), legs = shuffleList([t[0], t[1]]), ask = pick(['median AM', 'circumradius']);
+        const ans = t[2] / 2;
+        return genNum(T6, 3, TX('ABC') + ' is right-angled at ' + TX('A') + ', ' + TX('AB') + ' = ' + legs[0] + ' cm and ' + TX('AC') + ' = ' + legs[1] + ' cm, and ' + TX('M') + ' is the midpoint of ' + TX('[BC]') + '. Find the ' + (ask === 'median AM' ? 'median ' + TX('AM') : 'radius of the circumscribed circle') + ' (in cm).', ans,
+            TX(`BC=\\sqrt{${legs[0]}^2+${legs[1]}^2}=${t[2]}`) + '; ' + (ask === 'median AM' ? 'AM' : 'R') + ' = BC / 2 = ' + numStr(ans) + ' cm.', figRight(legs[0], legs[1], { AB: String(legs[0]), AC: String(legs[1]), BC: '?', AM: '?' }, true), { gen: 'medLegs', legs: legs, ask: ask });
+    });
+    GEN(T6, 2, 1.2, () => {                                               // converse with numbers
+        const bc = 2 * ri(3, 12), right = Math.random() < 0.8, am = right ? bc / 2 : bc / 2 + pick([-2, -1, 1, 2]);
+        return genMC(T6, 2, 'In triangle ' + TX('ABC') + ', ' + TX('M') + ' is the midpoint of ' + TX('[BC]') + ', ' + TX('BC') + ' = ' + bc + ' cm and ' + TX('AM') + ' = ' + numStr(am) + ' cm. What can be said about ' + ANG('A') + '?',
+            right ? 'It is a right angle' : 'The median does not equal half of BC, so the converse cannot be used to conclude that it is a right angle',
+            right ? ['It is acute', 'It is obtuse', 'It equals 60' + DEG] : ['It is a right angle', 'It equals 60' + DEG, 'It equals 45' + DEG],
+            right ? 'AM = ' + am + ' = BC / 2, so the triangle is right-angled at A.' : 'AM is not equal to BC / 2 = ' + bc / 2 + ', so the converse of the median theorem does not apply.', '', { gen: 'medConv', bc: bc, am: am });
+    });
+
+    // ============================================================================
+    // TOPIC 7 : ARCS AND ANGLES
+    // ============================================================================
+    const T7 = 'Arcs and angles';
+    MC(T7, 1, 'An arc has the same measure as its:', 'central angle', ['inscribed angle', 'radius', 'chord'], 'arc AB = \u00C2OB (the central angle).');
+    MC(T7, 1, 'The measure of a full circle and of a semicircle are:', '360\u00B0 and 180\u00B0', ['180\u00B0 and 90\u00B0', '360\u00B0 and 90\u00B0', '270\u00B0 and 135\u00B0']);
+    MC(T7, 1, 'A minor arc measures:', 'less than 180\u00B0', ['more than 180\u00B0', 'exactly 180\u00B0', 'exactly 90\u00B0']);
+    MC(T7, 1, 'A major arc measures:', 'more than 180\u00B0', ['less than 180\u00B0', 'exactly 180\u00B0', 'less than 90\u00B0']);
+    MC(T7, 1, 'An angle inscribed in a semicircle measures:', '90\u00B0', ['45\u00B0', '180\u00B0', '60\u00B0'], 'If [AB] is a diameter, then \u00C2CB = 90\u00B0.');
+    MC(T7, 2, 'An inscribed angle is equal to:', 'half the central angle that intercepts the same arc', ['the central angle that intercepts the same arc', 'twice the central angle that intercepts the same arc', 'the supplement of the arc'], 'ACB = \u00BD AOB = \u00BD arc AB.');
+    MC(T7, 2, '[AB] is a diameter of a circle and C is a point of the circle different from A and B. The triangle ' + TX('ABC') + ' is:', 'right-angled at C', ['right-angled at A', 'equilateral', 'obtuse at C'], 'ACB is inscribed in a semicircle, so it is a right angle.');
+    TF(T7, 1, 'The vertex of a central angle is the center of the circle.', true, 'Central angle: its vertex is the center O of the circle.');
+    TF(T7, 1, 'The vertex of an inscribed angle is on the circle.', true, 'An inscribed angle has its vertex on the circle; its sides are two chords.');
+    TF(T7, 1, 'Inscribed angles that intercept the same arc are equal.', true, 'Consequence of the inscribed angle theorem.');
+    TF(T7, 2, 'An inscribed angle is twice the central angle that intercepts the same arc.', false, 'It is half of it.');
+    TF(T7, 2, 'An angle inscribed in a semicircle is an acute angle.', false, 'It is a right angle.');
+    GEN(T7, 2, 1.5, () => {
+        const a = ri(20, 80);
+        return genNum(T7, 2, 'A, B and C lie on the circle (O) and ' + ANG('ACB') + ' = ' + a + DEG + '. Find the central angle ' + ANG('AOB') + ' (in degrees).', 2 * a,
+            'Central angle = 2 \u00D7 inscribed angle = 2 \u00D7 ' + a + DEG + ' = ' + 2 * a + DEG + '.', figInscribed(2 * a, a + DEG, '?'), { gen: 'inscToCentral', a: a });
+    });
+    GEN(T7, 2, 1.4, () => {
+        const arc = 2 * ri(20, 80);
+        return genNum(T7, 2, 'In a circle (O), the arc ' + TX('AB') + ' measures ' + arc + DEG + ' and ' + TX('C') + ' is on the major arc. Find the inscribed angle ' + ANG('ACB') + ' (in degrees).', arc / 2,
+            'Inscribed angle = half the arc: ' + arc + DEG + ' / 2 = ' + arc / 2 + DEG + '.', figInscribed(arc, '?', arc + DEG), { gen: 'arcToInsc', arc: arc });
+    });
+    GEN(T7, 3, 1.5, () => {                                               // example 1 of the course
+        const a = ri(20, 80), c = 2 * a, oab = (180 - c) / 2;
+        return genNum(T7, 3, 'A, B, C lie on the circle (O) and ' + ANG('ACB') + ' = ' + a + DEG + '. Find ' + ANG('OAB') + ' (in degrees).', oab,
+            ANG('AOB') + ' = 2 \u00D7 ' + a + DEG + ' = ' + c + DEG + '. The triangle OAB is isosceles (OA = OB): ' + ANG('OAB') + ' = (180' + DEG + ' \u2212 ' + c + DEG + ') / 2 = ' + oab + DEG + '.', figInscribed(c, a + DEG, c + DEG, { oab: '?' }), { gen: 'insc3', a: a });
+    });
+    GEN(T7, 1, 1.2, () => {                                               // major arc
+        const t = ri(2, 17) * 10, ask = Math.random() < 0.5;
+        if (ask) return genNum(T7, 1, 'In a circle (O), the central angle ' + ANG('AOB') + ' = ' + t + DEG + '. Find the measure of the minor arc ' + TX('AB') + ' (in degrees).', t, 'An arc has the same measure as its central angle: ' + t + DEG + '.', figArcFig(t, t + DEG, 'arc AB = ?'), { gen: 'arcEqCentral', t: t });
+        return genNum(T7, 2, 'In a circle (O), the minor arc ' + TX('AB') + ' measures ' + t + DEG + '. Find the measure of the major arc ' + TX('AB') + ' (in degrees).', 360 - t, 'Full circle: 360' + DEG + '. Major arc = 360' + DEG + ' \u2212 ' + t + DEG + ' = ' + (360 - t) + DEG + '.', figArcFig(t, t + DEG, ''), { gen: 'majorArc', t: t });
+    });
+    GEN(T7, 2, 1.5, () => {                                               // semicircle
+        const g = ri(15, 75), ask = pick(['ABC', 'ACB']);
+        if (ask === 'ACB') return genNum(T7, 1, '[AB] is a diameter of a circle and C is on the circle, ' + ANG('CAB') + ' = ' + g + DEG + '. Find ' + ANG('ACB') + ' (in degrees).', 90, 'An angle inscribed in a semicircle is a right angle.', figSemicircle(g, { A: g + DEG, B: '' }), { gen: 'semi', g: g, ask: ask });
+        return genNum(T7, 2, '[AB] is a diameter of a circle and C is on the circle, ' + ANG('CAB') + ' = ' + g + DEG + '. Find ' + ANG('ABC') + ' (in degrees).', 90 - g,
+            ANG('ACB') + ' = 90' + DEG + ' (angle in a semicircle), so ' + ANG('ABC') + ' = 180' + DEG + ' \u2212 90' + DEG + ' \u2212 ' + g + DEG + ' = ' + (90 - g) + DEG + '.', figSemicircle(g, { A: g + DEG, B: '?' }), { gen: 'semi', g: g, ask: ask });
+    });
+    GEN(T7, 2, 1.2, () => {                                               // same arc
+        const a = ri(20, 70);
+        return genNum(T7, 2, 'A, B, C and D lie on the circle (O). ' + ANG('ACB') + ' = ' + a + DEG + '. Find ' + ANG('ADB') + ' (in degrees).', a, 'Inscribed angles that intercept the same arc AB are equal.', figInscribed(2 * a, a + DEG, '', { D: true, Dlabel: '?' }), { gen: 'sameArc', a: a });
+    });
+
+    // ============================================================================
+    // TOPIC 8 : MIDSEGMENT THEOREM
+    // ============================================================================
+    const T8 = 'Midsegment theorem';
+    MC(T8, 1, TX('M') + ' and ' + TX('N') + ' are the midpoints of ' + TX('[AB]') + ' and ' + TX('[AC]') + '. Then:', TX(String.raw`(MN) \parallel (BC) \text{ and } MN=\frac{1}{2}BC`), [TX(String.raw`(MN) \parallel (BC) \text{ and } MN=BC`), TX(String.raw`(MN) \perp (BC) \text{ and } MN=\frac{1}{2}BC`), TX(String.raw`(MN) \parallel (AB) \text{ and } MN=2BC`)], 'Midsegment theorem.', () => figMidsegment({}, false));
+    MC(T8, 1, 'A segment joining the midpoints of two sides of a triangle is called a:', 'midsegment', ['median', 'altitude', 'bisector'], 'A midsegment joins the midpoints of two sides.');
+    MC(T8, 2, 'A line passes through the midpoint ' + TX('M') + ' of ' + TX('[AB]') + ' and is parallel to ' + TX('(BC)') + '. It meets ' + TX('[AC]') + ':', 'at its midpoint', ['at the point N such that AN = AC / 3', 'at A', 'at C'], 'Converse of the midsegment theorem.');
+    TF(T8, 1, 'The midsegment of a triangle is parallel to the third side.', true, '(MN) // (BC).');
+    TF(T8, 1, 'The midsegment of a triangle is equal to the third side.', false, 'It is equal to half of the third side.');
+    TF(T8, 1, 'The three midsegments of a triangle cut it into 4 congruent triangles.', true, 'The three midsegments cut the triangle into 4 congruent triangles.', () => figMidsegment({}, true));
+    TF(T8, 2, 'The perimeter of the triangle formed by the three midpoints is half the perimeter of the original triangle.', true, 'Each midsegment is half of the corresponding side.');
+    GEN(T8, 1, 1.5, () => {
+        const bc = 2 * ri(3, 14);
+        return genNum(T8, 1, 'In triangle ' + TX('ABC') + ', ' + TX('M') + ' and ' + TX('N') + ' are the midpoints of ' + TX('[AB]') + ' and ' + TX('[AC]') + '. ' + TX('BC') + ' = ' + bc + ' cm. Find ' + TX('MN') + ' (in cm).', bc / 2, TX(`MN=\\frac{1}{2}BC=${bc / 2}`) + ' cm.', figMidsegment({ BC: String(bc), MN: '?' }, false), { gen: 'mid1', bc: bc });
+    });
+    GEN(T8, 1, 1.4, () => {
+        const mn = pick([3, 4, 5, 6, 7, 7.5, 8, 9, 10, 11.5, 12]);
+        return genNum(T8, 1, 'In triangle ' + TX('ABC') + ', ' + TX('M') + ' and ' + TX('N') + ' are the midpoints of ' + TX('[AB]') + ' and ' + TX('[AC]') + '. ' + TX('MN') + ' = ' + mn + ' cm. Find ' + TX('BC') + ' (in cm).', 2 * mn, TX(`BC=2\\times MN=${numStr(2 * mn)}`) + ' cm.', figMidsegment({ BC: '?', MN: String(mn) }, false), { gen: 'mid2', mn: mn });
+    });
+    GEN(T8, 2, 1.5, () => {                                               // perimeter of the medial triangle
+        let a, b, c; do { a = 2 * ri(3, 9); b = 2 * ri(3, 9); c = 2 * ri(3, 9); } while (a + b <= c || a + c <= b || b + c <= a);
+        return genNum(T8, 2, 'A triangle ' + TX('ABC') + ' has sides ' + TX(`AB=${a}`) + ' cm, ' + TX(`AC=${b}`) + ' cm and ' + TX(`BC=${c}`) + ' cm. ' + TX('M') + ', ' + TX('N') + ', ' + TX('P') + ' are the midpoints of ' + TX('[AB]') + ', ' + TX('[AC]') + ', ' + TX('[BC]') + '. Find the perimeter of triangle ' + TX('MNP') + ' (in cm).', (a + b + c) / 2,
+            'MN = ' + c / 2 + ', NP = ' + a / 2 + ', MP = ' + b / 2 + '. Perimeter = ' + (a + b + c) / 2 + ' cm (half of ' + (a + b + c) + ').', figMidsegment({ AB: String(a), AC: String(b), BC: String(c) }, true), { gen: 'mid3', a: a, b: b, c: c });
+    });
+    GEN(T8, 2, 1.3, () => {                                               // converse
+        const ac = 2 * ri(4, 12), bc = ri(5, 20);
+        if (Math.random() < 0.5) return genNum(T8, 2, 'In triangle ' + TX('ABC') + ', ' + TX('M') + ' is the midpoint of ' + TX('[AB]') + ' and the parallel to ' + TX('(BC)') + ' through ' + TX('M') + ' meets ' + TX('(AC)') + ' at ' + TX('N') + '. ' + TX('AC') + ' = ' + ac + ' cm. Find ' + TX('AN') + ' (in cm).', ac / 2,
+            'By the converse of the midsegment theorem, N is the midpoint of [AC]: AN = ' + ac / 2 + ' cm.', figMidsegment({ AC: String(ac) }, false), { gen: 'midConv', ac: ac, ask: 'AN' });
+        return genNum(T8, 2, 'In triangle ' + TX('ABC') + ', ' + TX('M') + ' is the midpoint of ' + TX('[AB]') + ' and the parallel to ' + TX('(BC)') + ' through ' + TX('M') + ' meets ' + TX('(AC)') + ' at ' + TX('N') + '. ' + TX('BC') + ' = ' + bc + ' cm. Find ' + TX('MN') + ' (in cm).', bc / 2,
+            'N is the midpoint of [AC], so [MN] is a midsegment: MN = BC / 2 = ' + numStr(bc / 2) + ' cm.', figMidsegment({ BC: String(bc), MN: '?' }, false), { gen: 'midConv', bc: bc, ask: 'MN' });
+    });
+    GEN(T8, 3, 1.2, () => {                                               // parallel lines
+        const ang = ri(40, 80), mn = pick([6, 7.5, 9, 10]);
+        return genNum(T8, 3, TX('M') + ' and ' + TX('N') + ' are the midpoints of ' + TX('[AB]') + ' and ' + TX('[AC]') + ' in triangle ' + TX('ABC') + '. ' + TX('MN') + ' = ' + mn + ' cm and ' + ANG('AMN') + ' = ' + ang + DEG + '. Find ' + ANG('ABC') + ' (in degrees).', ang,
+            '(MN) // (BC), so the corresponding angles ' + ANG('AMN') + ' and ' + ANG('ABC') + ' are equal: ' + ang + DEG + '.', figMidsegment({ MN: String(mn), angM: ang + DEG }, false), { gen: 'midAngle', ang: ang });
+    });
+
+    // ============================================================================
+    // TOPIC 9 : CIRCLES AND LINES
+    // ============================================================================
+    const T9 = 'Circles and lines';
+    MC(T9, 1, 'A chord that passes through the center of a circle is called a:', 'diameter', ['radius', 'tangent', 'secant'], 'Diameter [BC]: a chord through O, BC = 2r.');
+    MC(T9, 1, 'A segment joining two points of a circle is called a:', 'chord', ['radius', 'tangent', 'diameter'], 'Chord: joins two points of the circle.');
+    MC(T9, 1, 'A line that meets a circle at exactly one point is a:', 'tangent', ['secant', 'diameter', 'chord'], 'A tangent has exactly one common point with the circle.');
+    MC(T9, 1, 'A line that meets a circle at two points is a:', 'secant', ['tangent', 'radius', 'arc'], 'A secant meets the circle at 2 points.');
+    MC(T9, 1, 'The diameter of a circle of radius ' + TX('r') + ' is:', TX('2r'), [TX('r'), TX(String.raw`\frac{r}{2}`), TX('\\pi r')], 'BC = 2r.');
+    MC(T9, 1, 'The circle ' + TX('(O\\,;\\,r)') + ' is the set of all points:', 'at distance r from O', ['at distance less than r from O', 'at distance 2r from O', 'at distance r from a given line']);
+    MC(T9, 1, 'A line is at distance ' + TX('d') + ' from the center of a circle of radius ' + TX('r') + '. If ' + TX(String.raw`d \lt r`) + ', the line is:', 'a secant (2 common points)', ['a tangent (1 common point)', 'exterior to the circle (no common point)', 'a diameter'], 'Secant: d < r, 2 common points.');
+    MC(T9, 1, 'A line is at distance ' + TX('d') + ' from the center of a circle of radius ' + TX('r') + '. If ' + TX('d = r') + ', the line is:', 'a tangent (1 common point)', ['a secant (2 common points)', 'exterior to the circle (no common point)', 'a diameter'], 'Tangent: d = r, 1 common point.');
+    MC(T9, 1, 'A line is at distance ' + TX('d') + ' from the center of a circle of radius ' + TX('r') + '. If ' + TX(String.raw`d \gt r`) + ', the line is:', 'exterior to the circle (no common point)', ['a secant (2 common points)', 'a tangent (1 common point)', 'a diameter'], 'Exterior: d > r, no common point.');
+    TF(T9, 1, 'The longest chord of a circle is a diameter.', true, 'Longest chord = diameter.');
+    TF(T9, 1, 'A radius is half a diameter.', true, 'A radius is half a diameter.');
+    TF(T9, 1, 'A secant meets the circle at exactly one point.', false, 'A secant meets it at two points; a tangent meets it at one.');
+    TF(T9, 2, 'A line whose distance to the center is greater than the radius has no common point with the circle.', true, 'd > r: the line misses the circle.');
+    GEN(T9, 1, 1.6, () => {
+        const r = ri(3, 10), kind = pick(['secant', 'tangent', 'exterior']);
+        const d = kind === 'secant' ? ri(1, r - 1) : kind === 'tangent' ? r : r + ri(1, 5);
+        const names = { secant: 'a secant (2 common points)', tangent: 'a tangent (1 common point)', exterior: 'exterior to the circle (no common point)' };
+        return genMC(T9, 1, 'A circle has center ' + TX('O') + ' and radius ' + r + ' cm. A line is at distance ' + d + ' cm from ' + TX('O') + '. This line is:', names[kind], Object.keys(names).filter(k => k !== kind).map(k => names[k]),
+            'Compare d = ' + d + ' with r = ' + r + ': ' + (kind === 'secant' ? 'd < r, secant.' : kind === 'tangent' ? 'd = r, tangent.' : 'd > r, exterior.'), figCircleLine(r, d, 'r = ' + r, 'd = ' + d), { gen: 'circPos', r: r, d: d }, 3);
+    });
+    GEN(T9, 1, 1.2, () => {
+        const r = ri(3, 10), kind = pick(['secant', 'tangent', 'exterior']);
+        const d = kind === 'secant' ? ri(1, r - 1) : kind === 'tangent' ? r : r + ri(1, 5), n = kind === 'secant' ? 2 : kind === 'tangent' ? 1 : 0;
+        return genNum(T9, 1, 'A line is at distance ' + d + ' cm from the center of a circle of radius ' + r + ' cm. How many common points do the line and the circle have?', n,
+            'd = ' + d + ' and r = ' + r + ': ' + (n === 2 ? 'd < r, 2 points.' : n === 1 ? 'd = r, 1 point.' : 'd > r, no common point.'), figCircleLine(r, d, 'r = ' + r, 'd = ' + d), { gen: 'circCount', r: r, d: d });
+    });
+    GEN(T9, 1, 1.0, () => {
+        const r = ri(2, 15);
+        if (Math.random() < 0.5) return genNum(T9, 1, 'A circle has radius ' + r + ' cm. Find its diameter (in cm).', 2 * r, 'Diameter = 2r = ' + 2 * r + ' cm.', '', { gen: 'diam', r: r });
+        return genNum(T9, 1, 'A circle has a diameter of ' + 2 * r + ' cm. Find its radius (in cm).', r, 'A radius is half a diameter: ' + r + ' cm.', '', { gen: 'rad', r: r });
+    });
+    GEN(T9, 1, 1.0, () => {
+        const r = ri(3, 12), wr = [2 * r, r + 3, Math.max(r - 2, 1), r + 1, Math.round(r / 2)].filter(x => x !== r);
+        return genMC(T9, 1, 'A circle has radius ' + r + ' cm. For which distance ' + TX('d') + ' from the center is a line tangent to the circle?', r + ' cm', wr.map(x => x + ' cm'), 'A line is tangent when d = r.', '', { gen: 'tanDist', r: r });
+    });
+
+    // ============================================================================
+    // TOPIC 10 : TANGENT AND RADIUS
+    // ============================================================================
+    const T10 = 'Tangent and radius';
+    MC(T10, 1, 'A tangent to a circle is ... to the radius drawn to the point of tangency.', 'perpendicular', ['parallel', 'equal', 'oblique at 45\u00B0'], 'Theorem: (d) tangent at A \u21D4 (d) \u27C2 [OA].', () => figTangentRadius(3, 4, { r: '', AB: '', OB: '' }));
+    TF(T10, 1, 'A line perpendicular to a radius at its endpoint on the circle is tangent to the circle.', true, 'Converse theorem: such a line has no other common point with the circle.');
+    TF(T10, 1, 'Through a point of a circle there passes exactly one tangent to the circle.', true, 'At each point of the circle there is exactly one tangent.');
+    TF(T10, 1, 'Through a point outside a circle there are two tangents to the circle.', true, 'From an outside point: two tangents.');
+    TF(T10, 1, 'A tangent has exactly one point in common with the circle.', true, 'That is the definition of a tangent.');
+    TF(T10, 2, 'Every point of a tangent, other than the point of tangency, is inside the circle.', false, 'Every other point of the tangent is outside the circle.');
+    TF(T10, 2, 'A line through a point A of the circle which is not perpendicular to (OA) is a secant.', true, 'It meets the circle again at a second point: it is a secant.');
+    MC(T10, 2, 'To construct the tangent at a point ' + TX('A') + ' of a circle of center ' + TX('O') + ', we draw the line through ' + TX('A') + ':', 'perpendicular to (OA)', ['parallel to (OA)', 'through the midpoint of [OA]', 'making 45\u00B0 with (OA)'], 'Use a set square: one leg along [OA], right angle at A.');
+    MC(T10, 2, 'To construct the tangents from an outside point ' + TX('P') + ' to a circle of center ' + TX('O') + ', we draw the circle of diameter:', TX('[OP]'), [TX('[OA]') + ' where A is any point of the circle', 'the radius of the given circle', TX('[PA]')], 'Because [OP] is a diameter, \u00C2OAP = 90\u00B0 (angle in a semicircle), so (PA) is tangent by the converse theorem.');
+    MC(T10, 2, '(d) is tangent to the circle of center ' + TX('O') + ' at ' + TX('A') + ', and ' + TX('B') + ' is another point of (d). The triangle ' + TX('OAB') + ' is right-angled at:', 'A', ['O', 'B', 'none of the vertices'], 'The tangent is perpendicular to the radius [OA].', () => figTangentRadius(3, 4, {}));
+    GEN(T10, 2, 1.6, () => {                                              // OB
+        const t = pick(pyTriples(30)), sw = Math.random() < 0.5, r = sw ? t[0] : t[1], ab = sw ? t[1] : t[0], ob = t[2];
+        return genNum(T10, 2, '(d) is tangent at ' + TX('A') + ' to the circle ' + TX(`(O\\,;\\,${r}\\text{ cm})`) + '. ' + TX('B') + ' lies on (d) with ' + TX('AB') + ' = ' + ab + ' cm. Find ' + TX('OB') + ' (in cm).', ob,
+            TX('OA') + ' is perpendicular to (d), so ' + TX('OAB') + ' is right at A: ' + TX(`OB^2=${r}^2+${ab}^2=${ob * ob}`) + ', ' + TX(`OB=${ob}`) + ' cm.', figTangentRadius(r, ab, { r: String(r), AB: String(ab), OB: '?' }), { gen: 'tanOB', r: r, ab: ab });
+    });
+    GEN(T10, 3, 1.4, () => {                                              // distance from B to the circle
+        const t = pick(pyTriples(30)), r = t[0], ab = t[1], ob = t[2];
+        return genNum(T10, 3, '(d) is tangent at ' + TX('A') + ' to the circle ' + TX(`(O\\,;\\,${r}\\text{ cm})`) + '. ' + TX('B') + ' lies on (d) with ' + TX('AB') + ' = ' + ab + ' cm. Find the distance from ' + TX('B') + ' to the circle, that is ' + TX('BE') + ' where ' + TX('E') + ' is the point where ' + TX('[OB]') + ' meets the circle (in cm).', ob - r,
+            TX(`OB=${ob}`) + ' (Pythagoras), so ' + TX(`BE=OB-OE=${ob}-${r}=${ob - r}`) + ' cm.', figTangentRadius(r, ab, { r: String(r), AB: String(ab), OB: '?' }), { gen: 'tanBE', r: r, ab: ab });
+    });
+    GEN(T10, 2, 1.6, () => {                                              // tangent segment from P
+        const t = pick(pyTriples(30)), sw = Math.random() < 0.5, r = sw ? t[0] : t[1], pt = sw ? t[1] : t[0], op = t[2];
+        return genNum(T10, 2, TX('P') + ' is outside a circle of center ' + TX('O') + ' and radius ' + r + ' cm, with ' + TX('OP') + ' = ' + op + ' cm. ' + TX('[PT]') + ' is tangent to the circle at ' + TX('T') + '. Find ' + TX('PT') + ' (in cm).', pt,
+            TX('OTP') + ' is right at T: ' + TX(`PT^2=${op}^2-${r}^2=${pt * pt}`) + ', ' + TX(`PT=${pt}`) + ' cm.', figTangentFromP(op, r, { r: String(r), PT: '?', OP: String(op) }), { gen: 'tanPT', r: r, op: op });
+    });
+    GEN(T10, 2, 1.3, () => {                                              // OP from PT and r
+        const t = pick(pyTriples(30)), sw = Math.random() < 0.5, r = sw ? t[0] : t[1], pt = sw ? t[1] : t[0], op = t[2];
+        return genNum(T10, 2, 'The tangent segment ' + TX('[PT]') + ' drawn from ' + TX('P') + ' to a circle of center ' + TX('O') + ' and radius ' + r + ' cm has length ' + pt + ' cm. Find ' + TX('OP') + ' (in cm).', op,
+            'OTP is right at T: ' + TX(`OP^2=${r}^2+${pt}^2=${op * op}`) + ', so OP = ' + op + ' cm.', figTangentFromP(op, r, { r: String(r), PT: String(pt), OP: '?' }), { gen: 'tanOP', r: r, pt: pt });
+    });
+    GEN(T10, 2, 1.2, () => {                                              // radius from OB and AB
+        const t = pick(pyTriples(30)), r = t[0], ab = t[1], ob = t[2];
+        return genNum(T10, 2, '(d) is tangent at ' + TX('A') + ' to a circle of center ' + TX('O') + '. ' + TX('B') + ' lies on (d), ' + TX('AB') + ' = ' + ab + ' cm and ' + TX('OB') + ' = ' + ob + ' cm. Find the radius of the circle (in cm).', r,
+            'OAB is right at A: ' + TX(`OA^2=${ob}^2-${ab}^2=${r * r}`) + ', so the radius is ' + r + ' cm.', figTangentRadius(r, ab, { r: '?', AB: String(ab), OB: String(ob) }), { gen: 'tanR', r: r, ab: ab });
+    });
+    GEN(T10, 2, 1.2, () => {                                              // angle in the right triangle OAB
+        const th = ri(20, 70);
+        return genNum(T10, 2, '(d) is tangent at ' + TX('A') + ' to a circle of center ' + TX('O') + ', ' + TX('B') + ' is a point of (d) and ' + ANG('AOB') + ' = ' + th + DEG + '. Find ' + ANG('OBA') + ' (in degrees).', 90 - th,
+            ANG('OAB') + ' = 90' + DEG + ' (tangent \u27C2 radius), so ' + ANG('OBA') + ' = 90' + DEG + ' \u2212 ' + th + DEG + ' = ' + (90 - th) + DEG + '.', figTangentRadius(1, Math.tan(th * Math.PI / 180), { AB: '', r: '', OB: '' }), { gen: 'tanAngle', th: th });
+    });
+    GEN(T10, 3, 1.4, () => {                                              // distance from T to (OP)
+        const k = ri(1, 3), sw = Math.random() < 0.5, r = sw ? 3 * k : 4 * k, pt = sw ? 4 * k : 3 * k, op = 5 * k;
+        return genNum(T10, 3, 'P is outside a circle of center ' + TX('O') + ' and radius ' + r + ' cm, ' + TX('OP') + ' = ' + op + ' cm, and ' + TX('[PT]') + ' is tangent at ' + TX('T') + '. ' + TX('K') + ' is the foot of the perpendicular from ' + TX('T') + ' to ' + TX('(OP)') + '. Find ' + TX('TK') + ' (in cm).', r * pt / op,
+            TX(`PT=${pt}`) + '. Area of ' + TX('OTP') + ' = ' + TX(`\\frac{1}{2}\\times ${r}\\times ${pt}=\\frac{1}{2}\\times ${op}\\times TK`) + ', so ' + TX(`TK=\\frac{${r}\\times ${pt}}{${op}}=${numStr(r * pt / op)}`) + ' cm.', figTangentFromP(op, r, { r: String(r), PT: String(pt), OP: String(op), K: 1, TK: '?' }), { gen: 'tanTK', r: r, op: op, pt: pt });
+    });
+
+    // ============================================================================
+    // TOPIC 11 : TWO TANGENTS FROM A POINT
+    // ============================================================================
+    const T11 = 'Two tangents from a point';
+    MC(T11, 1, 'PA and PB are the tangents from a point ' + TX('P') + ' to a circle (A and B are the points of tangency). Then:', TX('PA=PB'), [TX('PA=2PB'), TX('PA \\ne PB'), TX('PA=OP')], 'Theorem: two tangents drawn from an outside point are equal.', () => figTwoTangents(2.5, 1.5, {}));
+    MC(T11, 2, 'PA and PB are the tangents from ' + TX('P') + ' to a circle of center ' + TX('O') + '. The line ' + TX('(PO)') + ':', 'bisects the angle ' + ANG('APB'), ['is parallel to (AB)', 'is tangent to the circle', 'is perpendicular to (PA)'], '(PO) bisects the angle APB.');
+    MC(T11, 2, 'PA and PB are the tangents from ' + TX('P') + ' to a circle of center ' + TX('O') + '. The line ' + TX('(OP)') + ' is the ... of the chord ' + TX('[AB]') + ':', 'perpendicular bisector', ['line parallel to it through O', 'tangent line at A', 'line perpendicular to (OA)'], '(OP) is the perpendicular bisector of [AB]: AH = HB and (AB) \u27C2 (OP).', () => figTwoTangents(2.5, 1.5, { chord: true }));
+    MC(T11, 2, 'PA and PB are the tangents from ' + TX('P') + ' to a circle of center ' + TX('O') + '. The quadrilateral ' + TX('OAPB') + ' is a:', 'kite', ['trapezoid', 'parallelogram that is not a kite', 'pentagon'], 'OA = OB and PA = PB: OAPB is a kite, symmetric about (OP).');
+    TF(T11, 1, 'The two tangents drawn from an outside point to a circle have the same length.', true, 'PA = PB.');
+    TF(T11, 2, 'In the figure of two tangents ' + TX('PA') + ' and ' + TX('PB') + ', the angles ' + ANG('AOB') + ' and ' + ANG('APB') + ' add up to 180' + DEG + '.', true, 'OAPB has two right angles (at A and B), and its angles add up to 360\u00B0, so AOB + APB = 180\u00B0.');
+    TF(T11, 2, 'In the figure of two tangents ' + TX('PA') + ' and ' + TX('PB') + ', the angles ' + ANG('OAP') + ' and ' + ANG('OBP') + ' are right angles.', true, 'A tangent is perpendicular to the radius at the point of tangency.');
+    GEN(T11, 2, 1.6, () => {                                              // AOB from APB
+        const th = ri(30, 120);
+        const op = 1 / Math.sin(th * Math.PI / 360);
+        return genNum(T11, 2, 'PA and PB are tangents to the circle (O) at A and B, and ' + ANG('APB') + ' = ' + th + DEG + '. Find ' + ANG('AOB') + ' (in degrees).', 180 - th,
+            'In OAPB: ' + ANG('OAP') + ' = ' + ANG('OBP') + ' = 90' + DEG + ', so ' + ANG('AOB') + ' = 360' + DEG + ' \u2212 90' + DEG + ' \u2212 90' + DEG + ' \u2212 ' + th + DEG + ' = ' + (180 - th) + DEG + '.', figTwoTangents(op, 1, { angP: th + DEG, angO: '?' }), { gen: 'ttAOB', th: th });
+    });
+    GEN(T11, 3, 1.5, () => {                                              // OPA or OAB
+        const th = 2 * ri(15, 60), op = 1 / Math.sin(th * Math.PI / 360), ask = pick(['OPA', 'OAB']);
+        return genNum(T11, 3, 'PA and PB are tangents to the circle (O) at A and B, and ' + ANG('APB') + ' = ' + th + DEG + '. Find ' + ANG(ask) + ' (in degrees).', th / 2,
+            ask === 'OPA' ? '(PO) bisects ' + ANG('APB') + ': ' + ANG('OPA') + ' = ' + th + DEG + ' / 2 = ' + th / 2 + DEG + '.' : ANG('AOB') + ' = 180' + DEG + ' \u2212 ' + th + DEG + ' = ' + (180 - th) + DEG + '; OAB is isosceles (OA = OB): ' + ANG('OAB') + ' = (180' + DEG + ' \u2212 ' + (180 - th) + DEG + ') / 2 = ' + th / 2 + DEG + '.', figTwoTangents(op, 1, { angP: th + DEG }), { gen: 'ttHalf', th: th, ask: ask });
+    });
+    GEN(T11, 2, 1.3, () => {                                              // algebraic equality of tangents
+        const x = ri(2, 9), k = ri(1, 6), pa = 2 * x + k, pb = pa;
+        return genNum(T11, 2, 'PA and PB are the two tangents from ' + TX('P') + ' to a circle. ' + TX(`PA=2x+${k}`) + ' and ' + TX(`PB=${pb}`) + ' (in cm). Find ' + TX('x') + '.', x,
+            'PA = PB, so ' + TX(`2x+${k}=${pb}`) + ', ' + TX(`2x=${pb - k}`) + ', ' + TX(`x=${x}`) + '.', figTwoTangents(2.4, 1.4, { PA: `2x+${k}`, PB: String(pb) }), { gen: 'ttAlg', x: x, k: k });
+    });
+    GEN(T11, 2, 1.4, () => {                                              // PA from OP and r
+        const t = pick(pyTriples(30)), sw = Math.random() < 0.5, r = sw ? t[0] : t[1], pa = sw ? t[1] : t[0], op = t[2];
+        return genNum(T11, 2, 'PA and PB are the tangents from ' + TX('P') + ' to a circle of center ' + TX('O') + ' and radius ' + r + ' cm, with ' + TX('OP') + ' = ' + op + ' cm. Find ' + TX('PA') + ' (in cm).', pa,
+            'OAP is right at A: ' + TX(`PA^2=${op}^2-${r}^2=${pa * pa}`) + ', so PA = ' + pa + ' cm.', figTwoTangents(op, r, { r: String(r), OP: String(op), PA: '?' }), { gen: 'ttPA', r: r, op: op });
+    });
+    GEN(T11, 3, 1.5, () => {                                              // chord of contact
+        const k = ri(1, 4), sw = Math.random() < 0.5, r = sw ? 3 * k : 4 * k, pa = sw ? 4 * k : 3 * k, op = 5 * k, ab = 2 * r * pa / op;
+        return genNum(T11, 3, 'PA and PB are the tangents from ' + TX('P') + ' to a circle of center ' + TX('O') + ' and radius ' + r + ' cm, with ' + TX('OP') + ' = ' + op + ' cm. ' + TX('H') + ' is the intersection of ' + TX('[AB]') + ' and ' + TX('[OP]') + '. Find ' + TX('AB') + ' (in cm).', ab,
+            TX(`PA=${pa}`) + '. (AH) \u27C2 (OP): area of OAP = ' + TX(`\\frac{1}{2}\\times ${op}\\times AH=\\frac{1}{2}\\times ${r}\\times ${pa}`) + ', so ' + TX(`AH=${numStr(r * pa / op)}`) + ' and ' + TX(`AB=2\\times AH=${numStr(ab)}`) + ' cm.', figTwoTangents(op, r, { chord: true, r: String(r), OP: String(op) }), { gen: 'ttAB', r: r, op: op, pa: pa });
+    });
+
+    // ============================================================================
+    // TOPIC 12 : INCIRCLE AND TANGENT LENGTHS
+    // ============================================================================
+    const T12 = 'Incircle';
+    MC(T12, 1, 'The incircle of a triangle is the circle that:', 'touches the three sides', ['passes through the three vertices', 'passes through the midpoints of the sides', 'touches only one side']);
+    TF(T12, 1, 'The two tangents drawn from a vertex of a triangle to its incircle have equal lengths.', true, 'Two tangents from a point are equal: AE = AF, BD = BF, CD = CE.', () => figIncircle(8, 9, 7, {}, { tangents: true }));
+    MC(T12, 2, 'The incircle of triangle ' + TX('ABC') + ' touches the sides at ' + TX('D') + ', ' + TX('E') + ', ' + TX('F') + ' and ' + TX('p') + ' is the semi-perimeter, ' + TX('a=BC') + '. The tangent length ' + TX('AE') + ' is:', TX('p-a'), [TX('p-b'), TX('p-c'), TX('p+a')], 'x = p \u2212 a, y = p \u2212 b, z = p \u2212 c.');
+    MC(T12, 2, 'In a right triangle ' + TX('ABC') + ' (right angle at ' + TX('A') + ', hypotenuse ' + TX('a') + ', legs ' + TX('b') + ' and ' + TX('c') + '), the radius of the incircle is:', TX(String.raw`r=\frac{b+c-a}{2}`), [TX(String.raw`r=\frac{b+c+a}{2}`), TX(String.raw`r=\frac{a}{2}`), TX(String.raw`r=b+c-a`)], 'AEIF is a square, so r = AE = p \u2212 a = (b + c \u2212 a) / 2.');
+    TF(T12, 2, 'In a right triangle ' + TX('ABC') + ' with the right angle at ' + TX('A') + ', the quadrilateral ' + TX('AEIF') + ' (I = incenter, E and F the points of tangency on [AC] and [AB]) is a square.', true, 'Three right angles (at A, E, F) and IE = IF = r: AEIF is a square, so AE = AF = r.');
+    NUM(T12, 3, TX('ABC') + ' is isosceles with ' + TX('AB=AC') + ' = 10 cm and ' + TX('BC') + ' = 12 cm. Find the radius of its incircle (in cm).', 3, 'p = 16, so AF = p \u2212 a = 4. The height from A is 8 and the incircle touches [BC] at its midpoint D. In the right triangle AIF: (8 \u2212 r)\u00B2 = r\u00B2 + 4\u00B2, hence r = 3.', () => figIncircle(12, 10, 10, { a: '12', b: '10', c: '10' }));
+    GEN(T12, 2, 1.7, () => {                                              // tangent length p - a
+        let a, b, c; do { a = ri(4, 14); b = ri(4, 14); c = ri(4, 14); } while (a + b <= c || a + c <= b || b + c <= a || (a + b + c) % 2 !== 0);
+        const p = (a + b + c) / 2, ask = pick(['AF', 'BD', 'CE']), ans = { AF: p - a, BD: p - b, CE: p - c }[ask], side = { AF: 'a', BD: 'b', CE: 'c' }[ask];
+        const lbl = { AF: ['A', 'a', 'BC'], BD: ['B', 'b', 'CA'], CE: ['C', 'c', 'AB'] }[ask];
+        return genNum(T12, 2, 'The incircle of triangle ' + TX('ABC') + ' touches ' + TX('[BC]') + ', ' + TX('[CA]') + ', ' + TX('[AB]') + ' at ' + TX('D') + ', ' + TX('E') + ', ' + TX('F') + '. ' + TX(`AB=${c}`) + ' cm, ' + TX(`BC=${a}`) + ' cm, ' + TX(`CA=${b}`) + ' cm. Find ' + TX(ask) + ' (in cm).', ans,
+            'p = ' + p + '. The tangent length from ' + lbl[0] + ' is p \u2212 ' + { AF: a, BD: b, CE: c }[ask] + ' = ' + ans + ' cm (' + ask + ' = ' + { AF: 'AE', BD: 'BF', CE: 'CD' }[ask] + ').', figIncircle(a, b, c, { a: String(a), b: String(b), c: String(c) }), { gen: 'incTan', a: a, b: b, c: c, ask: ask });
+    });
+    GEN(T12, 2, 1.4, () => {                                              // sides from tangent lengths
+        const x = ri(2, 9), y = ri(2, 9), z = ri(2, 9), ask = pick(['BC', 'CA', 'AB', 'perimeter']);
+        const known = { BC: [`AF=${x}`, `BD=${y}`, `CE=${z}`], CA: [`AF=${x}`, `BD=${y}`, `CE=${z}`], AB: [`AF=${x}`, `BD=${y}`, `CE=${z}`], perimeter: [`AF=${x}`, `BD=${y}`, `CE=${z}`] }[ask];
+        const ans = { BC: y + z, CA: z + x, AB: x + y, perimeter: 2 * (x + y + z) }[ask];
+        return genNum(T12, 2, 'The incircle of triangle ' + TX('ABC') + ' touches ' + TX('[BC]') + ', ' + TX('[CA]') + ', ' + TX('[AB]') + ' at ' + TX('D') + ', ' + TX('E') + ', ' + TX('F') + '. ' + known.map(TX).join(', ') + ' (in cm). Find ' + (ask === 'perimeter' ? 'the perimeter of the triangle' : TX(ask)) + ' (in cm).', ans,
+            'Equal tangents: AE = AF = ' + x + ', BD = BF = ' + y + ', CD = CE = ' + z + '. ' + (ask === 'perimeter' ? 'Perimeter = 2(x + y + z) = ' + ans : ask + ' = ' + { BC: 'BD + DC = ' + y + ' + ' + z, CA: 'CE + EA = ' + z + ' + ' + x, AB: 'AF + FB = ' + x + ' + ' + y }[ask] + ' = ' + ans) + ' cm.',
+            figIncircle(y + z, z + x, x + y, {}, { tangents: true, tl: { x: String(x), y: String(y), z: String(z) } }), { gen: 'incSides', x: x, y: y, z: z, ask: ask });
+    });
+    GEN(T12, 3, 1.5, () => {                                              // inradius of a right triangle
+        const t = pick(pyTriples(30)), legs = shuffleList([t[0], t[1]]), a = t[2], r = (legs[0] + legs[1] - a) / 2;
+        return genNum(T12, 3, TX('ABC') + ' is right-angled at ' + TX('A') + ', ' + TX('AB') + ' = ' + legs[0] + ' cm, ' + TX('AC') + ' = ' + legs[1] + ' cm and ' + TX('BC') + ' = ' + a + ' cm. Find the radius of the incircle (in cm).', r,
+            TX(String.raw`r=\frac{b+c-a}{2}=\frac{${legs[1]}+${legs[0]}-${a}}{2}=${r}`) + ' cm.', figIncircle(a, legs[1], legs[0], { a: String(a), b: String(legs[1]), c: String(legs[0]) }), { gen: 'incRight', legs: legs, a: a });
+    });
+
+    // ============================================================================
+    // TOPIC 13 : TWO CIRCLES
+    // ============================================================================
+    const T13 = 'Two circles';
+    MC(T13, 1, 'Two circles of radii ' + TX('R') + ' and ' + TX('r') + ' (' + TX(String.raw`R \ge r`) + ') are externally tangent. The distance ' + TX("OO'") + ' between their centers is:', TX("OO'=R+r"), [TX("OO'=R-r"), TX("OO'=Rr"), TX("OO'=R")], 'Externally tangent: d = R + r.', () => figTwoCircles(4, 2, 6, { R: 'R', r: 'r', d: 'd' }));
+    MC(T13, 1, 'Two circles of radii ' + TX('R') + ' and ' + TX('r') + ' (' + TX(String.raw`R \gt r`) + ') are internally tangent. The distance ' + TX("OO'") + ' between their centers is:', TX("OO'=R-r"), [TX("OO'=R+r"), TX("OO'=R"), TX("OO'=0")], 'Internally tangent: d = R \u2212 r.');
+    MC(T13, 2, 'Two circles with ' + TX(String.raw`R-r \lt d \lt R+r`) + ' (' + TX("d=OO'") + ') are:', 'secant (two common points)', ['externally tangent', 'internally tangent', 'one inside the other'], 'R \u2212 r < d < R + r: 2 common points.');
+    MC(T13, 2, 'Two circles with ' + TX(String.raw`d \lt R-r`) + ' (' + TX("d=OO'") + ') are:', 'one inside the other, with no common point', ['externally tangent', 'secant', 'outside each other'], 'd < R \u2212 r: one circle lies inside the other, no common point.');
+    MC(T13, 2, 'Two circles with ' + TX(String.raw`d \gt R+r`) + ' (' + TX("d=OO'") + ') are:', 'outside each other, with no common point', ['externally tangent', 'secant', 'internally tangent'], 'd > R + r: no common point.');
+    TF(T13, 1, 'The point of tangency of two tangent circles lies on the line of centers.', true, 'T lies on the line of centers (OO\u2032).');
+    TF(T13, 2, 'Two tangent circles have, at their point of tangency, the same tangent line, perpendicular to the line of centers.', true, 'Both circles share the same tangent at T, perpendicular to (OO\u2032).');
+    GEN(T13, 2, 1.8, () => {                                              // position of two circles (like the example of the course)
+        const kind = pick(['outside', 'ext', 'secant', 'int', 'inside']);
+        let R, r, d;
+        do { R = ri(3, 9); r = ri(2, 8); } while (R <= r + (kind === 'inside' ? 1 : 0) || R + r > 15);
+        if (kind === 'outside') d = R + r + ri(1, 4); else if (kind === 'ext') d = R + r; else if (kind === 'secant') d = ri(R - r + 1, R + r - 1); else if (kind === 'int') d = R - r; else d = ri(1, Math.max(R - r - 1, 1));
+        const names = { outside: 'outside each other (no common point)', ext: 'externally tangent', secant: 'intersecting at two points', int: 'internally tangent', inside: 'one inside the other (no common point)' };
+        const wr = Object.keys(names).filter(k => k !== kind).map(k => names[k]).concat(['concentric']);
+        const why = { outside: 'd = ' + d + ' > R + r = ' + (R + r) + ': outside each other.', ext: 'd = ' + d + ' = R + r = ' + (R + r) + ': externally tangent.', secant: 'R \u2212 r = ' + (R - r) + ' < d = ' + d + ' < R + r = ' + (R + r) + ': secant (two points).', int: 'd = ' + d + ' = R \u2212 r = ' + (R - r) + ': internally tangent.', inside: 'd = ' + d + ' < R \u2212 r = ' + (R - r) + ': one circle inside the other.' }[kind];
+        const T = kind === 'ext' ? [R, 0] : kind === 'int' ? [R, 0] : null;
+        return genMC(T13, 2, 'The circles ' + TX(`(O\\,;\\,${R})`) + ' and ' + TX(`(O'\\,;\\,${r})`) + ' are such that ' + TX("OO'") + ' = ' + d + '. These two circles are:', names[kind], wr, why, figTwoCircles(R, r, d, { R: String(R), r: String(r), d: String(d), T: T }), { gen: 'twoPos', R: R, r: r, d: d, kind: kind });
+    });
+    GEN(T13, 2, 1.3, () => {                                              // distance between centers when tangent
+        const R = ri(4, 12), r = ri(2, R - 1), ext = Math.random() < 0.5, d = ext ? R + r : R - r;
+        return genNum(T13, 2, 'Two circles of radii ' + R + ' cm and ' + r + ' cm are ' + (ext ? 'externally' : 'internally') + ' tangent. Find the distance between their centers (in cm).', d,
+            ext ? 'Externally tangent: OO\u2032 = R + r = ' + d + ' cm.' : 'Internally tangent: OO\u2032 = R \u2212 r = ' + d + ' cm.', figTwoCircles(R, r, d, { R: String(R), r: String(r), T: [R, 0] }), { gen: 'twoTan', R: R, r: r, ext: ext });
+    });
+    GEN(T13, 2, 1.2, () => {                                              // missing radius
+        const R = ri(4, 12), r = ri(2, R - 1), ext = Math.random() < 0.5, d = ext ? R + r : R - r;
+        return genNum(T13, 2, 'The circles ' + TX(`(O\\,;\\,${R}\\text{ cm})`) + ' and ' + TX(`(O'\\,;\\,r)`) + ' are ' + (ext ? 'externally' : 'internally') + ' tangent and ' + TX("OO'") + ' = ' + d + ' cm. Find ' + TX('r') + ' (in cm).', r,
+            ext ? TX(`OO'=R+r \\Rightarrow r=${d}-${R}=${r}`) + ' cm.' : TX(`OO'=R-r \\Rightarrow r=${R}-${d}=${r}`) + ' cm.', figTwoCircles(R, r, d, { R: String(R), r: '?', d: String(d), T: [R, 0] }), { gen: 'twoRad', R: R, r: r, ext: ext });
+    });
+    GEN(T13, 3, 1.7, () => {                                              // common external tangent
+        const t = pick(pyTriples(40).filter(x => x[2] <= 40)), sw = Math.random() < 0.5, diff = sw ? t[0] : t[1], ab = sw ? t[1] : t[0], d = t[2];
+        const r = ri(2, 6), R = r + diff;
+        return genNum(T13, 3, 'The circles ' + TX(`(O\\,;\\,${R})`) + ' and ' + TX(`(O'\\,;\\,${r})`) + ' satisfy ' + TX("OO'") + ' = ' + d + ' cm. ' + TX('[AB]') + ' is a common external tangent (A on the big circle, B on the small one). Find ' + TX('AB') + ' (in cm).', ab,
+            TX(String.raw`AB=\sqrt{d^2-(R-r)^2}=\sqrt{${d}^2-${diff}^2}=${ab}`) + ' cm.', figCommonTangent(R, r, d, { R: String(R), r: String(r), d: String(d), AB: '?' }), { gen: 'commonTan', R: R, r: r, d: d });
+    });
+    GEN(T13, 3, 1.3, () => {                                              // externally tangent circles : common tangent
+        let R, r; do { R = ri(2, 12); r = ri(2, 12); } while (R <= r || R * r > 80 || (R * r) % 1 !== 0);
+        const prod = R * r, ab2 = 4 * prod, key = TX(sqrtTex(ab2)), s = simpSqrt(prod);
+        const wr = [TX(sqrtTex(prod)), TX(String(R + r)), TX(String(R - r)), TX(sqrtTex(R * R + r * r)), TX(sqrtTex(ab2 + 4))];
+        return genMC(T13, 3, 'Two circles of radii ' + R + ' cm and ' + r + ' cm are externally tangent. The length of a common external tangent [AB] is:', key + ' cm', wr.map(w => w + ' cm'),
+            TX(`d=R+r=${R + r}`) + ' and ' + TX(String.raw`AB=\sqrt{d^2-(R-r)^2}=\sqrt{${(R + r) ** 2}-${(R - r) ** 2}}=\sqrt{${ab2}}=${sqrtTex(ab2)}`) + ' cm.', figCommonTangent(R, r, R + r, { R: String(R), r: String(r), d: String(R + r), AB: '?' }), { gen: 'commonTanExt', R: R, r: r });
+    });
+
+    // ============================================================================
+    // TOPIC 14 : QUADRILATERALS (only the properties used in the course)
+    // ============================================================================
+    const T14 = 'Quadrilaterals';
+    TF(T14, 1, 'The diagonals of a rectangle are equal.', true, 'The diagonals of a rectangle are equal and bisect each other.');
+    TF(T14, 1, 'The diagonals of a rectangle bisect each other.', true, 'The diagonals of a rectangle are equal and bisect each other.');
+    TF(T14, 1, 'The diagonals of a rectangle are perpendicular.', false, 'The diagonals of a rectangle are equal and bisect each other, but they are not perpendicular in general.');
+    TF(T14, 1, 'The diagonals of a parallelogram bisect each other.', true, 'If the diagonals bisect each other, the quadrilateral is a parallelogram (and conversely).');
+    TF(T14, 2, 'In a parallelogram, two opposite sides are parallel and equal.', true, 'For example in the parallelogram MBCD: MD // BC and MD = BC.');
+    TF(T14, 2, 'The quadrilateral ' + TX('OAPB') + ' formed by the center, the two points of tangency and the outside point is symmetric about the line ' + TX('(OP)') + '.', true, 'OAPB is a kite, symmetric about (OP).');
+    MC(T14, 2, 'In a rectangle ' + TX('ABDC') + ', the diagonals meet at ' + TX('M') + '. Which equality is true?', TX('MA=MB=MC=MD'), [TX('MA=2MB'), TX('MA=MB \\text{ but } MC \\ne MD'), TX('AB=MA')], 'The diagonals are equal and bisect each other, so M is equidistant from the four vertices.');
+    MC(T14, 2, 'In a right triangle ' + TX('ABC') + ' (right angle at ' + TX('A') + '), the incircle touches ' + TX('[AB]') + ' at ' + TX('F') + ' and ' + TX('[AC]') + ' at ' + TX('E') + '. The quadrilateral ' + TX('AEIF') + ' is a:', 'square', ['rhombus that is not a square', 'trapezoid', 'kite that is not a rectangle'], 'It has three right angles and IE = IF = r.');
+
+    // ============================================================================
+    // RANDOM DRAW  (20 questions from the bank, balanced across topics)
+    // ============================================================================
+    const CAT_LABELS = {};
+    const TOPIC_CAP = { 'Quadrilaterals': 1 };
+    let sessionSeen = new Set();
+    function weightedPick(items) {
+        const tot = items.reduce((s, i) => s + i.w, 0); let r = Math.random() * tot;
+        for (const it of items) { r -= it.w; if (r <= 0) return it; }
+        return items[items.length - 1];
+    }
+    function bankStats() {
+        const byKind = { tf: 0, mc: 0, num: 0, gen: 0 }; BANK.forEach(b => byKind[b.kind]++);
+        const topics = {}; BANK.forEach(b => { topics[b.topic] = (topics[b.topic] || 0) + 1; });
+        return { items: BANK.length, byKind: byKind, topics: topics };
+    }
+    function tryBuild(item) { try { const p = item.build(); p._itemId = item.id; p._topic = item.topic; p._level = item.level; p._kind = item.kind; return p; } catch (e) { return null; } }
+    function pickQuizItems() {
+        const byTopic = {}; BANK.forEach(it => { (byTopic[it.topic] = byTopic[it.topic] || []).push(it); });
+        const topics = Object.keys(byTopic);
+        let best = null;
+        for (let attempt = 0; attempt < 400; attempt++) {
+            const slots = topics.slice();                                                     // every topic once ...
+            const extra = shuffleList(topics.filter(t => (TOPIC_CAP[t] || 2) > 1));            // ... then distinct extra topics up to 20
+            while (slots.length < APP_LIMITS.totalItems && extra.length) slots.push(extra.pop());
+            const chosen = [], used = new Set();
+            let ok = true;
+            shuffleList(slots).forEach(t => {
+                let pool = byTopic[t].filter(it => !used.has(it.id));
+                const fresh = pool.filter(it => !sessionSeen.has(it.id)); if (fresh.length) pool = fresh;
+                if (!pool.length) { ok = false; return; }
+                const it = weightedPick(pool); used.add(it.id); chosen.push(it);
+            });
+            if (!ok || chosen.length !== APP_LIMITS.totalItems) continue;
+            const tf = chosen.filter(c => c.kind === 'tf').length, l1 = chosen.filter(c => c.level === 1).length, l3 = chosen.filter(c => c.level === 3).length;
+            const score = Math.abs(tf - 4) + Math.abs(l1 - 7) + Math.abs(l3 - 4);
+            if (!best || score < best.score) best = { chosen: chosen, score: score };
+            if (tf <= 6 && l1 >= 5 && l3 >= 3) return chosen;
+        }
+        return best.chosen;
+    }
+    function generateEntireQuizSuite() {
+        const items = pickQuizItems(), problems = [];
+        items.forEach(it => {
+            let p = tryBuild(it), guard = 0;
+            while (!p && guard++ < 5) p = tryBuild(it);
+            if (p) { problems.push(p); if (it.kind !== 'gen') sessionSeen.add(it.id); }
+        });
+        while (problems.length < APP_LIMITS.totalItems) {                                      // safety net (never expected)
+            const it = pick(BANK.filter(b => b.kind === 'gen')), p = tryBuild(it); if (p) problems.push(p);
+        }
+        // easy -> hard, shuffled inside each level, never two questions of the same topic in a row when avoidable
+        let ordered = [];
+        [1, 2, 3].forEach(lv => { ordered = ordered.concat(shuffleList(problems.filter(p => p._level === lv))); });
+        for (let pass = 0; pass < 4; pass++) {
+            for (let i = 1; i < ordered.length; i++) {
+                if (ordered[i]._topic === ordered[i - 1]._topic) {
+                    for (let j = i + 1; j < ordered.length; j++) {
+                        if (ordered[j]._topic !== ordered[i - 1]._topic && (j + 1 >= ordered.length || ordered[j]._topic !== ordered[j + 1]._topic || true) && ordered[j]._level === ordered[i]._level) { const tmp = ordered[i]; ordered[i] = ordered[j]; ordered[j] = tmp; break; }
+                    }
+                }
+            }
+        }
+        generatedSuite = ordered.slice(0, APP_LIMITS.totalItems);
+    }
+
+
+    // ========================================== -->
+    // PART 4A: INTERFACE DISPLAY SYNC ENGINE     -->
+    // ========================================== -->
+
+    function renderMath(el) {
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(el, {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: '\\(', right: '\\)', display: false }
+                ],
+                throwOnError: false
+            });
+        }
+    }
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+
+        let equationBlock = activeProblem.equation ? `
+        <div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; line-height: 1.4;">
+            $$${activeProblem.equation}$$
+        </div>
+        ` : "";
+
+        let problemMarkup = `
+        <div style="font-size:1.15rem; line-height:1.6; text-align:center; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; width:100%; padding: 0 10px;">
+            <p style="margin-bottom: 4px; color: var(--text-main); font-weight: 500;">
+                ${activeProblem.prompt}
+            </p>
+            ${activeProblem.figureHtml ? '<div class="fig-wrap">' + activeProblem.figureHtml + '</div>' : ''}
+            ${equationBlock}
+        </div>
+        `;
+
+        document.getElementById('math-prompt-container').innerHTML = problemMarkup;
+
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+        document.getElementById('box-text').classList.add('hidden');
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+            activeProblem.pool.forEach(choice => {
+                const buttonElement = document.createElement('button');
+                buttonElement.className = `opt-btn ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+                buttonElement.setAttribute("style", "display: flex; justify-content: center; align-items: center; text-align: center; width: 100%; padding: 10px 12px; min-height: auto; height: auto; line-height: 1.2; margin: 0;");
+                buttonElement.innerHTML = choice;
+                buttonElement.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    buttonElement.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(buttonElement);
+            });
+            renderMath(mcqContainer);
+        }
+        else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        } else if (activeProblem.type === 'TEXT') {
+            document.getElementById('box-text').classList.remove('hidden');
+            const targetInput = document.getElementById('manual-text-input');
+            targetInput.value = storedResponses[traversalIndex] || "";
+            targetInput.placeholder = "Type a number (e.g., 12 or 4.8)";
+            targetInput.oninput = (e) => recordInput(e.target.value);
+        }
+
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+
+        renderMath(document.getElementById('math-prompt-container'));
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; }
+
+    // ========================================== -->
+    // PART 4B: METRIC TIMERS & EVALUATION ENGINES -->
+    // ========================================== -->
+
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            let m = Math.floor(timeTrackingRemaining / 60);
+            let s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            let dynamicPercentage = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${dynamicPercentage}%`;
+
+            if (dynamicPercentage < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (dynamicPercentage < 50) progress.style.backgroundColor = '#d97706';
+            else progress.style.backgroundColor = '';
+        }
+        pulse();
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    function isCorrect(problem, raw) {
+        if (raw === undefined || raw === null || String(raw).trim() === '') return false;
+        if (problem.type === 'TEXT') {
+            const norm = s => String(s).trim().replace(/\s+/g, '').replace(/^\+/, '').replace(/,/g, '.').replace(/−/g, '-');
+            const a = norm(raw), b = norm(problem.solution);
+            return a === b || (a !== '' && !isNaN(Number(a)) && Number(a) === Number(b));
+        }
+        return String(raw) === String(problem.solution);
+    }
+
+    // Core Metrics Verification & Score Reporter
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limits reached. Compiling final diagnostic report sheet now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+        const renderAnswer = (problem, rawStr) => {
+            if (rawStr === undefined || rawStr === null || String(rawStr).trim() === '') return '<span style="color:var(--error); font-weight:500;">Unanswered</span>';
+            if (problem.type === 'MCQ') {
+                return String(rawStr);
+            }
+            return escapeHtml(rawStr);
+        };
+
+        generatedSuite.forEach((problem, index) => {
+            const outcomeState = isCorrect(problem, storedResponses[index]);
+            if (outcomeState) tallyCorrect++;
+
+            let itemScoreBadge = outcomeState ?
+                `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>` :
+                `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+
+            const userAnsView = renderAnswer(problem, storedResponses[index]);
+            const correctAnsView = renderAnswer(problem, problem.solution);
+            const label = CAT_LABELS[problem.categoryType] || problem.categoryType;
+
+            compilationHtml += `
+                <div class="report-item ${outcomeState ? 'pass' : 'fail'}" style="position: relative; overflow: auto;">
+                    ${itemScoreBadge}
+                    <strong>Question ${index + 1} &middot; ${escapeHtml(label)}</strong>
+                    ${problem.equation ? `<div style="margin: 12px 0; font-size:1.05rem; text-align: center;">$$${problem.equation}$$</div>` : ''}
+                    <p style="font-size:0.9rem; margin: 8px 0 4px; color:var(--text-muted);">Prompt: <em>${problem.prompt}</em></p>
+                    ${problem.figureHtml ? '<div class="fig-wrap">' + problem.figureHtml + '</div>' : ''}
+                    <p style="display: flex; align-items: center; flex-wrap: wrap; margin: 4px 0; gap: 6px;"><strong>Your Answer:</strong> <span>${userAnsView}</span></p>
+                    <p style="display: flex; align-items: center; flex-wrap: wrap; margin: 4px 0; gap: 6px;"><strong>Correct Reference Answer:</strong> <span>${correctAnsView}</span></p>
+                    ${problem.explain ? `<div class="explanation-pane"><strong>Explanation</strong>${problem.explain}</div>` : ''}
+                </div>
+            `;
+        });
+
+        document.getElementById('lbl-score-obtained').innerText = tallyCorrect;
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = escapeHtml(document.getElementById('student-name').value.trim());
+        const sectionTitle = escapeHtml(document.getElementById('student-section').value.trim());
+
+        let structuralHeaderHtml = `
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 20px; line-height: 1.5; font-size: 0.95rem; color: var(--text-main);">
+                <div style="text-align: center; font-size: 1.15rem; font-weight: 800; color: var(--text-main); border-bottom: 2px solid var(--primary); padding-bottom: 8px; margin-bottom: 10px;"><span style="font-size:0.75rem; font-weight:700; letter-spacing:0.08em; color: var(--text-muted); text-transform: uppercase; display:block; margin-bottom:2px;">Quiz Title</span>${QUIZ_TITLE}</div>
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px; margin-bottom: 8px;">
+                    <div><strong>Student Full Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+                    <div><strong>Assigned Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+                </div>
+                <div><strong>Examination Start Time:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+            </div>
+        `;
+
+        const zone = document.getElementById('report-injection-zone');
+        zone.innerHTML = structuralHeaderHtml + compilationHtml;
+        renderMath(zone);
+    }
+
+    // Action Form Click Handlers
+    let formattedQuizStartTimeStamp = "";
+    let quizStartDateObj = null;
+
+    document.getElementById('action-start').onclick = () => {
+        const user = document.getElementById('student-name').value.trim();
+        const sect = document.getElementById('student-section').value.trim();
+        if (!user || !sect) {
+            alert("Please provide credential values to unlock the examination matrix.");
+            return;
+        }
+
+        const rightNow = new Date();
+        quizStartDateObj = rightNow;
+        formattedQuizStartTimeStamp = rightNow.toLocaleDateString() + " @ " + rightNow.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        storedResponses = {};
+        traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Are you confident you want to finalize and process this quiz?")) {
+                compileFinalPerformanceReport();
+            }
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) {
+            traversalIndex--;
+            synchroniseQuestionIndex();
+        }
+    };
+
+    document.getElementById('action-pdf').onclick = () => { triggerDirectPdfDownload(); };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {};
+        traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+    // Opens the browser's print dialog. Choose "Save as PDF" as the printer.
+    // The page title becomes "<student name> - <quiz title> - <date>", which browsers use as the suggested file name.
+    function triggerDirectPdfDownload() {
+        const clean = s => String(s).replace(/[\\\/:*?"<>|]+/g, '-').replace(/\s+/g, ' ').trim();
+        const d = quizStartDateObj || new Date();
+        const p2 = n => String(n).padStart(2, '0');
+        const dateText = d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()) + ' ' + p2(d.getHours()) + '-' + p2(d.getMinutes());
+        const studentName = document.getElementById('student-name').value.trim() || 'Student';
+
+        const originalTitle = document.title;
+        document.title = clean(studentName + ' - ' + QUIZ_TITLE + ' - ' + dateText);
+
+        const restore = () => { document.title = originalTitle; window.removeEventListener('afterprint', restore); };
+        window.addEventListener('afterprint', restore);
+        window.print();
+        setTimeout(restore, 60000);   // safety net for browsers that never fire afterprint
+    }
+
+</script>
+</body>
+</html>
