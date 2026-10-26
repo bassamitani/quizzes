@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 10 Vectors Diagnostic Quiz</title>
+    <!-- Tailwind CSS Framework CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX Mathematical Typography Engine -->                  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="initKaTeX();">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7; --primary-hover: #0369a1; --bg-main: #f8fafc;
+            --bg-surface: #ffffff; --border-color: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #16a34a; --error: #dc2626;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, -apple-system, sans-serif; }
+        .hidden { display: none !important; }
+        .opt-btn {
+            background-color: var(--bg-surface); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 1.05rem;
+        }
+        .opt-btn:hover { border-color: var(--primary); background-color: #f0f9ff; }
+        .opt-btn.active { border-color: var(--primary); background-color: #e0f2fe; font-weight: 600; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+        .report-item { background: var(--bg-surface); border-radius: 10px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #cbd5e1; }
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+        .katex { font-size: 1.15em; }
+        
+        @media print {
+            html, body {
+                display: block !important;
+                height: auto !important;
+                overflow: visible !important;
+                background: white !important;
+            }
+            #stage-summary {
+                display: block !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            footer, #stage-auth, #stage-engine, button, .bg-gradient-to-r button {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Credentials Authentication Entry Stage -->
+    <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
+        <h1 class="text-3xl font-extrabold text-slate-800 text-center tracking-tight mb-2">Grade 10 Vectors Quiz</h1>
+        <p class="text-sm text-slate-500 text-center mb-8">Vector Addition, Scalar Multiplication, Geometric Figures & Norms</p>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Student Full Name</label>
+                <input type="text" id="student-name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Assigned Class Section</label>
+                <input type="text" id="student-section" placeholder="Grade 10-A" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <button id="action-start" class="w-full bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm tracking-wider uppercase mt-4">Start Assessment Matrix</button>
+        </div>
+    </div>
+
+    <!-- Active Test Core Engine -->
+    <div id="stage-engine" class="hidden max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+        <div class="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between min-h-[550px]">
+
+            <!-- HEADER INFO BAR -->
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-5 flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Question Tracker &middot; <span id="idx-current">0</span> / <span id="idx-total">20</span></span>
+                    <span id="txt-tier-badge" class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase bg-slate-100 text-slate-600">Tier</span>
+                </div>
+
+                <!-- TIMER COMPONENT -->
+                <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
+                    <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">30:00</span>
+                    <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                        <div id="meter-progress" class="bg-sky-400 h-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Content Presentation Window -->
+            <div class="flex-grow flex flex-col justify-center">
+                <div id="math-prompt-container" class="mb-4"></div>
+
+                <div id="interactive-zone" class="w-full flex flex-col items-center justify-center mb-6">
+                    <div id="figure-diagram-canvas" class="mb-5 w-full flex justify-center"></div>
+                    <div id="box-mcq" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"></div>
+                    <div id="box-tf" class="hidden flex gap-4 w-full justify-center">
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="TRUE">TRUE</button>
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="FALSE">FALSE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Navigation Row -->
+            <div class="border-t border-slate-100 pt-4 mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden md:block">Overview:</span>
+                    <div id="navigation-shortcut-grid" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <div class="flex gap-3 justify-end w-full sm:w-auto">
+                    <button id="action-back" class="px-5 py-2 border border-slate-300 rounded-xl font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 text-sm transition cursor-pointer">&larr; Back</button>
+                    <button id="action-forward" class="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 text-sm shadow transition cursor-pointer">Next &rarr;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Final Diagnostic Summary Sheet Layout -->
+    <div id="stage-summary" class="hidden max-w-3xl mx-auto w-full px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 p-6 text-white flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">Performance Summary Report</h1>
+                    <p class="text-sky-100 text-xs mt-1">Grade 10 Vectors Curriculum Assessment</p>
+                </div>
+                <button onclick="window.print()" class="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition cursor-pointer shadow-sm border border-white/10 text-white">Save as PDF</button>
+            </div>
+
+            <div class="grid grid-cols-3 text-center border-b border-slate-100 bg-slate-50 py-4">
+                <div>
+                    <div id="m-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div id="m-incorrect" class="text-2xl font-extrabold text-rose-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Incorrect</div>
+                </div>
+                <div>
+                    <div id="m-percent" class="text-2xl font-extrabold text-sky-600">0%</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score Rate</div>
+                </div>
+            </div>
+
+            <div id="report-injection-zone" class="p-6 space-y-4 bg-slate-50/50"></div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
+            <button id="action-pdf-bottom" onclick="window.print()" class="flex-grow bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
+            <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
+        </div>
+    </div>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
+        &copy; 2026 Grade 10 Vectors Assessment Suite &bull; Academic Diagnostic Engine
+    </footer>
+
+<script>
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 1800, // 30 Minutes
+        tiers: { easy: 6, medium: 8, hard: 6 }
+    };
+
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+    let formattedQuizStartTimeStamp = "";
+
+    function initKaTeX() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });
+    }
+
+    function triggerMathRender(elementId) {
+        if (window.renderMathInElement) {
+            const el = elementId ? document.getElementById(elementId) : document.body;
+            if (el) {
+                renderMathInElement(el, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+    }
+
+    function shuffleArray(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function buildShuffledChoices(correct, fakes) {
+        const options = [correct];
+        shuffleArray(fakes).forEach(f => {
+            if (options.length < 4 && f !== undefined && f !== null && !options.includes(f)) options.push(f);
+        });
+        return shuffleArray(options);
+    }
+
+    function renderFigureSVG(figType, dimensions) {
+        if (!figType) return "";
+        const w = 360, h = 220;
+        let svg = `<svg viewBox="0 0 ${w} ${h}" class="w-full max-w-[360px] bg-white border border-slate-200 rounded-xl shadow-sm p-2">`;
+        
+        if (figType === 'PARALLELOGRAM' || figType === 'PARM_CENTER') {
+            const A = [50, 160], B = [200, 160], C = [290, 60], D = [140, 60], O = [170, 110];
+            svg += `<polygon points="${A.join(',')} ${B.join(',')} ${C.join(',')} ${D.join(',')}" fill="none" stroke="#0284c7" stroke-width="3"/>`;
+            if (figType === 'PARM_CENTER') {
+                svg += `<line x1="${A[0]}" y1="${A[1]}" x2="${C[0]}" y2="${C[1]}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4"/>`;
+                svg += `<line x1="${B[0]}" y1="${B[1]}" x2="${D[0]}" y2="${D[1]}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4"/>`;
+                svg += `<circle cx="${O[0]}" cy="${O[1]}" r="4" fill="#0f172a"/>`;
+                svg += `<text x="${O[0]+6}" y="${O[1]-6}" font-size="14" font-weight="bold" fill="#0f172a">O</text>`;
+            }
+            svg += `<text x="${A[0]-15}" y="${A[1]+15}" font-size="16" font-weight="bold" fill="#0f172a">A</text>`;
+            svg += `<text x="${B[0]+10}" y="${B[1]+15}" font-size="16" font-weight="bold" fill="#0f172a">B</text>`;
+            svg += `<text x="${C[0]+10}" y="${C[1]-5}" font-size="16" font-weight="bold" fill="#0f172a">C</text>`;
+            svg += `<text x="${D[0]-15}" y="${D[1]-5}" font-size="16" font-weight="bold" fill="#0f172a">D</text>`;
+        } 
+        else if (figType === 'RECTANGLE' || figType === 'RECT_CENTER' || figType === 'SQUARE') {
+            const isSq = (figType === 'SQUARE');
+            const A = [60, 170], B = [isSq ? 180 : 280, 170], C = [isSq ? 180 : 280, 60], D = [60, 60], O = [isSq ? 120 : 170, 115];
+            svg += `<rect x="${D[0]}" y="${D[1]}" width="${B[0]-A[0]}" height="${A[1]-D[1]}" fill="none" stroke="#0284c7" stroke-width="3"/>`;
+            
+            if (figType === 'RECT_CENTER') {
+                svg += `<line x1="${A[0]}" y1="${A[1]}" x2="${C[0]}" y2="${C[1]}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4"/>`;
+                svg += `<line x1="${B[0]}" y1="${B[1]}" x2="${D[0]}" y2="${D[1]}" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4"/>`;
+                svg += `<circle cx="${O[0]}" cy="${O[1]}" r="4" fill="#0f172a"/>`;
+                svg += `<text x="${O[0]+6}" y="${O[1]-6}" font-size="14" font-weight="bold" fill="#0f172a">O</text>`;
+            }
+            if (dimensions) {
+                svg += `<text x="${(A[0]+B[0])/2}" y="${A[1]+20}" font-size="13" font-weight="bold" fill="#475569" text-anchor="middle">${dimensions.base}</text>`;
+                svg += `<text x="${A[0]-25}" y="${(A[1]+D[1])/2}" font-size="13" font-weight="bold" fill="#475569" text-anchor="middle">${dimensions.height}</text>`;
+            }
+            svg += `<text x="${A[0]-15}" y="${A[1]+15}" font-size="16" font-weight="bold" fill="#0f172a">A</text>`;
+            svg += `<text x="${B[0]+10}" y="${B[1]+15}" font-size="16" font-weight="bold" fill="#0f172a">B</text>`;
+            svg += `<text x="${C[0]+10}" y="${C[1]-5}" font-size="16" font-weight="bold" fill="#0f172a">C</text>`;
+            svg += `<text x="${D[0]-15}" y="${D[1]-5}" font-size="16" font-weight="bold" fill="#0f172a">D</text>`;
+        }
+        else if (figType === 'TRIANGLE_MID') {
+            const A = [180, 40], B = [60, 170], C = [300, 170];
+            const I = [(A[0]+B[0])/2, (A[1]+B[1])/2], J = [(A[0]+C[0])/2, (A[1]+C[1])/2], K = [(B[0]+C[0])/2, (B[1]+C[1])/2];
+            svg += `<polygon points="${A.join(',')} ${B.join(',')} ${C.join(',')}" fill="none" stroke="#0284c7" stroke-width="3"/>`;
+            svg += `<line x1="${I[0]}" y1="${I[1]}" x2="${J[0]}" y2="${J[1]}" stroke="#16a34a" stroke-width="2" stroke-dasharray="3"/>`;
+            svg += `<text x="${A[0]}" y="${A[1]-10}" font-size="15" font-weight="bold" fill="#0f172a" text-anchor="middle">A</text>`;
+            svg += `<text x="${B[0]-12}" y="${B[1]+15}" font-size="15" font-weight="bold" fill="#0f172a">B</text>`;
+            svg += `<text x="${C[0]+5}" y="${C[1]+15}" font-size="15" font-weight="bold" fill="#0f172a">C</text>`;
+            svg += `<text x="${I[0]-15}" y="${I[1]}" font-size="13" font-weight="bold" fill="#16a34a">I</text>`;
+            svg += `<text x="${J[0]+10}" y="${J[1]}" font-size="13" font-weight="bold" fill="#16a34a">J</text>`;
+            svg += `<text x="${K[0]}" y="${K[1]+18}" font-size="13" font-weight="bold" fill="#16a34a" text-anchor="middle">K</text>`;
+        }
+
+        svg += `</svg>`;
+        return svg;
+    }
+
+    function constructVectorProblem(tier) {
+        const templates = [
+            // --- Easy Tier ---
+            {
+                tier: 'easy',
+                type: 'MCQ',
+                cat: 'Chasles Relation',
+                prompt: 'Simplify the vector sum using Chasles\' Relation:',
+                eq: '\\overrightarrow{AB} + \\overrightarrow{BC}',
+                sol: '\\overrightarrow{AC}',
+                fakes: ['\\overrightarrow{CA}', '\\overrightarrow{BA}', '\\vec{0}', '\\overrightarrow{CB}']
+            },
+            {
+                tier: 'easy',
+                type: 'MCQ',
+                cat: 'Chasles Relation',
+                prompt: 'Simplify the vector expression:',
+                eq: '\\overrightarrow{MA} + \\overrightarrow{AB} + \\overrightarrow{BM}',
+                sol: '\\vec{0}',
+                fakes: ['\\overrightarrow{MM}', '\\overrightarrow{MA}', '\\overrightarrow{AB}', '2\\overrightarrow{MA}']
+            },
+            {
+                tier: 'easy',
+                type: 'MCQ',
+                cat: 'Parallelogram Vector Addition',
+                fig: 'PARALLELOGRAM',
+                prompt: 'In parallelogram $ABCD$, express the sum of vectors as a single vector:',
+                eq: '\\overrightarrow{AB} + \\overrightarrow{AD}',
+                sol: '\\overrightarrow{AC}',
+                fakes: ['\\overrightarrow{BD}', '\\overrightarrow{DB}', '\\overrightarrow{CA}', '\\overrightarrow{BC}']
+            },
+            {
+                tier: 'easy',
+                type: 'MCQ',
+                cat: 'Vector Subtraction',
+                fig: 'PARALLELOGRAM',
+                prompt: 'In parallelogram $ABCD$, simplify the vector subtraction:',
+                eq: '\\overrightarrow{AB} - \\overrightarrow{AD}',
+                sol: '\\overrightarrow{DB}',
+                fakes: ['\\overrightarrow{BD}', '\\overrightarrow{AC}', '\\overrightarrow{CA}', '\\vec{0}']
+            },
+            {
+                tier: 'easy',
+                type: 'TF',
+                cat: 'Opposite Vectors',
+                prompt: 'Evaluate the truth value of the vector equality for any two distinct points $A$ and $B$:',
+                eq: '\\overrightarrow{AB} = -\\overrightarrow{BA}',
+                sol: 'TRUE'
+            },
+            {
+                tier: 'easy',
+                type: 'MCQ',
+                cat: 'Scalar Multiplication',
+                prompt: 'If vector $\\vec{u}$ has magnitude $\\|\\vec{u}\\| = 4$, find the norm (magnitude) of $-3\\vec{u}$:',
+                eq: '||-3\\vec{u}||',
+                sol: '12',
+                fakes: ['-12', '7', '1', '4']
+            },
+            {
+                tier: 'easy',
+                type: 'MCQ',
+                cat: 'Parallelogram Properties',
+                fig: 'PARALLELOGRAM',
+                prompt: 'In parallelogram $ABCD$, which vector is equal to $\\overrightarrow{AB}$?',
+                eq: '\\overrightarrow{AB} = \\text{?}',
+                sol: '\\overrightarrow{DC}',
+                fakes: ['\\overrightarrow{CD}', '\\overrightarrow{BA}', '\\overrightarrow{AD}', '\\overrightarrow{BC}']
+            },
+
+            // --- Medium Tier ---
+            {
+                tier: 'medium',
+                type: 'MCQ',
+                cat: 'Parallelogram Diagonals',
+                fig: 'PARM_CENTER',
+                prompt: 'Let $ABCD$ be a parallelogram centered at $O$. Express the sum $\\overrightarrow{OA} + \\overrightarrow{OC}$:',
+                eq: '\\overrightarrow{OA} + \\overrightarrow{OC}',
+                sol: '\\vec{0}',
+                fakes: ['\\overrightarrow{AC}', '2\\overrightarrow{OA}', '\\overrightarrow{OB}', '\\overrightarrow{BD}']
+            },
+            {
+                tier: 'medium',
+                type: 'MCQ',
+                cat: 'Parallelogram Diagonals',
+                fig: 'PARM_CENTER',
+                prompt: 'Let $ABCD$ be a parallelogram centered at $O$. Express $\\overrightarrow{AB} + \\overrightarrow{AD}$ in terms of $\\overrightarrow{AO}$:',
+                eq: '\\overrightarrow{AB} + \\overrightarrow{AD}',
+                sol: '2\\overrightarrow{AO}',
+                fakes: ['\\overrightarrow{AO}', '2\\overrightarrow{OA}', '\\overrightarrow{AC}', '0.5\\overrightarrow{AO}']
+            },
+            {
+                tier: 'medium',
+                type: 'MCQ',
+                cat: 'Rectangle Vector Norms',
+                fig: 'RECTANGLE',
+                dim: { base: 'AB = 6', height: 'AD = 8' },
+                prompt: 'In rectangle $ABCD$ with $AB = 6$ and $AD = 8$, compute the norm of the vector sum:',
+                eq: '||\\overrightarrow{AB} + \\overrightarrow{AD}||',
+                sol: '10',
+                fakes: ['14', '2', '48', '100']
+            },
+            {
+                tier: 'medium',
+                type: 'MCQ',
+                cat: 'Rectangle Vector Norms',
+                fig: 'RECTANGLE',
+                dim: { base: 'AB = 3', height: 'AD = 4' },
+                prompt: 'In rectangle $ABCD$ with $AB = 3$ and $AD = 4$, compute the norm of vector subtraction:',
+                eq: '||\\overrightarrow{AB} - \\overrightarrow{AD}||',
+                sol: '5',
+                fakes: ['7', '1', '12', '25']
+            },
+            {
+                tier: 'medium',
+                type: 'MCQ',
+                cat: 'Midpoint Theorem Vectors',
+                fig: 'TRIANGLE_MID',
+                prompt: 'In triangle $ABC$, $I$ is the midpoint of $[AB]$ and $J$ is the midpoint of $[AC]$. Express $\\overrightarrow{BC}$ in terms of $\\overrightarrow{IJ}$:',
+                eq: '\\overrightarrow{BC}',
+                sol: '2\\overrightarrow{IJ}',
+                fakes: ['\\overrightarrow{IJ}', '0.5\\overrightarrow{IJ}', '-2\\overrightarrow{IJ}', '\\overrightarrow{JI}']
+            },
+            {
+                tier: 'medium',
+                type: 'TF',
+                cat: 'Collinearity & Scalars',
+                prompt: 'If $\\overrightarrow{AB} = -2\\overrightarrow{CD}$, evaluate the truth value of the statement:',
+                eq: '(AB) \\parallel (CD)',
+                sol: 'TRUE'
+            },
+            {
+                tier: 'medium',
+                type: 'MCQ',
+                cat: 'Vector Simplification',
+                prompt: 'Simplify the linear combination of vectors:',
+                eq: '2\\overrightarrow{AB} + 3\\overrightarrow{BC} - 2\\overrightarrow{AC}',
+                sol: '\\overrightarrow{BC}',
+                fakes: ['\\overrightarrow{AB}', '\\overrightarrow{AC}', '5\\overrightarrow{BC}', '\\vec{0}']
+            },
+            {
+                tier: 'medium',
+                type: 'MCQ',
+                cat: 'Square Vector Norms',
+                fig: 'SQUARE',
+                dim: { base: 'AB = 5', height: 'AD = 5' },
+                prompt: 'In square $ABCD$ of side length $5$, compute the norm:',
+                eq: '||\\overrightarrow{AC}||',
+                sol: '5\\sqrt{2}',
+                fakes: ['10', '25', '5', '10\\sqrt{2}']
+            },
+
+            // --- Hard Tier ---
+            {
+                tier: 'hard',
+                type: 'MCQ',
+                cat: 'Linear Combination Norms',
+                fig: 'RECTANGLE',
+                dim: { base: 'AB = 4', height: 'AD = 3' },
+                prompt: 'In rectangle $ABCD$ with $AB = 4$ and $AD = 3$, calculate the norm:',
+                eq: '||2\\overrightarrow{AB} + 2\\overrightarrow{AD}||',
+                sol: '10',
+                fakes: ['14', '20', '7', '5']
+            },
+            {
+                tier: 'hard',
+                type: 'MCQ',
+                cat: 'Midpoint Vector Relation',
+                fig: 'TRIANGLE_MID',
+                prompt: 'If $K$ is the midpoint of segment $[BC]$, simplify the vector sum:',
+                eq: '\\overrightarrow{AB} + \\overrightarrow{AC}',
+                sol: '2\\overrightarrow{AK}',
+                fakes: ['\\overrightarrow{AK}', '0.5\\overrightarrow{AK}', '\\overrightarrow{BC}', '\\vec{0}']
+            },
+            {
+                tier: 'hard',
+                type: 'MCQ',
+                cat: 'Center of Figure Properties',
+                fig: 'RECT_CENTER',
+                dim: { base: 'AB = 8', height: 'AD = 6' },
+                prompt: 'Rectangle $ABCD$ is centered at $O$. Given $AB = 8$ and $AD = 6$, find the norm:',
+                eq: '||\\overrightarrow{OA} + \\overrightarrow{OB}||',
+                sol: '6',
+                fakes: ['8', '10', '5', '14']
+            },
+            {
+                tier: 'hard',
+                type: 'MCQ',
+                cat: 'Algebraic Vector Expansion',
+                prompt: 'Express point $P$ satisfying $\\overrightarrow{PA} + 2\\overrightarrow{PB} = \\vec{0}$ in terms of vector $\\overrightarrow{AB}$:',
+                eq: '\\overrightarrow{AP}',
+                sol: '\\frac{2}{3}\\overrightarrow{AB}',
+                fakes: ['\\frac{1}{3}\\overrightarrow{AB}', '2\\overrightarrow{AB}', '\\frac{1}{2}\\overrightarrow{AB}', '-2\\overrightarrow{AB}']
+            },
+            {
+                tier: 'hard',
+                type: 'MCQ',
+                cat: 'Complex Vector Linear Reduction',
+                fig: 'PARALLELOGRAM',
+                prompt: 'In parallelogram $ABCD$, simplify the expression:',
+                eq: '2\\overrightarrow{AB} + \\overrightarrow{BC} - \\overrightarrow{DC}',
+                sol: '\\overrightarrow{AC}',
+                fakes: ['\\overrightarrow{AB}', '2\\overrightarrow{AC}', '\\overrightarrow{BD}', '\\overrightarrow{AD}']
+            },
+            {
+                tier: 'hard',
+                type: 'TF',
+                cat: 'Vector Triangle Inequality',
+                prompt: 'For any three points $A$, $B$, and $C$, is the statement always true?',
+                eq: '||\\overrightarrow{AB} + \\overrightarrow{BC}|| \\le ||\\overrightarrow{AB}|| + ||\\overrightarrow{BC}||',
+                sol: 'TRUE'
+            }
+        ];
+
+        let filtered = templates.filter(t => t.tier === tier);
+        let selected = filtered[Math.floor(Math.random() * filtered.length)];
+
+        let choicesPool = [];
+        if (selected.type === 'MCQ') {
+            choicesPool = buildShuffledChoices(selected.sol, selected.fakes);
+        }
+
+        return {
+            equation: selected.eq,
+            tier: selected.tier,
+            type: selected.type,
+            categoryType: selected.cat,
+            pool: choicesPool,
+            solution: selected.sol,
+            prompt: selected.prompt,
+            fig: selected.fig || null,
+            dim: selected.dim || null
+        };
+    }
+
+    function generateEntireQuizSuite() {
+        generatedSuite = [];
+        const generateUniqueTier = (tierName, requiredCount) => {
+            let rolledItems = [];
+            let seenPrompts = new Set();
+            let loopsGuard = 0;
+
+            while (rolledItems.length < requiredCount && loopsGuard++ < 400) {
+                let candidate = constructVectorProblem(tierName);
+                let identityFingerprint = (candidate.prompt + "||" + candidate.equation).replace(/\s+/g, "");
+
+                if (!seenPrompts.has(identityFingerprint)) {
+                    seenPrompts.add(identityFingerprint);
+                    rolledItems.push(candidate);
+                }
+            }
+            while (rolledItems.length < requiredCount) {
+                rolledItems.push(constructVectorProblem(tierName));
+            }
+            return rolledItems;
+        };
+
+        const easySuite = generateUniqueTier('easy', APP_LIMITS.tiers.easy);
+        const mediumSuite = generateUniqueTier('medium', APP_LIMITS.tiers.medium);
+        const hardSuite = generateUniqueTier('hard', APP_LIMITS.tiers.hard);
+
+        generatedSuite = [...easySuite, ...mediumSuite, ...hardSuite];
+    }
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+        document.getElementById('txt-tier-badge').innerText = activeProblem.tier + " tier";
+
+        let equationBlock = activeProblem.equation ? `
+            <div class="text-xl font-bold text-sky-600 mt-2 text-center">
+                $$${activeProblem.equation}$$
+            </div>
+        ` : "";
+
+        document.getElementById('math-prompt-container').innerHTML = `
+            <div class="text-base leading-relaxed text-slate-800">
+                ${activeProblem.prompt}
+                ${equationBlock}
+            </div>
+        `;
+
+        const figContainer = document.getElementById('figure-diagram-canvas');
+        if (activeProblem.fig) {
+            figContainer.innerHTML = renderFigureSVG(activeProblem.fig, activeProblem.dim);
+            figContainer.classList.remove('hidden');
+        } else {
+            figContainer.innerHTML = "";
+            figContainer.classList.add('hidden');
+        }
+
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+
+            activeProblem.pool.forEach(choice => {
+                const buttonElement = document.createElement('button');
+                buttonElement.className = `opt-btn p-3 text-center transition flex justify-center items-center ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+                buttonElement.style.minHeight = "48px";
+                
+                const isMath = choice.includes('\\') || choice.includes('frac') || choice.includes('sqrt') || choice.includes('vec') || /^\d+$/.test(choice) === false;
+                buttonElement.innerHTML = isMath ? `$$${choice}$$` : choice;
+                
+                buttonElement.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    buttonElement.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(buttonElement);
+            });
+        } else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        }
+
+        buildShortcutsGridMatrix();
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+
+        triggerMathRender('stage-engine');
+    }
+
+    function recordInput(value) { 
+        storedResponses[traversalIndex] = value; 
+        buildShortcutsGridMatrix(); 
+    }
+
+    function buildShortcutsGridMatrix() {
+        const grid = document.getElementById('navigation-shortcut-grid');
+        grid.innerHTML = "";
+        for (let i = 0; i < APP_LIMITS.totalItems; i++) {
+            const b = document.createElement('button');
+            b.innerText = i + 1;
+            let bgStyle = "bg-slate-100 text-slate-600 border border-slate-300";
+            if (traversalIndex === i) bgStyle = "bg-sky-600 text-white font-bold ring-2 ring-sky-300";
+            else if (storedResponses[i]) bgStyle = "bg-emerald-100 text-emerald-700 border border-emerald-400 font-semibold";
+
+            b.className = `p-2 text-xs text-center rounded-lg transition cursor-pointer min-w-[32px] ${bgStyle}`;
+            b.onclick = () => { traversalIndex = i; synchroniseQuestionIndex(); };
+            grid.appendChild(b);
+        }
+    }
+
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            let m = Math.floor(timeTrackingRemaining / 60);
+            let s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            let dynamicPercentage = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${dynamicPercentage}%`;
+
+            if (dynamicPercentage < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (dynamicPercentage < 50) progress.style.backgroundColor = '#d97706';
+        }
+        pulse();
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limit reached. Compiling performance report now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+        generatedSuite.forEach((problem, index) => {
+            const userRaw = storedResponses[index];
+            const userAns = (userRaw || "").toString().trim().toUpperCase();
+            const correctAns = problem.solution.toString().trim().toUpperCase();
+            const outcomeState = userAns === correctAns;
+            if (outcomeState) tallyCorrect++;
+
+            const formatAns = (s) => {
+                if (!s) return 'Unanswered';
+                if (s === 'TRUE' || s === 'FALSE') return s;
+                return `$${s}$`;
+            };
+
+            const answerColor = outcomeState ? 'var(--success)' : 'var(--error)';
+            let figHtml = problem.fig ? `<div class="my-2 flex justify-center">${renderFigureSVG(problem.fig, problem.dim)}</div>` : '';
+
+            let itemScoreBadge = outcomeState ?
+                `<span class="float-right font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-300 text-xs">Score: 1 / 1</span>` :
+                `<span class="float-right font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-300 text-xs">Score: 0 / 1</span>`;
+
+            compilationHtml += `
+                <div class="report-item" style="border-left-color: ${outcomeState ? 'var(--success)' : 'var(--error)'}">
+                    ${itemScoreBadge}
+                    <div class="text-xs uppercase font-bold text-slate-500 mb-1">
+                        Question ${index + 1} &middot; Topic: <span class="text-sky-600">${problem.categoryType}</span>
+                    </div>
+                    <div class="text-center text-lg font-bold my-2">
+                        ${problem.equation ? '$$' + problem.equation + '$$' : ''}
+                    </div>
+                    <div class="text-sm border border-slate-200 rounded-lg p-2.5 my-2">
+                        <strong>Prompt:</strong> ${problem.prompt}
+                    </div>
+                    ${figHtml}
+                    <div class="text-sm space-y-1 mt-2">
+                        <p><strong>Your Submitted Answer:</strong> <span style="color: ${answerColor}; font-weight:600;">${formatAns(userRaw)}</span></p>
+                        <p class="text-slate-600"><strong>Correct Solution Key:</strong> <span class="font-semibold text-slate-900">${formatAns(problem.solution)}</span></p>
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = document.getElementById('student-name').value.trim();
+        const sectionTitle = document.getElementById('student-section').value.trim();
+
+        let headerMetaHtml = `
+            <div class="bg-white border border-slate-300 rounded-xl p-3.5 mb-4 text-sm">
+                <div class="flex justify-between border-b border-dashed border-slate-300 pb-2 mb-2 flex-wrap gap-2">
+                    <div><strong>Student Name:</strong> <span class="text-sky-600 font-semibold">${userTitle}</span></div>
+                    <div><strong>Class Section:</strong> <span class="text-sky-600 font-semibold">${sectionTitle}</span></div>
+                </div>
+                <div class="text-xs space-y-1">
+                    <div><strong>Assessment Topic:</strong> Grade 10 Vectors Evaluation</div>
+                    <div><strong>Start Timestamp:</strong> <span class="font-mono">${formattedQuizStartTimeStamp}</span></div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('report-injection-zone').innerHTML = headerMetaHtml + compilationHtml;
+        triggerMathRender('report-injection-zone');
+
+        sendGradesToTeacher(
+            userTitle,
+            sectionTitle,
+            `${tallyCorrect} / ${APP_LIMITS.totalItems}`,
+            formattedQuizStartTimeStamp,
+            "Grade 10 Vectors Quiz"
+        );
+    }
+
+    function sendGradesToTeacher(name, classroom, score, duration, quizTitle) {
+        const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+        fetch(url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name,
+                classroom: classroom,
+                score: score,
+                duration: duration,
+                quizTitle: quizTitle,
+                date: new Date().toLocaleString()
+            })
+        }).catch(err => console.log("Network fallback triggered."));
+    }
+
+    document.getElementById('action-start').onclick = () => {
+        if (!document.getElementById('student-name').value.trim() || !document.getElementById('student-section').value.trim()) {
+            alert("Please fill in student information to proceed.");
+            return;
+        }
+        const now = new Date();
+        formattedQuizStartTimeStamp = now.toLocaleDateString() + " @ " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Finalize and submit quiz responses?")) compileFinalPerformanceReport();
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) {
+            traversalIndex--;
+            synchroniseQuestionIndex();
+        }
+    };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+</script>
+</body>
+</html>

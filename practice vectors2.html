@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vectors & Plane Geometry Diagnostic Suite</title>
+    <!-- Tailwind CSS Styling Framework CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX Mathematical Typography Notation Engine Setup CDN -->                  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7; --primary-hover: #0369a1; --bg-main: #f8fafc;
+            --bg-surface: #ffffff; --border-color: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #16a34a; --error: #dc2626;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; }
+        .hidden { display: none !important; }
+        .opt-btn {
+            background-color: var(--bg-surface); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 1.05rem;
+        }
+        .opt-btn:hover { border-color: var(--primary); background-color: #f0f9ff; }
+        .opt-btn.active { border-color: var(--primary); background-color: #e0f2fe; font-weight: 600; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+                        .report-item { background: var(--bg-surface); border-radius: 10px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #cbd5e1; }
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+            .katex { font-size: 1.12em; }
+            </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Credentials Authentication Entry Stage -->
+    <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
+        <h2 class="text-3xl font-extrabold text-slate-800 text-center tracking-tight mb-2">VECTORS Matrix Quiz</h2>
+        <p class="text-sm text-slate-500 text-center mb-8">Vectors, Chasles Relation, Norms &amp; Coordinates</p>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Student Full Name</label>
+                <input type="text" id="student-name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Assigned Class Section</label>
+                <input type="text" id="student-section" placeholder="Grade 10-A" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <button id="action-start" class="w-full bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm tracking-wider uppercase mt-4">Unlock Examination Matrix</button>
+        </div>
+    </div>
+
+    <!-- FIXED: Active Test Core Engine Integrated Inside One Single Unified Main Box Header Layout -->
+    <div id="stage-engine" class="hidden max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+        <div class="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between min-h-[550px]">
+
+            <!-- HEADER INFO BAR: Time tracking and Question counts grouped inside the single main container block -->
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-5 flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Question Tracker &middot; <span id="idx-current">0</span> / <span id="idx-total">0</span></span>
+                    <span id="txt-tier-badge" class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase bg-slate-100 text-slate-600">Tier</span>
+                </div>
+
+                <!-- TIMER COMPONENT: Grouped tightly inside the primary top header control area -->
+                <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
+                    <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">30:00</span>
+                    <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                        <div id="meter-progress" class="bg-sky-400 h-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Content Presentation Window -->
+            <div class="flex-grow flex flex-col justify-center">
+                <div id="math-prompt-container" class="mb-6"></div>
+
+                <div id="interactive-zone" class="w-full flex flex-col items-center justify-center mb-6">
+                    <div id="figure-canvas" class="mb-5 w-full"></div>
+                    <div id="box-mcq" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"></div>
+                    <div id="box-tf" class="hidden flex gap-4 w-full justify-center">
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="TRUE">TRUE</button>
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="FALSE">FALSE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Layout Shortcut Matrix Navigation Row -->
+            <div class="border-t border-slate-100 pt-4 mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <!-- Grid Shortcuts inline at the bottom left -->
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden md:block">Overview:</span>
+                    <div id="navigation-shortcut-grid" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="flex gap-3 justify-end w-full sm:w-auto">
+                    <button id="action-back" class="px-5 py-2 border border-slate-300 rounded-xl font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 text-sm transition cursor-pointer">&larr; Back</button>
+                    <button id="action-forward" class="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 text-sm shadow transition cursor-pointer">Next &rarr;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Final Diagnostic Summary Sheet Layout -->
+    <div id="stage-summary" class="hidden max-w-3xl mx-auto w-full px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 p-6 text-white flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">Performance Summary Report</h1>
+                    <p class="text-sky-100 text-xs mt-1">Vectors Curriculum Assessment Key</p>
+                </div>
+                <button onclick="triggerDirectPdfDownload()" class="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition cursor-pointer shadow-sm border border-white/10 text-white">Download as PDF</button>
+            </div>
+
+            <div class="grid grid-cols-3 text-center border-b border-slate-100 bg-slate-50 py-4">
+                <div>
+                    <div id="m-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div id="m-incorrect" class="text-2xl font-extrabold text-rose-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Incorrect</div>
+                </div>
+                <div>
+                    <div id="m-percent" class="text-2xl font-extrabold text-sky-600">0%</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score Rate</div>
+                </div>
+            </div>
+
+                    <!-- Dynamic Question Injections -->
+                        <div id="report-injection-zone" class="p-6 space-y-4 bg-slate-50/50"></div>
+                </div>
+
+                <!-- FIXED: Repositioned standalone PDF action handler bar to the absolute bottom of the page structure -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
+                        <button id="action-pdf-bottom" onclick="triggerDirectPdfDownload()" class="flex-grow bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
+                        <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
+                </div>
+        </div>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
+        &copy; 2026 Vectors Assessment Suite &bull; Academic Diagnostic Engine
+    </footer>
+
+<script>
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 1800, // 30 minutes exactly
+        tiers: { easy: 6, medium: 8, hard: 6 }
+    };
+
+    // ---------- tiny helpers (BS is a backslash; write LaTeX with @ instead of a backslash and wrap in tx()) ----------
+    const BS = String.fromCharCode(92);
+    function tx(s) { return s.split('@').join(BS); }
+    function shuffleArray(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+    function rnd(n) { return Math.floor(Math.random() * n); }
+    function pickOne(a) { return a[rnd(a.length)]; }
+    function rI(a, b) { return a + rnd(b - a + 1); }
+    function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a; }
+
+    // ---------- LaTeX builders ----------
+    const VT = p => BS + 'overrightarrow{' + p[0] + p[1] + '}';          // vector AB
+    const ZERO = BS + 'vec{0}';
+    const NORM = s => BS + '|' + s + BS + '|';
+    const vecU = BS + 'vec{u}', vecV = BS + 'vec{v}';
+    function crdTex(a, b) { return '(' + a + BS + ',;' + BS + ',' + b + ')'; }          // (a ; b)
+    function sqrtTex(tot) {                                   // sqrt(tot) simplified, e.g. 32 -> 4\sqrt{2}
+        if (tot === 0) return '0';
+        let f = 1, r = tot;
+        for (let k = Math.floor(Math.sqrt(tot)); k >= 2; k--) { if (tot % (k * k) === 0) { f = k; r = tot / (k * k); break; } }
+        if (r === 1) return String(f);
+        return (f === 1 ? '' : String(f)) + BS + 'sqrt{' + r + '}';
+    }
+    function simplifySqrt(tot) {
+        let f = 1, r = tot;
+        for (let k = Math.floor(Math.sqrt(tot)); k >= 2; k--) { if (tot % (k * k) === 0) { f = k; r = tot / (k * k); break; } }
+        return [f, r];
+    }
+    function lenTex(scale, n2) {                      // length = scale * sqrt(n2); scale is an integer or a half-integer
+        const den = (scale % 1 === 0) ? 1 : 2, num = Math.round(scale * den);
+        const tot = num * num * n2;
+        if (tot === 0) return '0' + BS + 'text{ cm}';
+        const fr = simplifySqrt(tot), f = fr[0], r = fr[1], g = gcd(f, den), fn = f / g, dn = den / g;
+        let body;
+        if (r === 1) { const v = fn / dn; body = Number.isInteger(v) ? String(v) : String(+v.toFixed(2)); }
+        else if (dn === 1) body = (fn === 1 ? '' : String(fn)) + BS + 'sqrt{' + r + '}';
+        else body = BS + 'frac{' + (fn === 1 ? '' : String(fn)) + BS + 'sqrt{' + r + '}}{' + dn + '}';
+        return body + BS + 'text{ cm}';
+    }
+    function fracTex(n, d) {
+        const g = gcd(n, d) || 1; n /= g; d /= g;
+        if (d < 0) { n = -n; d = -d; }
+        if (d === 1) return String(n);
+        return (n < 0 ? '-' : '') + BS + 'frac{' + Math.abs(n) + '}{' + d + '}';
+    }
+    function exprTex(terms) {
+        return terms.map((t, i) => (i === 0 ? (t.s < 0 ? '-' : '') : (t.s < 0 ? ' - ' : ' + ')) + VT(t.p)).join('');
+    }
+
+    // always 4 different options; the first two "priority" fakes are always kept (they are the classic traps)
+    function pick4(correct, fakes) {
+        const seen = new Set([correct]); const uniq = [];
+        fakes.forEach(f => { if (f !== undefined && f !== null && !seen.has(f)) { seen.add(f); uniq.push(f); } });
+        const chosen = uniq.slice(0, 2).concat(shuffleArray(uniq.slice(2))).slice(0, 3);
+        let g = 0; while (chosen.length < 3 && g++ < 50) { const x = String(rI(1, 30)); if (!seen.has(x)) { seen.add(x); chosen.push(x); } }
+        return shuffleArray([correct].concat(chosen));
+    }
+
+    // =====================================================================================
+    //  PART 1 - FIGURES (exact integer lattice coordinates, so every answer is exact)
+    //  A point is [m,n]. 'ortho' figures: position (m,n).  'hex' figure: m*e1 + n*e2 with e1,e2 at 60 degrees.
+    // =====================================================================================
+    const LETTERS = 'ABCDEFGHKLMNPQRSTUVWXYZ'.split('');
+    function pickConsecutive(n) {
+        const start = Math.random() < 0.5 ? 0 : rnd(LETTERS.length - n + 1);
+        return LETTERS.slice(start, start + n);
+    }
+    function pickRole(prefer, taken) {
+        if (!taken.has(prefer) && Math.random() < 0.7) { taken.add(prefer); return prefer; }
+        const pool = shuffleArray('IJOKLMNPQRSTUVWXYZ'.split('')).filter(x => !taken.has(x));
+        taken.add(pool[0]); return pool[0];
+    }
+    function transformRaw(raw, k, mirror) {
+        const out = {};
+        Object.keys(raw).forEach(name => {
+            let m = raw[name][0], n = raw[name][1];
+            if (mirror) m = -m;
+            for (let i = 0; i < k; i++) { const t = m; m = -n; n = t; }
+            out[name] = [m, n];
+        });
+        return out;
+    }
+
+    // Figure type 1: square + a point beyond B + the midpoint of the "slanted" side  (inspired by image 1)
+    function buildSquare() {
+        const s = pickOne([4, 6, 8]);
+        const P = pickConsecutive(4), taken = new Set(P);
+        const O = pickRole('O', taken), X = pickRole('I', taken), N = pickRole('N', taken);
+        const raw = {};
+        raw[P[0]] = [0, 2]; raw[P[1]] = [2, 2]; raw[P[2]] = [2, 0]; raw[P[3]] = [0, 0];
+        raw[O] = [1, 1]; raw[X] = [4, 2]; raw[N] = [3, 1];
+        return {
+            kind: 'SQUARE', basis: 'ortho', scale: s / 2,
+            names: [P[0], P[1], P[2], P[3], O, X, N],
+            pts: transformRaw(raw, rnd(4), Math.random() < 0.5),
+            lines: [[P[0], P[1], X], [P[1], P[2]], [P[2], P[3]], [P[3], P[0]], [P[0], O, P[2]], [P[1], O, P[3]], [P[2], N, X], [O, N]],
+            ticks: [{ p: [P[0], P[1]], n: 1 }, { p: [P[1], X], n: 1 }, { p: [P[2], N], n: 2 }, { p: [N, X], n: 2 }],
+            mids: [[P[1], P[0], X], [O, P[0], P[2]], [O, P[1], P[3]], [N, P[2], X]],
+            info: P.join('') + ' is a square of side ' + s + ' cm and ' + O + ' is its centre. ' + P[1] + ' is the midpoint of [' + P[0] + X + '] and ' + N + ' is the midpoint of [' + P[2] + X + '].'
+        };
+    }
+
+    // Figure type 2: parallelogram + rhombus sharing the side AB  (inspired by image 2)
+    function buildPara() {
+        const T = pickOne([[3, 4], [4, 3], [6, 8], [8, 6], [5, 12], [12, 5]]);
+        const p = T[0], q = T[1], a = Math.round(Math.hypot(p, q)), c = rI(4, 7);
+        const P = pickConsecutive(4), taken = new Set(P);
+        const M = pickRole('M', taken), N = pickRole('N', taken), I = pickRole('I', taken);
+        const raw = {};
+        raw[P[0]] = [0, q]; raw[P[1]] = [-p, 0]; raw[P[2]] = [-p - c, 0]; raw[P[3]] = [-c, q];
+        raw[M] = [0, -q]; raw[N] = [p, 0]; raw[I] = [0, 0];
+        return {
+            kind: 'PARA', basis: 'ortho', scale: 1,
+            names: [P[0], P[1], P[2], P[3], M, N, I],
+            pts: transformRaw(raw, rnd(4), Math.random() < 0.5),
+            lines: [[P[3], P[0]], [P[0], P[1]], [P[2], P[1], I, N], [P[2], P[3]], [P[0], I, M], [P[1], M], [M, N], [N, P[0]]],
+            ticks: [{ p: [P[0], P[1]], n: 1 }, { p: [P[1], M], n: 1 }, { p: [M, N], n: 1 }, { p: [N, P[0]], n: 1 }],
+            mids: [[I, P[0], M], [I, P[1], N]],
+            info: P.join('') + ' is a parallelogram and ' + P[0] + P[1] + M + N + ' is a rhombus of side ' + a + ' cm. ' + I + ' is the intersection of the diagonals of the rhombus.'
+        };
+    }
+
+    // Figure type 3: regular hexagon with its centre
+    function buildHex() {
+        const a = rI(2, 6);
+        const P = pickConsecutive(6), taken = new Set(P);
+        const O = pickRole('O', taken);
+        const V = [[1, 0], [0, 1], [-1, 1], [-1, 0], [0, -1], [1, -1]];
+        const k0 = rnd(6), dir = Math.random() < 0.5 ? 1 : -1;
+        const raw = {};
+        for (let i = 0; i < 6; i++) raw[P[i]] = V[(k0 + dir * i + 12) % 6];
+        raw[O] = [0, 0];
+        const lines = [], ticks = [];
+        for (let i = 0; i < 6; i++) { lines.push([P[i], P[(i + 1) % 6]]); ticks.push({ p: [P[i], P[(i + 1) % 6]], n: 1 }); }
+        for (let i = 0; i < 3; i++) lines.push([P[i], O, P[i + 3]]);
+        return {
+            kind: 'HEX', basis: 'hex', scale: a,
+            names: P.concat([O]), pts: raw, lines: lines, ticks: ticks,
+            mids: [[O, P[0], P[3]], [O, P[1], P[4]], [O, P[2], P[5]]],
+            info: P.join('') + ' is a regular hexagon of side ' + a + ' cm and centre ' + O + '.'
+        };
+    }
+
+
+    // Figure type 4: right triangle at A with the midpoints of its three sides  (inspired by image 3)
+    function buildTri() {
+        const T = pickOne([[3, 4], [4, 3], [2, 2], [3, 3], [4, 4], [6, 8]]), p = T[0], q = T[1];
+        const P = pickConsecutive(3), taken = new Set(P);
+        const D = pickRole('D', taken), E = pickRole('E', taken), F = pickRole('F', taken);
+        const raw = {};
+        raw[P[0]] = [0, 0]; raw[P[1]] = [2 * p, 0]; raw[P[2]] = [0, 2 * q]; raw[D] = [p, q]; raw[E] = [0, q]; raw[F] = [p, 0];
+        return {
+            kind: 'TRI', basis: 'ortho', scale: 1,
+            names: [P[0], P[1], P[2], D, E, F],
+            pts: transformRaw(raw, rnd(4), Math.random() < 0.5),
+            lines: [[P[0], F, P[1]], [P[0], E, P[2]], [P[1], D, P[2]], [D, E], [D, F], [E, F]],
+            ticks: [{ p: [P[1], D], n: 1 }, { p: [D, P[2]], n: 1 }, { p: [P[0], E], n: 2 }, { p: [E, P[2]], n: 2 }, { p: [P[0], F], n: 3 }, { p: [F, P[1]], n: 3 }],
+            mids: [[D, P[1], P[2]], [E, P[0], P[2]], [F, P[0], P[1]]],
+            right: [P[0], P[1], P[2]],
+            info: P.join('') + ' is a right triangle at ' + P[0] + ' with ' + P[0] + P[1] + ' = ' + (2 * p) + ' cm and ' + P[0] + P[2] + ' = ' + (2 * q) + ' cm. ' + D + ', ' + E + ' and ' + F + ' are the midpoints of [' + P[1] + P[2] + '], [' + P[0] + P[2] + '] and [' + P[0] + P[1] + '] respectively.'
+        };
+    }
+
+    // Figure type 5: rectangle with centre, midpoints and two symmetric points  (inspired by image 4)
+    function buildRect() {
+        let a, b; do { a = pickOne([4, 5, 6, 8]); b = pickOne([2, 3, 4, 5]); } while (a === b);
+        const P = pickConsecutive(4), taken = new Set(P);
+        const O = pickRole('O', taken), M = pickRole('M', taken), N = pickRole('N', taken), F = pickRole('F', taken), H = pickRole('H', taken), E = pickRole('E', taken);
+        const raw = {};      // half-centimetre lattice: AB = 2a units = a cm, BC = 2b units = b cm
+        raw[P[0]] = [0, 2 * b]; raw[P[1]] = [2 * a, 2 * b]; raw[P[2]] = [2 * a, 0]; raw[P[3]] = [0, 0];
+        raw[O] = [a, b]; raw[M] = [2 * a, b]; raw[N] = [a, 0]; raw[F] = [a, 2 * b]; raw[H] = [3 * a, 2 * b]; raw[E] = [2 * a, -2 * b];
+        return {
+            kind: 'RECT', basis: 'ortho', scale: 0.5,
+            names: [P[0], P[1], P[2], P[3], O, M, N, F, H, E],
+            pts: transformRaw(raw, rnd(4), Math.random() < 0.5),
+            lines: [[P[0], F, P[1], H], [P[1], M, P[2], E], [P[2], N, P[3]], [P[3], P[0]], [P[0], O, P[2]], [P[1], O, P[3]]],
+            ticks: [{ p: [P[0], F], n: 1 }, { p: [F, P[1]], n: 1 }, { p: [P[1], H], n: 1 }, { p: [P[1], M], n: 2 }, { p: [M, P[2]], n: 2 }, { p: [P[2], N], n: 3 }, { p: [N, P[3]], n: 3 }],
+            mids: [[F, P[0], P[1]], [M, P[1], P[2]], [N, P[2], P[3]], [O, P[0], P[2]], [O, P[1], P[3]], [P[1], F, H], [P[2], P[1], E]],
+            right: [P[3], P[2], P[0]],
+            info: P.join('') + ' is a rectangle of centre ' + O + ' with ' + P[0] + P[1] + ' = ' + a + ' cm and ' + P[1] + P[2] + ' = ' + b + ' cm. ' + M + ', ' + N + ' and ' + F + ' are the midpoints of [' + P[1] + P[2] + '], [' + P[2] + P[3] + '] and [' + P[0] + P[1] + ']. ' + H + ' is the symmetric of ' + F + ' with respect to ' + P[1] + ' and ' + E + ' is the symmetric of ' + P[1] + ' with respect to ' + P[2] + '.'
+        };
+    }
+
+    function finalizeFig(f) {
+        f.pairsAll = [];
+        f.names.forEach(a => f.names.forEach(b => { if (a !== b) f.pairsAll.push([a, b]); }));
+        f.drawnSet = new Set();
+        f.lines.forEach(L => { for (let i = 0; i < L.length; i++) for (let j = 0; j < L.length; j++) if (i !== j) f.drawnSet.add(L[i] + '|' + L[j]); });
+        f.pairsDrawn = f.pairsAll.filter(p => f.drawnSet.has(p[0] + '|' + p[1]));
+        return f;
+    }
+    // Balanced choice: use the figure type that has appeared least in the current quiz and never the same one twice in a row
+    let FIG_USAGE = {}, LAST_FIG = null;
+    function mkFig(kinds) {
+        let min = 1e9; kinds.forEach(k => { min = Math.min(min, FIG_USAGE[k] || 0); });
+        let cand = kinds.filter(k => (FIG_USAGE[k] || 0) === min);
+        const noRepeat = cand.filter(k => k !== LAST_FIG); if (noRepeat.length) cand = noRepeat;
+        const k = pickOne(cand);
+        const f = k === 'SQUARE' ? buildSquare() : (k === 'PARA' ? buildPara() : (k === 'HEX' ? buildHex() : (k === 'TRI' ? buildTri() : buildRect())));
+        return finalizeFig(f);
+    }
+
+    // ---------- exact vector algebra on lattice coordinates ----------
+    const vv = (f, p) => [f.pts[p[1]][0] - f.pts[p[0]][0], f.pts[p[1]][1] - f.pts[p[0]][1]];
+    const vAdd = (a, b) => [a[0] + b[0], a[1] + b[1]];
+    const vSub = (a, b) => [a[0] - b[0], a[1] - b[1]];
+    const vNeg = a => [-a[0], -a[1]];
+    const vSame = (a, b) => a[0] === b[0] && a[1] === b[1];
+    const vZero = a => a[0] === 0 && a[1] === 0;
+    const vCross = (a, b) => a[0] * b[1] - a[1] * b[0];
+    const vN2 = (f, a) => f.basis === 'hex' ? a[0] * a[0] + a[0] * a[1] + a[1] * a[1] : a[0] * a[0] + a[1] * a[1];
+    const isDrawn = (f, p) => f.drawnSet.has(p[0] + '|' + p[1]);
+    function termsValue(f, terms) { return terms.reduce((acc, t) => vAdd(acc, t.s < 0 ? vNeg(vv(f, t.p)) : vv(f, t.p)), [0, 0]); }
+
+    // a name for a vector value (0 -> zero vector; otherwise some AB in the figure), or null if the figure has none
+    function nameVec(f, v) {
+        if (vZero(v)) return ZERO;
+        let c = f.pairsDrawn.filter(p => vSame(vv(f, p), v));
+        if (!c.length) c = f.pairsAll.filter(p => vSame(vv(f, p), v));
+        return c.length ? VT(pickOne(c)) : null;
+    }
+    // 4 choices for "which vector" questions; traps first: opposite vector, zero vector, same-length vectors
+    function vectorChoices(f, ansVec, correctStr) {
+        const fakes = [];
+        const negP = shuffleArray(f.pairsDrawn.filter(p => vSame(vv(f, p), vNeg(ansVec))));
+        if (negP.length) fakes.push(VT(negP[0]));
+        if (!vZero(ansVec)) fakes.push(ZERO);
+        const n2a = vN2(f, ansVec);
+        shuffleArray(f.pairsDrawn.filter(p => { const w = vv(f, p); return !vSame(w, ansVec) && !vZero(w) && vN2(f, w) === n2a; })).slice(0, 3).forEach(p => fakes.push(VT(p)));
+        shuffleArray(f.pairsDrawn.filter(p => !vSame(vv(f, p), ansVec))).slice(0, 8).forEach(p => fakes.push(VT(p)));
+        return pick4(correctStr, fakes);
+    }
+    function normChoices(f, correctStr, vecs) {
+        const fakes = [];
+        vecs.forEach(v => { if (!vZero(v)) fakes.push(lenTex(f.scale, vN2(f, v))); });
+        shuffleArray(f.pairsDrawn).slice(0, 10).forEach(p => fakes.push(lenTex(f.scale, vN2(f, vv(f, p)))));
+        return pick4(correctStr, fakes);
+    }
+
+    // ---------- SVG drawing of the geometric figure ----------
+    let svgCounter = 0;
+    function toXY(f, pt) { return f.basis === 'hex' ? [pt[0] + pt[1] / 2, pt[1] * Math.sqrt(3) / 2] : [pt[0], pt[1]]; }
+    function distPtSeg(px, py, s) {
+        const dx = s[2] - s[0], dy = s[3] - s[1], l2 = dx * dx + dy * dy;
+        let t = l2 ? ((px - s[0]) * dx + (py - s[1]) * dy) / l2 : 0; t = Math.max(0, Math.min(1, t));
+        return Math.hypot(px - (s[0] + t * dx), py - (s[1] + t * dy));
+    }
+    function figSvg(f, maxWidth) {
+        const W = 600, H = 330, M = 52;
+        const xy = {}; let minx = 1e9, maxx = -1e9, miny = 1e9, maxy = -1e9;
+        f.names.forEach(n => { const q = toXY(f, f.pts[n]); xy[n] = q; minx = Math.min(minx, q[0]); maxx = Math.max(maxx, q[0]); miny = Math.min(miny, q[1]); maxy = Math.max(maxy, q[1]); });
+        const sc = Math.min((W - 2 * M) / ((maxx - minx) || 1), (H - 2 * M) / ((maxy - miny) || 1));
+        const cx = (minx + maxx) / 2, cy = (miny + maxy) / 2;
+        const P = {}; f.names.forEach(n => { P[n] = [W / 2 + sc * (xy[n][0] - cx), H / 2 - sc * (xy[n][1] - cy)]; });
+        const segs = f.lines.map(L => [P[L[0]][0], P[L[0]][1], P[L[L.length - 1]][0], P[L[L.length - 1]][1]]);
+
+        let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="w-full mx-auto" style="display:block; max-width:' + (maxWidth || 600) + 'px; background:#fff; border:1px solid #cbd5e1; border-radius:12px;" role="img" aria-label="Geometric figure">';
+        segs.forEach(g => { s += '<line x1="' + g[0].toFixed(1) + '" y1="' + g[1].toFixed(1) + '" x2="' + g[2].toFixed(1) + '" y2="' + g[3].toFixed(1) + '" stroke="#334155" stroke-width="2.6" stroke-linecap="round"/>'; });
+        f.ticks.forEach(t => {
+            const a = P[t.p[0]], b = P[t.p[1]], mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+            let dx = b[0] - a[0], dy = b[1] - a[1]; const l = Math.hypot(dx, dy) || 1; dx /= l; dy /= l;
+            const nx = -dy, ny = dx, offs = t.n === 3 ? [-6, 0, 6] : (t.n === 2 ? [-3.5, 3.5] : [0]);
+            offs.forEach(o => { const px = mx + dx * o, py = my + dy * o; s += '<line x1="' + (px - nx * 7).toFixed(1) + '" y1="' + (py - ny * 7).toFixed(1) + '" x2="' + (px + nx * 7).toFixed(1) + '" y2="' + (py + ny * 7).toFixed(1) + '" stroke="#dc2626" stroke-width="2.4"/>'; });
+        });
+        if (f.right) {                                   // little square marking the right angle
+            const v = P[f.right[0]], a = P[f.right[1]], b = P[f.right[2]];
+            let ux = a[0] - v[0], uy = a[1] - v[1], wx = b[0] - v[0], wy = b[1] - v[1];
+            const l1 = Math.hypot(ux, uy) || 1, l2 = Math.hypot(wx, wy) || 1; ux = ux / l1 * 14; uy = uy / l1 * 14; wx = wx / l2 * 14; wy = wy / l2 * 14;
+            s += '<polyline points="' + (v[0] + ux).toFixed(1) + ',' + (v[1] + uy).toFixed(1) + ' ' + (v[0] + ux + wx).toFixed(1) + ',' + (v[1] + uy + wy).toFixed(1) + ' ' + (v[0] + wx).toFixed(1) + ',' + (v[1] + wy).toFixed(1) + '" fill="none" stroke="#16a34a" stroke-width="2.4"/>';
+        }
+        f.names.forEach(n => { s += '<circle cx="' + P[n][0].toFixed(1) + '" cy="' + P[n][1].toFixed(1) + '" r="4" fill="#0f172a"/>'; });
+        // labels: choose, for every point, the direction that stays farthest from lines / other points / other labels
+        const placed = [];
+        f.names.forEach(n => {
+            let best = null, bs = -1e9;
+            for (let k = 0; k < 48; k++) {
+                const ang = (k % 16) * Math.PI / 8, dx = Math.cos(ang), dy = Math.sin(ang), r = [18, 23, 28][Math.floor(k / 16)];
+                const lx = P[n][0] + dx * r, ly = P[n][1] + dy * r;
+                let sc2 = 1e9;
+                segs.forEach(g => { sc2 = Math.min(sc2, distPtSeg(lx, ly, g)); });
+                placed.forEach(pl => { sc2 = Math.min(sc2, Math.hypot(lx - pl[0], ly - pl[1]) * 0.9); });
+                f.names.forEach(m => { if (m !== n) sc2 = Math.min(sc2, Math.hypot(lx - P[m][0], ly - P[m][1]) * 0.9); });
+                const ox = P[n][0] - W / 2, oy = P[n][1] - H / 2, ol = Math.hypot(ox, oy) || 1;
+                sc2 += 4 * ((dx * ox + dy * oy) / ol) - 0.35 * (r - 18);
+                if (lx < 14 || lx > W - 14 || ly < 16 || ly > H - 12) sc2 -= 40;
+                if (sc2 > bs) { bs = sc2; best = [lx, ly]; }
+            }
+            placed.push(best);
+            s += '<text x="' + best[0].toFixed(1) + '" y="' + best[1].toFixed(1) + '" font-size="22" font-weight="800" fill="#0f172a" text-anchor="middle" dominant-baseline="central" font-family="Georgia, serif">' + n + '</text>';
+        });
+        return s + '</svg>';
+    }
+
+    // ---------- SVG drawing of the coordinate grid (hard tier) ----------
+    function gridSvg(pts, segs) {
+        const W = 460, H = 380, u = 34, ox = 230, oy = 190;
+        const cols = ['#dc2626', '#2563eb', '#16a34a'];
+        const uid = 'g' + (++svgCounter);
+        const gx = x => ox + u * x, gy = y => oy - u * y;
+        let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="w-full mx-auto" style="display:block; max-width:460px; background:#fff; border:1px solid #cbd5e1; border-radius:12px;" role="img" aria-label="Coordinate grid"><defs>';
+        cols.forEach((c, i) => { s += '<marker id="' + uid + '-' + i + '" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="' + c + '"/></marker>'; });
+        s += '</defs>';
+        for (let i = -6; i <= 6; i++) s += '<line x1="' + gx(i) + '" y1="' + gy(-5) + '" x2="' + gx(i) + '" y2="' + gy(5) + '" stroke="#e2e8f0" stroke-width="1"/>';
+        for (let j = -5; j <= 5; j++) s += '<line x1="' + gx(-6) + '" y1="' + gy(j) + '" x2="' + gx(6) + '" y2="' + gy(j) + '" stroke="#e2e8f0" stroke-width="1"/>';
+        s += '<line x1="' + gx(-6.4) + '" y1="' + oy + '" x2="' + gx(6.4) + '" y2="' + oy + '" stroke="#475569" stroke-width="2"/>';
+        s += '<line x1="' + ox + '" y1="' + gy(-5.4) + '" x2="' + ox + '" y2="' + gy(5.4) + '" stroke="#475569" stroke-width="2"/>';
+        for (let i = -6; i <= 6; i++) if (i !== 0) s += '<text x="' + gx(i) + '" y="' + (oy + 15) + '" font-size="11" fill="#64748b" text-anchor="middle">' + i + '</text>';
+        for (let j = -5; j <= 5; j++) if (j !== 0) s += '<text x="' + (ox - 7) + '" y="' + (gy(j) + 4) + '" font-size="11" fill="#64748b" text-anchor="end">' + j + '</text>';
+        s += '<text x="' + (ox - 9) + '" y="' + (oy + 15) + '" font-size="12" fill="#475569" text-anchor="end" font-weight="700">0</text>';
+        (segs || []).forEach(g => {
+            const c = cols[g.col || 0];
+            s += '<line x1="' + gx(g.a[0]) + '" y1="' + gy(g.a[1]) + '" x2="' + gx(g.b[0]) + '" y2="' + gy(g.b[1]) + '" stroke="' + c + '" stroke-width="3"' + (g.dash ? ' stroke-dasharray="7 5"' : '') + (g.arrow ? ' marker-end="url(#' + uid + '-' + (g.col || 0) + ')"' : '') + '/>';
+            if (g.lab) s += '<text x="' + (gx((g.a[0] + g.b[0]) / 2) + 10) + '" y="' + (gy((g.a[1] + g.b[1]) / 2) - 8) + '" font-size="20" font-weight="800" fill="' + c + '" font-style="italic" font-family="Georgia, serif">' + g.lab + '</text>';
+        });
+        (pts || []).forEach(p => {
+            s += '<circle cx="' + gx(p.x) + '" cy="' + gy(p.y) + '" r="5" fill="#0f172a"/>';
+            s += '<text x="' + (gx(p.x) + 11) + '" y="' + (gy(p.y) - 9) + '" font-size="20" font-weight="800" fill="#0f172a" font-family="Georgia, serif">' + p.n + '</text>';
+        });
+        return s + '</svg>';
+    }
+
+    // =====================================================================================
+    //  PART 2 - THE 20 QUESTION ENGINES
+    // =====================================================================================
+    function geoPrompt(f, instr) { return '<div style="margin-bottom:8px; font-weight:500; color:#334155;">' + f.info + '</div>' + instr; }
+    function geoProblem(f, cat, tier, type, instr, equation, solution, pool) {
+        return { equation: equation, tier: tier, type: type, categoryType: cat, pool: pool || [], solution: solution, prompt: geoPrompt(f, instr), svg: figSvg(f), figKind: f.kind };
+    }
+    const ALL3 = ['SQUARE', 'PARA', 'HEX', 'TRI', 'RECT'];
+
+    // ---------------------------------- EASY ----------------------------------
+    // 1. name a vector equal to AB
+    function qEqualVector(tier) {
+        const f = mkFig(ALL3);
+        const cands = f.pairsDrawn.filter(u => f.pairsAll.some(p => p !== u && vSame(vv(f, p), vv(f, u))));
+        const u = pickOne(cands), uv = vv(f, u);
+        const correct = VT(pickOne(f.pairsAll.filter(p => p !== u && vSame(vv(f, p), uv))));
+        return geoProblem(f, 'EQUAL VECTORS', tier, 'MCQ', 'Which of the following vectors is <b>equal</b> to the vector below?', VT(u), correct, vectorChoices(f, uv, correct));
+    }
+    // 2. name a vector opposite to MN
+    function qOppositeVector(tier) {
+        const f = mkFig(ALL3);
+        const u = pickOne(f.pairsDrawn), av = vNeg(vv(f, u));
+        let reps = f.pairsAll.filter(p => vSame(vv(f, p), av));
+        const nonRev = reps.filter(p => !(p[0] === u[1] && p[1] === u[0]));
+        const correct = VT(pickOne(nonRev.length ? nonRev : reps));
+        return geoProblem(f, 'OPPOSITE VECTORS', tier, 'MCQ', 'Which of the following vectors is <b>opposite</b> to the vector below?', VT(u), correct, vectorChoices(f, av, correct));
+    }
+    // 3. true/false: ||U|| = ||V||
+    function qTfNorm(tier) {
+        const f = mkFig(ALL3), want = Math.random() < 0.5, list = [];
+        f.pairsDrawn.forEach(u => f.pairsDrawn.forEach(w => {
+            if (u === w || (u[0] === w[1] && u[1] === w[0])) return;
+            if ((vN2(f, vv(f, u)) === vN2(f, vv(f, w))) !== want) return;
+            if (u[0] === w[0] || u[1] === w[1] || u[0] === w[1] || u[1] === w[0]) list.push([u, w]);
+        }));
+        if (!list.length) return null;
+        const c = pickOne(list);
+        return geoProblem(f, 'NORM COMPARISON', tier, 'TF', 'Answer by <b>true</b> or <b>false</b>. Study the figure and decide whether the statement is correct.', NORM(VT(c[0])) + ' = ' + NORM(VT(c[1])), want ? 'TRUE' : 'FALSE', []);
+    }
+    // 4. true/false: U = V
+    function qTfEqual(tier) {
+        const f = mkFig(ALL3), want = Math.random() < 0.5;
+        const trueL = [], trap = [], other = [];
+        f.pairsDrawn.forEach(u => f.pairsDrawn.forEach(w => {
+            if (u === w) return;
+            if (vSame(vv(f, u), vv(f, w))) trueL.push([u, w]);
+            else if (vN2(f, vv(f, u)) === vN2(f, vv(f, w))) trap.push([u, w]); else other.push([u, w]);
+        }));
+        const list = want ? trueL : (trap.length && Math.random() < 0.75 ? trap : other);
+        if (!list.length) return null;
+        const c = pickOne(list);
+        return geoProblem(f, 'VECTOR EQUALITY', tier, 'TF', 'Answer by <b>true</b> or <b>false</b>. Two vectors are equal only if they have the same direction, the same sense and the same norm.', VT(c[0]) + ' = ' + VT(c[1]), want ? 'TRUE' : 'FALSE', []);
+    }
+    // 5. true/false: U + V = W
+    function qTfSum(tier) {
+        const f = mkFig(ALL3), want = Math.random() < 0.5;
+        for (let t = 0; t < 400; t++) {
+            const u = pickOne(f.pairsDrawn), v = pickOne(f.pairsDrawn);
+            if (u === v) continue;
+            const r = vAdd(vv(f, u), vv(f, v)); if (vZero(r)) continue;
+            const reps = f.pairsAll.filter(p => vSame(vv(f, p), r)); if (!reps.length) continue;
+            let w;
+            if (want) { const d = reps.filter(p => isDrawn(f, p)); w = pickOne(d.length ? d : reps); }
+            else {
+                const alt = vSub(vv(f, u), vv(f, v));
+                let pool = f.pairsAll.filter(p => vSame(vv(f, p), alt) && !vSame(alt, r) && !vZero(alt));
+                if (!pool.length) pool = f.pairsAll.filter(p => vSame(vv(f, p), vNeg(r)));
+                if (!pool.length) pool = f.pairsDrawn.filter(p => !vSame(vv(f, p), r));
+                w = pickOne(pool);
+            }
+            return geoProblem(f, 'SUM RELATION', tier, 'TF', 'Answer by <b>true</b> or <b>false</b>. Justify using the parallelogram rule or the Chasles relation.', VT(u) + ' + ' + VT(v) + ' = ' + VT(w), want ? 'TRUE' : 'FALSE', []);
+        }
+        return null;
+    }
+    // 6. complete a sum (Chasles) - terms are shuffled and some are replaced by an equal vector
+    function qChasles(tier) {
+        const f = mkFig(ALL3);
+        const pts = shuffleArray(f.names).slice(0, 4);
+        const last = Math.random() < 0.2 ? pts[0] : pickOne(f.names.filter(n => n !== pts[3] && n !== pts[0]));
+        pts.push(last);
+        let terms = [];
+        for (let i = 0; i < 4; i++) {
+            let p = [pts[i], pts[i + 1]];
+            if (Math.random() < 0.5) { const alt = f.pairsAll.filter(q => q !== p && !(q[0] === p[0] && q[1] === p[1]) && vSame(vv(f, q), vv(f, p))); if (alt.length) p = pickOne(alt); }
+            terms.push({ s: 1, p: p });
+        }
+        terms = shuffleArray(terms);
+        const total = vv(f, [pts[0], pts[4]]);
+        const correct = vZero(total) ? ZERO : VT([pts[0], pts[4]]);
+        return geoProblem(f, 'CHASLES RELATION', tier, 'MCQ', 'Complete:', exprTex(terms) + ' = ' + BS + 'ldots', correct, vectorChoices(f, total, correct));
+    }
+
+    // ---------------------------------- MEDIUM ----------------------------------
+    // 7. difference of two vectors
+    function qDifference(tier) {
+        const f = mkFig(ALL3);
+        for (let t = 0; t < 400; t++) {
+            const u = pickOne(f.pairsDrawn), v = pickOne(f.pairsDrawn);
+            if (u === v) continue;
+            const r = vSub(vv(f, u), vv(f, v)); if (vZero(r)) continue;
+            const correct = nameVec(f, r); if (!correct) continue;
+            return geoProblem(f, 'DIFFERENCE OF VECTORS', tier, 'MCQ', 'Complete (write the answer as a single vector of the figure):', VT(u) + ' - ' + VT(v) + ' = ' + BS + 'ldots', correct, vectorChoices(f, r, correct));
+        }
+        return null;
+    }
+    // 8. midpoint relations
+    function qMidpoint(tier) {
+        const f = mkFig(ALL3);
+        const m = pickOne(f.mids);
+        let M = m[0], P = m[1], Q = m[2];
+        if (Math.random() < 0.5) { const t = P; P = Q; Q = t; }
+        const variants = [
+            [{ s: 1, p: [M, P] }, { s: 1, p: [M, Q] }],
+            [{ s: 1, p: [P, M] }, { s: 1, p: [Q, M] }],
+            [{ s: 1, p: [P, M] }, { s: -1, p: [Q, M] }],
+            [{ s: 1, p: [M, Q] }, { s: -1, p: [M, P] }]
+        ];
+        const terms = pickOne(variants), r = termsValue(f, terms), correct = nameVec(f, r);
+        if (!correct) return null;
+        return {
+            equation: exprTex(terms) + ' = ' + BS + 'ldots', tier: tier, type: 'MCQ', categoryType: 'MIDPOINT',
+            pool: vectorChoices(f, r, correct), solution: correct,
+            prompt: geoPrompt(f, M + ' is the midpoint of [' + P + Q + '].<br>Complete:'), svg: figSvg(f), figKind: f.kind
+        };
+    }
+    // 9. parallelogram rule (two vectors with the same origin)
+    function qParallelogramRule(tier) {
+        const f = mkFig(ALL3), opts = [];
+        f.names.forEach(P => f.names.forEach(Q => f.names.forEach(R => {
+            if (P === Q || P === R || Q === R) return;
+            if (!isDrawn(f, [P, Q]) || !isDrawn(f, [P, R])) return;
+            const a = vv(f, [P, Q]), b = vv(f, [P, R]);
+            if (vCross(a, b) === 0) return;
+            const s = vAdd(a, b);
+            f.names.forEach(S => { if (S !== P && vSame(vv(f, [P, S]), s)) opts.push([P, Q, R, S]); });
+        })));
+        if (!opts.length) return null;
+        const c = pickOne(opts), correct = VT([c[0], c[3]]);
+        return geoProblem(f, 'PARALLELOGRAM RULE', tier, 'MCQ', 'Use the parallelogram rule to complete:', VT([c[0], c[1]]) + ' + ' + VT([c[0], c[2]]) + ' = ' + BS + 'ldots', correct, vectorChoices(f, vv(f, [c[0], c[3]]), correct));
+    }
+    // 10. norm of a sum / difference of two vectors
+    function qNormOfSum(tier) {
+        const f = mkFig(ALL3);
+        for (let t = 0; t < 400; t++) {
+            const u = pickOne(f.pairsDrawn), v = pickOne(f.pairsDrawn);
+            if (u === v || (u[0] === v[1] && u[1] === v[0])) continue;
+            const minus = Math.random() < 0.3, a = vv(f, u), b = vv(f, v);
+            const r = minus ? vSub(a, b) : vAdd(a, b); if (vZero(r)) continue;
+            const correct = lenTex(f.scale, vN2(f, r));
+            const other = minus ? vAdd(a, b) : vSub(a, b);
+            return geoProblem(f, 'NORM OF A SUM', tier, 'MCQ', 'Calculate the norm. Show the steps: first reduce the vector, then read its length in the figure.', NORM(VT(u) + (minus ? ' - ' : ' + ') + VT(v)) + ' = ' + BS + 'ldots', correct, normChoices(f, correct, [other, a, b]));
+        }
+        return null;
+    }
+    // 11. sum of three vectors = one vector
+    function qThreeTerm(tier) {
+        const f = mkFig(ALL3);
+        for (let t = 0; t < 800; t++) {
+            const u = pickOne(f.pairsDrawn), v = pickOne(f.pairsDrawn), w = pickOne(f.pairsDrawn);
+            if (u === v || v === w || u === w) continue;
+            const r = vAdd(vAdd(vv(f, u), vv(f, v)), vv(f, w)); if (vZero(r)) continue;
+            const correct = nameVec(f, r); if (!correct) continue;
+            const terms = [{ s: 1, p: u }, { s: 1, p: v }, { s: 1, p: w }];
+            return geoProblem(f, 'SUM OF THREE VECTORS', tier, 'MCQ', 'By showing the steps, determine a vector equal to:', exprTex(terms) + ' = ' + BS + 'ldots', correct, vectorChoices(f, r, correct));
+        }
+        return null;
+    }
+    // 13. u = k v : find k
+    function qScalar(tier) {
+        const f = mkFig(ALL3), K = [[2, 1], [-2, 1], [3, 1], [-3, 1], [1, 2], [-1, 2], [1, 3], [-1, 3], [3, 2], [-3, 2], [2, 3], [-2, 3]];
+        const keyOf = k => k[0] + '/' + k[1], allowed = new Set(K.map(keyOf)), list = [];
+        f.pairsDrawn.forEach(u => f.pairsDrawn.forEach(v => {
+            if (u === v) return;
+            const a = vv(f, u), b = vv(f, v);
+            if (vZero(b) || vCross(a, b) !== 0) return;
+            const i = b[0] !== 0 ? 0 : 1;
+            let n = a[i], d = b[i]; const g = gcd(n, d) || 1; n /= g; d /= g; if (d < 0) { n = -n; d = -d; }
+            if (allowed.has(n + '/' + d)) list.push([u, v, n, d]);
+        }));
+        if (!list.length) return null;
+        const c = pickOne(list), correct = fracTex(c[2], c[3]);
+        const fakes = [fracTex(-c[2], c[3]), fracTex(c[3], c[2])].concat(shuffleArray(K).map(k => fracTex(k[0], k[1])));
+        return geoProblem(f, 'COLLINEAR VECTORS', tier, 'MCQ', 'The two vectors below are collinear. Find the real number <i>k</i> such that the equality holds.', VT(c[0]) + ' = k' + BS + ',' + VT(c[1]), correct, pick4(correct, fakes));
+    }
+    // 14. image of a point by a translation
+    function qTranslation(tier) {
+        const f = mkFig(ALL3), list = [];
+        f.pairsDrawn.forEach(u => f.names.forEach(P => {
+            if (P === u[0] || P === u[1]) return;
+            const v = vv(f, u);
+            f.names.forEach(R => { if (R !== P && vSame(vv(f, [P, R]), v)) list.push([u, P, R]); });
+        }));
+        if (!list.length) return null;
+        const c = pickOne(list), u = c[0], P = c[1], R = c[2], fakes = [];
+        f.names.forEach(X => { if (X !== P && vSame(vv(f, [P, X]), vNeg(vv(f, u)))) fakes.push(X); });
+        fakes.push(u[1], u[0], P);
+        shuffleArray(f.names).forEach(X => fakes.push(X));
+        return geoProblem(f, 'TRANSLATION', tier, 'MCQ', 'Let <i>t</i> be the translation of the vector shown. Find the image of the point ' + P + ' by <i>t</i>.', 't_{' + VT(u) + '}(' + P + ') = ' + BS + 'ldots', R, pick4(R, fakes));
+    }
+    // 15. which equality proves that PQRS is a parallelogram
+    function qParallelogramProof(tier) {
+        const f = mkFig(ALL3), good = [], nice = [];
+        f.names.forEach(P => f.names.forEach(Q => f.names.forEach(R => f.names.forEach(S => {
+            if (new Set([P, Q, R, S]).size < 4) return;
+            if (!vSame(vv(f, [P, Q]), vv(f, [S, R]))) return;
+            if (vCross(vv(f, [P, Q]), vv(f, [P, S])) === 0) return;
+            good.push([P, Q, R, S]);
+            if (isDrawn(f, [P, Q]) && isDrawn(f, [Q, R]) && isDrawn(f, [R, S]) && isDrawn(f, [S, P])) nice.push([P, Q, R, S]);
+        }))));
+        const list = nice.length ? nice : good; if (!list.length) return null;
+        const q = pickOne(list), P = q[0], Q = q[1], R = q[2], S = q[3];
+        const eq = (a, b) => VT(a) + ' = ' + VT(b);
+        const goodForms = [[[P, Q], [S, R]], [[Q, R], [P, S]], [[Q, P], [R, S]], [[R, Q], [S, P]]];
+        const badForms = [[[P, Q], [R, S]], [[P, S], [R, Q]], [[P, R], [Q, S]], [[Q, R], [S, P]], [[P, Q], [Q, R]], [[P, R], [S, Q]], [[P, Q], [P, S]]]
+            .filter(x => !vSame(vv(f, x[0]), vv(f, x[1])));
+        const correct = (function (g) { return eq(g[0], g[1]); })(pickOne(goodForms));
+        const fakes = shuffleArray(badForms).map(x => eq(x[0], x[1]));
+        return geoProblem(f, 'PARALLELOGRAM PROOF', tier, 'MCQ', 'Using the figure, which equality proves that <b>' + P + Q + R + S + '</b> is a parallelogram?', '', correct, pick4(correct, fakes));
+    }
+
+    // ---------------------------------- HARD ----------------------------------
+    // 12. norm of a three-term sum
+    function qNormThree(tier) {
+        const f = mkFig(['PARA', 'SQUARE', 'RECT', 'TRI']);
+        for (let t = 0; t < 800; t++) {
+            const u = pickOne(f.pairsDrawn), v = pickOne(f.pairsDrawn), w = pickOne(f.pairsDrawn);
+            if (u === v || v === w || u === w) continue;
+            const a = vv(f, u), b = vv(f, v), c = vv(f, w), r = vAdd(vAdd(a, b), c);
+            if (vZero(r)) continue;
+            const correct = lenTex(f.scale, vN2(f, r));
+            return geoProblem(f, 'NORM OF THREE VECTORS', tier, 'MCQ', 'Calculate. Show the steps: reduce the sum to a single vector, then find its norm.', NORM(exprTex([{ s: 1, p: u }, { s: 1, p: v }, { s: 1, p: w }])) + ' = ' + BS + 'ldots', correct,
+                normChoices(f, correct, [vAdd(a, b), vAdd(a, c), vAdd(b, c), vAdd(vSub(a, b), c)]));
+        }
+        return null;
+    }
+    function rndPoint(lo, hi) { return [rI(lo, hi), rI(lo, hi)]; }
+    // 16. components of AB from two points
+    function qCoordComponents(tier) {
+        let A, B, dx, dy;
+        do { A = rndPoint(-5, 5); B = rndPoint(-5, 5); dx = B[0] - A[0]; dy = B[1] - A[1]; } while (dx === 0 || dy === 0 || Math.abs(dx) > 8 || Math.abs(dy) > 8 || dx === dy || dx === -dy);
+        const correct = crdTex(dx, dy);
+        const fakes = [crdTex(-dx, -dy), crdTex(A[0] + B[0], A[1] + B[1]), crdTex(dy, dx), crdTex(dx, -dy), crdTex(-dx, dy)];
+        return {
+            equation: BS + 'overrightarrow{AB} = ' + BS + 'ldots', tier: tier, type: 'MCQ', categoryType: 'COORDINATES OF A VECTOR',
+            pool: pick4(correct, fakes), solution: correct,
+            prompt: tx('In an orthonormal system, $A' + crdTex(A[0], A[1]) + '$ and $B' + crdTex(B[0], B[1]) + '$. Find the coordinates of the vector below.'),
+            svg: gridSvg([{ n: 'A', x: A[0], y: A[1] }, { n: 'B', x: B[0], y: B[1] }], [{ a: A, b: B, arrow: true, col: 0 }])
+        };
+    }
+    // 17. linear combination in coordinates
+    function qCoordCombination(tier) {
+        let a, b, c, d, k, m;
+        do {
+            a = rI(-4, 4); b = rI(-4, 4); c = rI(-4, 4); d = rI(-4, 4);
+            k = pickOne([2, 3, -2, -3, 1, -1]); m = pickOne([2, 3, -2, -3, 1, -1]);
+        } while ((a === 0 && b === 0) || (c === 0 && d === 0) || (a === c && b === d) || vCross([a, b], [c, d]) === 0 || (Math.abs(k) === 1 && Math.abs(m) === 1));
+        const X = k * a + m * c, Y = k * b + m * d;
+        const coef = z => z === 1 ? '' : (z === -1 ? '-' : String(z));
+        const expr = coef(k) + vecU + (m > 0 ? ' + ' : ' - ') + (Math.abs(m) === 1 ? '' : String(Math.abs(m))) + vecV;
+        const correct = crdTex(X, Y);
+        const fakes = [crdTex(k * a - m * c, k * b - m * d), crdTex(k * a + c, k * b + d), crdTex(a + m * c, b + m * d), crdTex(-X, -Y), crdTex(k * a + m * c, k * b - m * d)];
+        return {
+            equation: expr + ' = ' + BS + 'ldots', tier: tier, type: 'MCQ', categoryType: 'LINEAR COMBINATION',
+            pool: pick4(correct, fakes), solution: correct,
+            prompt: tx('Given $' + vecU + crdTex(a, b) + '$ and $' + vecV + crdTex(c, d) + '$, find the coordinates of the vector below.'),
+            svg: gridSvg([], [{ a: [0, 0], b: [a, b], arrow: true, col: 0, lab: 'u' }, { a: [0, 0], b: [c, d], arrow: true, col: 1, lab: 'v' }])
+        };
+    }
+    // 18. norm from coordinates
+    function qCoordNorm(tier) {
+        const T = pickOne([[3, 4], [6, 8], [5, 12], [1, 1], [2, 2], [1, 2], [2, 3], [3, 3], [1, 3], [4, 4], [2, 4]]);
+        let A, B, dx, dy;
+        for (let g = 0; g < 200; g++) {
+            dx = (Math.random() < 0.5 ? 1 : -1) * T[0]; dy = (Math.random() < 0.5 ? 1 : -1) * T[1];
+            if (Math.random() < 0.5) { const t = dx; dx = dy; dy = t; }
+            A = rndPoint(-5, 5); B = [A[0] + dx, A[1] + dy];
+            if (Math.abs(B[0]) <= 5 && Math.abs(B[1]) <= 5) break;
+        }
+        const tot = dx * dx + dy * dy, correct = sqrtTex(tot);
+        const fakes = [String(Math.abs(dx) + Math.abs(dy)), String(tot), sqrtTex(Math.abs(dx) + Math.abs(dy)), Math.abs(dx * dx - dy * dy) > 0 ? sqrtTex(Math.abs(dx * dx - dy * dy)) : null, sqrtTex(tot + 2), sqrtTex(tot - 1), sqrtTex(tot + 4)];
+        return {
+            equation: NORM(BS + 'overrightarrow{AB}') + ' = ' + BS + 'ldots', tier: tier, type: 'MCQ', categoryType: 'NORM FROM COORDINATES',
+            pool: pick4(correct, fakes), solution: correct,
+            prompt: tx('In an orthonormal system (unit = 1 cm), $A' + crdTex(A[0], A[1]) + '$ and $B' + crdTex(B[0], B[1]) + '$. Calculate the norm below (exact value).'),
+            svg: gridSvg([{ n: 'A', x: A[0], y: A[1] }, { n: 'B', x: B[0], y: B[1] }], [{ a: A, b: B, arrow: true, col: 1 }])
+        };
+    }
+    // 19. collinearity with an unknown coordinate
+    function qCollinear(tier) {
+        let a, b, k;
+        do { a = rI(-4, 4); b = rI(-4, 4); k = pickOne([2, 3, -1, -2, -3]); } while (a === 0 || b === 0);
+        const c = k * a, d = k * b, unknownX = Math.random() < 0.5, ans = unknownX ? c : d;
+        const vTxt = unknownX ? crdTex('m', d) : crdTex(c, 'm');
+        const fakes = [-ans, ans + 1, ans - 1, unknownX ? a + d : b + c, ans * 2, a * d].filter(x => x !== ans && x !== 0 || (x === 0 && ans !== 0)).map(String);
+        return {
+            equation: vecU + crdTex(a, b) + ' ' + BS + 'quad ' + vecV + vTxt, tier: tier, type: 'MCQ', categoryType: 'COLLINEARITY',
+            pool: pick4(String(ans), fakes), solution: String(ans),
+            prompt: tx('Find the real number <i>m</i> such that the vectors $' + vecU + '$ and $' + vecV + '$ are collinear.'),
+            svg: ''
+        };
+    }
+    // 20. find the fourth vertex of a parallelogram
+    function qFourthPoint(tier) {
+        let A, B, C, D;
+        do {
+            A = rndPoint(-3, 3); B = rndPoint(-3, 3); C = rndPoint(-3, 3);
+            D = [A[0] + C[0] - B[0], A[1] + C[1] - B[1]];
+        } while (vCross(vSub(B, A), vSub(C, B)) === 0 || Math.abs(D[0]) > 5 || Math.abs(D[1]) > 5 || A.join() === B.join() || B.join() === C.join() || A.join() === C.join());
+        const correct = crdTex(D[0], D[1]);
+        const alt = [[B[0] + C[0] - A[0], B[1] + C[1] - A[1]], [A[0] + B[0] - C[0], A[1] + B[1] - C[1]], [A[0] + C[0] + B[0], A[1] + C[1] + B[1]], [D[0], -D[1]], [-D[0], D[1]]];
+        const fakes = alt.map(p => crdTex(p[0], p[1]));
+        return {
+            equation: BS + 'overrightarrow{AB} = ' + BS + 'overrightarrow{DC}', tier: tier, type: 'MCQ', categoryType: 'FOURTH VERTEX',
+            pool: pick4(correct, fakes), solution: correct,
+            prompt: tx('In an orthonormal system, $A' + crdTex(A[0], A[1]) + '$, $B' + crdTex(B[0], B[1]) + '$ and $C' + crdTex(C[0], C[1]) + '$. Find the coordinates of the point <b>D</b> such that <b>ABCD</b> is a parallelogram.'),
+            svg: gridSvg([{ n: 'A', x: A[0], y: A[1] }, { n: 'B', x: B[0], y: B[1] }, { n: 'C', x: C[0], y: C[1] }], [{ a: A, b: B, col: 2 }, { a: B, b: C, col: 2 }])
+        };
+    }
+
+    // =====================================================================================
+    //  PART 2b - NEW ENGINES (modelled on the right-triangle and rectangle exercises)
+    // =====================================================================================
+    const coefStr = z => z === 1 ? '' : (z === -1 ? '-' : String(z));
+    function coefExpr(list) {                       // list of [coefficient, pair]
+        return list.map((t, i) => {
+            const k = t[0], a = Math.abs(k), body = (a === 1 ? '' : String(a)) + VT(t[1]);
+            return i === 0 ? (k < 0 ? '-' : '') + body : (k < 0 ? ' - ' : ' + ') + body;
+        }).join('');
+    }
+    function coefVal(f, list) { return list.reduce((acc, t) => vAdd(acc, [t[0] * vv(f, t[1])[0], t[0] * vv(f, t[1])[1]]), [0, 0]); }
+    const mulV = (k, v) => [k * v[0], k * v[1]];
+
+    // TF: ||U|| = k cm  (image 3, 1a)
+    function qTfLength(tier) {
+        const f = mkFig(ALL3), want = Math.random() < 0.5;
+        const u = pickOne(f.pairsDrawn), L = lenTex(f.scale, vN2(f, vv(f, u)));
+        let shown = L;
+        if (!want) {
+            const others = shuffleArray(f.pairsDrawn.map(p => lenTex(f.scale, vN2(f, vv(f, p)))).filter(x => x !== L));
+            if (!others.length) return null; shown = others[0];
+        }
+        return geoProblem(f, 'LENGTH FROM THE FIGURE', tier, 'TF', 'Answer by <b>true</b> or <b>false</b>. Justify with the data of the figure.', NORM(VT(u)) + ' = ' + shown, want ? 'TRUE' : 'FALSE', []);
+    }
+    // TF: ||U + V|| = 0  (image 3, 1b)
+    function qTfZeroSum(tier) {
+        const f = mkFig(ALL3), want = Math.random() < 0.5, list = [], trap = [], other = [];
+        f.pairsDrawn.forEach(u => f.pairsDrawn.forEach(v => {
+            if (u === v || (u[0] === v[1] && u[1] === v[0])) return;
+            const r = vAdd(vv(f, u), vv(f, v));
+            if (vZero(r)) list.push([u, v]);
+            else if (vN2(f, vv(f, u)) === vN2(f, vv(f, v))) trap.push([u, v]); else other.push([u, v]);
+        }));
+        const pool = want ? list : (trap.length && Math.random() < 0.7 ? trap : other);
+        if (!pool.length) return null;
+        const c = pickOne(pool);
+        return geoProblem(f, 'NORM OF A ZERO SUM', tier, 'TF', 'Answer by <b>true</b> or <b>false</b>. Justify.', NORM(VT(c[0]) + ' + ' + VT(c[1])) + ' = 0', want ? 'TRUE' : 'FALSE', []);
+    }
+    // TF: ||U + V|| = ||U|| + ||V||  (image 3, 1c)
+    function qTfNormSum(tier) {
+        const f = mkFig(ALL3), want = Math.random() < 0.5, yes = [], no = [];
+        f.pairsDrawn.forEach(u => f.pairsDrawn.forEach(v => {
+            if (u === v) return;
+            const a = vv(f, u), b = vv(f, v); if (vZero(a) || vZero(b) || vZero(vAdd(a, b))) return;
+            const i = a[0] !== 0 ? 0 : 1;
+            const same = vCross(a, b) === 0 && a[i] * b[i] > 0;
+            (same ? yes : no).push([u, v]);
+        }));
+        const pool = want ? yes : no; if (!pool.length) return null;
+        const c = pickOne(pool);
+        return geoProblem(f, 'NORM OF A SUM', tier, 'TF', 'Answer by <b>true</b> or <b>false</b>. Justify (think about the direction and the sense of the two vectors).',
+            NORM(VT(c[0]) + ' + ' + VT(c[1])) + ' = ' + NORM(VT(c[0])) + ' + ' + NORM(VT(c[1])), want ? 'TRUE' : 'FALSE', []);
+    }
+    // random true relation  k.u + l.v = m.w  found by search
+    function findCoefRelations(f, n) {
+        const out = [], K = [1, 1, 2, -1, -2], M = [1, 2, 3, -1, -2];
+        for (let t = 0; t < 1500 && out.length < n; t++) {
+            const u = pickOne(f.pairsDrawn), v = pickOne(f.pairsDrawn), w = pickOne(f.pairsDrawn);
+            if (u === v) continue;
+            const k = pickOne(K), l = pickOne(K);
+            const r = coefVal(f, [[k, u], [l, v]]); if (vZero(r)) continue;
+            const c = vv(f, w); if (vZero(c)) continue;
+            M.forEach(m => { if (vSame(r, mulV(m, c))) out.push({ k: k, u: u, l: l, v: v, m: m, w: w, r: r }); });
+        }
+        return out;
+    }
+    // TF: 2AB + AD = 2AM  (image 4, item 5)
+    function qTfCoeff(tier) {
+        const f = mkFig(ALL3), want = Math.random() < 0.5;
+        const rel = findCoefRelations(f, 40).filter(x => Math.abs(x.k) > 1 || Math.abs(x.l) > 1 || Math.abs(x.m) > 1);
+        if (!rel.length) return null;
+        const c = pickOne(rel); let m = c.m;
+        if (!want) { m = pickOne([1, 2, 3, -1, -2].filter(x => x !== c.m)); }
+        return geoProblem(f, 'RELATION WITH COEFFICIENTS', tier, 'TF', 'Answer by <b>true</b> or <b>false</b>. Show the steps.', coefExpr([[c.k, c.u], [c.l, c.v]]) + ' = ' + coefExpr([[m, c.w]]), want ? 'TRUE' : 'FALSE', []);
+    }
+    // complete using one vector: u + v  (image 3, item 2)
+    function qSumTwo(tier) {
+        const f = mkFig(ALL3);
+        for (let t = 0; t < 500; t++) {
+            const u = pickOne(f.pairsDrawn), v = pickOne(f.pairsDrawn);
+            if (u === v) continue;
+            const r = vAdd(vv(f, u), vv(f, v)); if (vZero(r)) continue;
+            const correct = nameVec(f, r); if (!correct) continue;
+            return geoProblem(f, 'COMPLETE USING ONE VECTOR', tier, 'MCQ', 'Complete using one vector:', VT(u) + ' + ' + VT(v) + ' = ' + BS + 'ldots', correct, vectorChoices(f, r, correct));
+        }
+        return null;
+    }
+    // u - v + w  (image 3, item 2d)
+    function qMixedSum(tier) {
+        const f = mkFig(ALL3);
+        for (let t = 0; t < 800; t++) {
+            const u = pickOne(f.pairsDrawn), v = pickOne(f.pairsDrawn), w = pickOne(f.pairsDrawn);
+            if (u === v || v === w || u === w) continue;
+            const r = vAdd(vSub(vv(f, u), vv(f, v)), vv(f, w)); if (vZero(r)) continue;
+            const correct = nameVec(f, r); if (!correct) continue;
+            return geoProblem(f, 'MIXED SUM', tier, 'MCQ', 'Complete using one vector. Show the steps:', exprTex([{ s: 1, p: u }, { s: -1, p: v }, { s: 1, p: w }]) + ' = ' + BS + 'ldots', correct, vectorChoices(f, r, correct));
+        }
+        return null;
+    }
+    // k.u + l.v = m.w : find the right-hand side  (image 4, items 4-5)
+    function qCoeffComplete(tier) {
+        const f = mkFig(ALL3);
+        const rel = findCoefRelations(f, 60).filter(x => Math.abs(x.m) !== 1 || Math.abs(x.k) > 1 || Math.abs(x.l) > 1);
+        if (!rel.length) return null;
+        const c = pickOne(rel), correct = coefStr(c.m) + VT(c.w), cw = vv(f, c.w), fakes = [];
+        [1, 2, 3, -1, -2, -3].forEach(m => { if (m !== c.m) fakes.push(coefStr(m) + VT(c.w)); });
+        shuffleArray(f.pairsDrawn).slice(0, 12).forEach(p => { const w = vv(f, p); [c.m, 1, 2].forEach(m => { if (!vZero(w) && !vSame(mulV(m, w), c.r)) fakes.push(coefStr(m) + VT(p)); }); });
+        const pr = fakes.slice(0, 2), rest = shuffleArray(fakes.slice(2));
+        return geoProblem(f, 'COMPLETE WITH A COEFFICIENT', tier, 'MCQ', 'Complete using <b>one</b> vector (a coefficient may be needed):', coefExpr([[c.k, c.u], [c.l, c.v]]) + ' = ' + BS + 'ldots', correct, pick4(correct, pr.concat(rest)));
+    }
+    // ||U|| from the data of the figure
+    function qLengthOne(tier) {
+        const f = mkFig(ALL3);
+        const u = pickOne(f.pairsDrawn.filter(p => vN2(f, vv(f, p)) > 0)), a = vv(f, u);
+        const correct = lenTex(f.scale, vN2(f, a));
+        return geoProblem(f, 'LENGTH FROM THE FIGURE', tier, 'MCQ', 'Use the data of the figure to calculate the norm.', NORM(VT(u)) + ' = ' + BS + 'ldots', correct, normChoices(f, correct, []));
+    }
+    // ||k.u + l.v||  (image 4, item 6: ||AD + AC||)
+    function qNormCoeff(tier) {
+        const f = mkFig(['RECT', 'TRI', 'SQUARE', 'PARA']);
+        for (let t = 0; t < 800; t++) {
+            const u = pickOne(f.pairsDrawn), v = pickOne(f.pairsDrawn);
+            if (u === v || u[0] !== v[0]) continue;                       // same origin, like AD + AC
+            const k = pickOne([1, 1, 2, -1]), l = pickOne([1, 2, -1, -2]);
+            const a = vv(f, u), b = vv(f, v), r = coefVal(f, [[k, u], [l, v]]);
+            if (vZero(r) || vCross(a, b) === 0) continue;
+            const correct = lenTex(f.scale, vN2(f, r));
+            return geoProblem(f, 'NORM WITH COEFFICIENTS', tier, 'MCQ', 'Calculate (exact value). Show the steps: first reduce to a single vector.', NORM(coefExpr([[k, u], [l, v]])) + ' = ' + BS + 'ldots', correct,
+                normChoices(f, correct, [vAdd(a, b), vSub(a, b), mulV(k, a), mulV(l, b)]));
+        }
+        return null;
+    }
+    // coordinates of a midpoint
+    function qCoordMidpoint(tier) {
+        let A, B;
+        do { A = rndPoint(-5, 5); B = rndPoint(-5, 5); } while ((A[0] + B[0]) % 2 !== 0 || (A[1] + B[1]) % 2 !== 0 || A.join() === B.join() || Math.abs(A[0] - B[0]) + Math.abs(A[1] - B[1]) < 4);
+        const I = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2], correct = crdTex(I[0], I[1]);
+        const fakes = [crdTex(A[0] + B[0], A[1] + B[1]), crdTex(B[0] - A[0], B[1] - A[1]), crdTex((B[0] - A[0]) / 2 || 1, (B[1] - A[1]) / 2 || 1), crdTex(I[1], I[0]), crdTex(-I[0], -I[1])];
+        return {
+            equation: BS + 'overrightarrow{AI} = ' + BS + 'overrightarrow{IB}', tier: tier, type: 'MCQ', categoryType: 'MIDPOINT COORDINATES',
+            pool: pick4(correct, fakes), solution: correct,
+            prompt: tx('In an orthonormal system, $A' + crdTex(A[0], A[1]) + '$ and $B' + crdTex(B[0], B[1]) + '$. Find the coordinates of <b>I</b>, the midpoint of [AB].'),
+            svg: gridSvg([{ n: 'A', x: A[0], y: A[1] }, { n: 'B', x: B[0], y: B[1] }], [{ a: A, b: B, col: 1, dash: true }])
+        };
+    }
+
+    // =====================================================================================
+    //  PART 3 - QUIZ ASSEMBLY: 20 slots, every slot draws one of several engines
+    //  (so the bank is much larger than 20 questions, and figures are balanced)
+    // =====================================================================================
+    const ENGINE_SLOTS = {
+        easy:   [[qEqualVector], [qOppositeVector], [qTfNorm, qTfLength], [qTfEqual, qTfZeroSum], [qTfSum, qTfNormSum], [qChasles, qSumTwo]],
+        medium: [[qDifference, qMixedSum], [qMidpoint], [qParallelogramRule, qCoeffComplete], [qNormOfSum, qLengthOne], [qThreeTerm, qCoeffComplete], [qScalar, qTfCoeff], [qTranslation], [qParallelogramProof]],
+        hard:   [[qNormThree, qNormCoeff], [qCoordComponents, qCoordMidpoint], [qCoordCombination], [qCoordNorm], [qCollinear], [qFourthPoint]]
+    };
+    function runEngine(fn, tier) {
+        for (let i = 0; i < 80; i++) {
+            let r = null;
+            try { r = fn(tier); } catch (e) { r = null; }
+            if (r) return r;
+        }
+        throw new Error('Engine failed: ' + fn.name);
+    }
+    function generateEntireQuizSuite() {
+        FIG_USAGE = {}; LAST_FIG = null;
+        const suite = [], usedEngines = new Set(), seen = new Set();
+        ['easy', 'medium', 'hard'].forEach(tier => {
+            shuffleArray(ENGINE_SLOTS[tier]).slice(0, APP_LIMITS.tiers[tier]).forEach(alts => {
+                let options = shuffleArray(alts), fresh = options.filter(fn => !usedEngines.has(fn.name));
+                const fn = (fresh.length ? fresh : options)[0];
+                let p = null;
+                for (let a = 0; a < 6; a++) {                              // avoid an identical question twice
+                    p = runEngine(fn, tier);
+                    const key = (p.prompt + '|' + p.equation).replace(/\s+/g, '');
+                    if (!seen.has(key)) { seen.add(key); break; }
+                }
+                usedEngines.add(fn.name);
+                if (p.figKind) { FIG_USAGE[p.figKind] = (FIG_USAGE[p.figKind] || 0) + 1; LAST_FIG = p.figKind; }
+                p.engine = fn.name;
+                suite.push(p);
+            });
+        });
+        return suite;
+    }
+
+
+    // =====================================================================================
+    //  PART 4 - INTERFACE
+    // =====================================================================================
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+    let formattedQuizStartTimeStamp = "";
+
+    function renderMath(el) {
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(el, {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: '$', right: '$', display: false },
+                    { left: BS + '(', right: BS + ')', display: false },
+                    { left: BS + '[', right: BS + ']', display: true }
+                ],
+                throwOnError: false
+            });
+        }
+    }
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+        document.getElementById('txt-tier-badge').innerText = activeProblem.tier + " tier";
+
+        const equationBlock = activeProblem.equation ? `
+            <div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 10px; text-align:center; overflow-x:auto; overflow-y:hidden;">
+                $$${activeProblem.equation}$$
+            </div>` : "";
+
+        document.getElementById('math-prompt-container').innerHTML = `
+            <div style="font-size:1.1rem; line-height:1.5; color: var(--text-main);">
+                ${activeProblem.prompt}
+                ${equationBlock}
+            </div>`;
+
+        document.getElementById('figure-canvas').innerHTML = activeProblem.svg || "";
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+            activeProblem.pool.forEach(choice => {
+                const b = document.createElement('button');
+                b.className = `opt-btn p-3 text-center transition flex justify-center items-center ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+                b.style.minHeight = "52px";
+                b.style.fontSize = "1.2rem";
+                b.innerHTML = BS + "(" + choice + BS + ")";          // choices are stored as LaTeX
+                b.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    b.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(b);
+            });
+            renderMath(mcqContainer);
+        } else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        }
+
+        buildShortcutsGridMatrix();
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+        renderMath(document.getElementById('math-prompt-container'));
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; buildShortcutsGridMatrix(); }
+
+    function buildShortcutsGridMatrix() {
+        const grid = document.getElementById('navigation-shortcut-grid');
+        grid.innerHTML = "";
+        for (let i = 0; i < APP_LIMITS.totalItems; i++) {
+            const b = document.createElement('button');
+            b.innerText = i + 1;
+            let bgStyle = "bg-slate-100 text-slate-600 border border-slate-300";
+            if (traversalIndex === i) bgStyle = "bg-sky-600 text-white font-bold ring-2 ring-sky-300";
+            else if (storedResponses[i]) bgStyle = "bg-emerald-100 text-emerald-700 border border-emerald-400 font-semibold";
+            b.className = `p-2 text-xs text-center rounded-lg transition cursor-pointer min-w-[32px] ${bgStyle}`;
+            b.onclick = () => { traversalIndex = i; synchroniseQuestionIndex(); };
+            grid.appendChild(b);
+        }
+    }
+
+    // =====================================================================================
+    //  PART 5 - TIMER, REPORT, PDF & EVENT LISTENERS
+    // =====================================================================================
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        document.getElementById('meter-progress').style.backgroundColor = '';
+        function pulse() {
+            const m = Math.floor(timeTrackingRemaining / 60), s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            const pct = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${pct}%`;
+            if (pct < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (pct < 50) progress.style.backgroundColor = '#d97706';
+        }
+        pulse();
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function sendGradesToTeacher(name, classroom, score, duration, quizTitle) {
+        // PASTE YOUR GOOGLE WEB APP LINK DIRECTLY INSIDE THE QUOTES BELOW
+        const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+        fetch(url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name,
+                classroom: classroom,
+                score: score,
+                duration: duration,                 // start time string, logged into Column E of your sheet
+                quizTitle: quizTitle,
+                date: new Date().toLocaleString()
+            })
+        }).catch(err => console.log("Network trace: Client sync fallback triggered."));
+    }
+
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limit reached. Compiling final performance report now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+        generatedSuite.forEach((problem, index) => {
+            const userRaw = storedResponses[index];
+            const userAns = (userRaw || "").toString().trim();
+            const correctAns = problem.solution.toString().trim();
+            const outcomeState = userAns === correctAns;
+            if (outcomeState) tallyCorrect++;
+
+            // maths answers are rendered by KaTeX, TRUE / FALSE are shown as words
+            const isPlain = s => /^(TRUE|FALSE|UNANSWERED)$/i.test(s);
+            const showAns = s => isPlain(String(s)) ? String(s) : (BS + "(" + s + BS + ")");
+            const answerColor = outcomeState ? 'var(--success)' : 'var(--error)';
+
+            const figBlock = problem.svg ? '<div style="margin:12px auto; max-width:380px;">' + problem.svg + '</div>' : "";
+            const answerBlock =
+                '<p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:' + answerColor + '; font-size:1.05rem;">' + (userRaw ? showAns(userRaw) : 'Unanswered') + '</span></p>' +
+                '<p style="margin:0; color: var(--text-muted);"><strong>Correct Verification Key:</strong> <span style="font-weight:600; color: var(--text-main); font-size:1.05rem;">' + showAns(problem.solution) + '</span></p>';
+
+            const itemScoreBadge = outcomeState ?
+                `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>` :
+                `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+
+            compilationHtml += `
+            <div class="report-item" style="position: relative; overflow: auto; background:#ffffff; padding:16px; margin-bottom:12px; border-radius:12px; border-left: 5px solid ${outcomeState ? 'var(--success)' : 'var(--error)'}; page-break-inside: avoid;">
+                ${itemScoreBadge}
+                <div style="font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+                    Question ${index + 1} &middot; Topic Category: <span style="color: var(--primary);">${problem.categoryType}</span>
+                </div>
+                <div style="font-size: 0.95rem; line-height: 1.5; color: var(--text-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 8px;">
+                    <strong>Problem Prompt:</strong>
+                    <div style="margin-top: 4px; font-family: system-ui, sans-serif;">${problem.prompt}</div>
+                    ${problem.equation ? '<div style="margin: 10px 0 2px; text-align: center; font-size: 1.3rem; font-weight: bold; color: var(--text-main); overflow-x:auto;">$$' + problem.equation + '$$</div>' : ''}
+                </div>
+                ${figBlock}
+                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; padding-left: 4px;">
+                    ${answerBlock}
+                </div>
+            </div>`;
+        });
+
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = document.getElementById('student-name').value.trim();
+        const sectionTitle = document.getElementById('student-section').value.trim();
+
+        const headerMetaHtml = `
+        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 0.95rem; line-height:1.4;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                <div><strong>Student Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+                <div><strong>Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem;">
+                <div><strong>Quiz Assessment:</strong> <span style="color: #475569; font-weight: 700;">VECTORS</span></div>
+                <div><strong>Quiz Start Timestamp:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+            </div>
+        </div>`;
+
+        document.getElementById('report-injection-zone').innerHTML = headerMetaHtml + compilationHtml;
+        renderMath(document.getElementById('report-injection-zone'));
+
+        sendGradesToTeacher(userTitle, sectionTitle, `${tallyCorrect} / ${APP_LIMITS.totalItems}`, formattedQuizStartTimeStamp, "VECTORS");
+    }
+
+    function triggerDirectPdfDownload() {
+        const targetElement = document.getElementById('stage-summary');
+        const config = {
+            margin: 10,
+            filename: 'Vectors_Quiz_Diagnostic_Report.pdf',
+            image: { type: 'jpeg', quality: 0.99 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(config).from(targetElement).save();
+    }
+
+    document.getElementById('action-start').onclick = () => {
+        if (!document.getElementById('student-name').value.trim() || !document.getElementById('student-section').value.trim()) {
+            alert("Please complete credential parameters to unlock.");
+            return;
+        }
+        const now = new Date();
+        formattedQuizStartTimeStamp = now.toLocaleDateString() + " @ " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        generatedSuite = generateEntireQuizSuite();
+        traversalIndex = 0;
+        storedResponses = {};
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Finalize and compile report sheets?")) compileFinalPerformanceReport();
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) { traversalIndex--; synchroniseQuestionIndex(); }
+    };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+    // Print-optimized styles + the working "save as PDF" dialog (same behaviour as the sets quiz)
+    if (!document.getElementById('print-fix-styles')) {
+        const style = document.createElement('style');
+        style.id = 'print-fix-styles';
+        style.innerHTML = `
+            @media print {
+                html, body { display: block !important; height: auto !important; overflow: visible !important; background: white !important; }
+                #stage-summary { display: block !important; max-width: 100% !important; width: 100% !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; }
+                footer, #stage-auth, #stage-engine, button, .bg-gradient-to-r button { display: none !important; }
+            }`;
+        document.head.appendChild(style);
+    }
+    document.querySelectorAll('button').forEach(button => {
+        if (button.textContent.includes('Save as PDF') || button.textContent.includes('Download as PDF')) {
+            button.removeAttribute('onclick');
+            button.addEventListener('click', (e) => { e.preventDefault(); window.print(); });
+        }
+    });
+</script>
+</body>
+</html>

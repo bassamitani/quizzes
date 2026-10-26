@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebraic Expressions Diagnostic Suite</title>
+    <!-- Tailwind CSS Styling Framework CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX Mathematical Typography Notation Engine Setup CDN -->                  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7; --primary-hover: #0369a1; --bg-main: #f8fafc;
+            --bg-surface: #ffffff; --border-color: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #16a34a; --error: #dc2626;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; }
+        .hidden { display: none !important; }
+        .opt-btn {
+            background-color: var(--bg-surface); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 1.05rem;
+        }
+        .opt-btn:hover { border-color: var(--primary); background-color: #f0f9ff; }
+        .opt-btn.active { border-color: var(--primary); background-color: #e0f2fe; font-weight: 600; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+        .report-item { background: var(--bg-surface); border-radius: 10px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #cbd5e1; }
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+            .katex { font-size: 1.12em; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Credentials Authentication Entry Stage -->
+    <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
+        <h2 class="text-3xl font-extrabold text-slate-800 text-center tracking-tight mb-2">Algebraic Expressions Quiz</h2>
+        <p class="text-sm text-slate-500 text-center mb-8">Factorizing, Expanding &amp; Remarkable Identities</p>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Student Full Name</label>
+                <input type="text" id="student-name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Assigned Class Section</label>
+                <input type="text" id="student-section" placeholder="Grade 10-A" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <button id="action-start" class="w-full bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm tracking-wider uppercase mt-4">Unlock Examination Matrix</button>
+        </div>
+    </div>
+
+    <!-- FIXED: Active Test Core Engine Integrated Inside One Single Unified Main Box Header Layout -->
+    <div id="stage-engine" class="hidden max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+        <div class="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between min-h-[550px]">
+
+            <!-- HEADER INFO BAR: Time tracking and Question counts grouped inside the single main container block -->
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-5 flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Question Tracker &middot; <span id="idx-current">0</span> / <span id="idx-total">0</span></span>
+                    <span id="txt-tier-badge" class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase bg-slate-100 text-slate-600">Tier</span>
+                </div>
+
+                <!-- TIMER COMPONENT: Grouped tightly inside the primary top header control area -->
+                <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
+                    <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">20:00</span>
+                    <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                        <div id="meter-progress" class="bg-sky-400 h-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Content Presentation Window -->
+            <div class="flex-grow flex flex-col justify-center">
+                <div id="math-prompt-container" class="mb-6"></div>
+
+                <div id="interactive-zone" class="w-full flex flex-col items-center justify-center mb-6">
+                    <div id="box-mcq" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"></div>
+                    <div id="box-tf" class="hidden flex gap-4 w-full justify-center">
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="TRUE">TRUE</button>
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="FALSE">FALSE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Layout Shortcut Matrix Navigation Row -->
+            <div class="border-t border-slate-100 pt-4 mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <!-- Grid Shortcuts inline at the bottom left -->
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden md:block">Overview:</span>
+                    <div id="navigation-shortcut-grid" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="flex gap-3 justify-end w-full sm:w-auto">
+                    <button id="action-back" class="px-5 py-2 border border-slate-300 rounded-xl font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 text-sm transition cursor-pointer">&larr; Back</button>
+                    <button id="action-forward" class="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 text-sm shadow transition cursor-pointer">Next &rarr;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Final Diagnostic Summary Sheet Layout -->
+    <div id="stage-summary" class="hidden max-w-3xl mx-auto w-full px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 p-6 text-white flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">Performance Summary Report</h1>
+                    <p class="text-sky-100 text-xs mt-1">Algebraic Expressions Assessment Key</p>
+                </div>
+                <button onclick="triggerDirectPdfDownload()" class="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition cursor-pointer shadow-sm border border-white/10 text-white">Download as PDF</button>
+            </div>
+
+            <div class="grid grid-cols-3 text-center border-b border-slate-100 bg-slate-50 py-4">
+                <div>
+                    <div id="m-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div id="m-incorrect" class="text-2xl font-extrabold text-rose-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Incorrect</div>
+                </div>
+                <div>
+                    <div id="m-percent" class="text-2xl font-extrabold text-sky-600">0%</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score Rate</div>
+                </div>
+            </div>
+
+                    <!-- Dynamic Question Injections -->
+                        <div id="report-injection-zone" class="p-6 space-y-4 bg-slate-50/50"></div>
+                </div>
+
+                <!-- FIXED: Repositioned standalone PDF action handler bar to the absolute bottom of the page structure -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
+                        <button id="action-pdf-bottom" onclick="triggerDirectPdfDownload()" class="flex-grow bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
+                        <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
+                </div>
+        </div>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
+        &copy; 2026 Algebraic Expressions Assessment Suite &bull; Academic Diagnostic Engine
+    </footer>
+
+<script>
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 1200, // 20 minutes exactly
+        tiers: { easy: 6, medium: 8, hard: 6 }
+    };
+    const QUIZ_TITLE = "Algebraic Expressions";
+
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+    let formattedQuizStartTimeStamp = "";
+    const BS = String.fromCharCode(92);
+
+// ===GEN-START===
+function ri(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function rsign() { return Math.random() < 0.5 ? -1 : 1; }
+function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a; }
+function shuffleArray(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+}
+
+// ---------- tiny polynomial engine in x and y (keys are "powerOfX,powerOfY") ----------
+function ptAdd(p, c, a, b) { const k = a + ',' + b; const v = (p[k] || 0) + c; if (v === 0) delete p[k]; else p[k] = v; }
+function P() { const p = {}; for (let i = 0; i < arguments.length; i++) { const t = arguments[i]; ptAdd(p, t[0], t[1] || 0, t[2] || 0); } return p; }
+function padd(p, q) { const r = Object.assign({}, p); for (const k in q) { const v = (r[k] || 0) + q[k]; if (v === 0) delete r[k]; else r[k] = v; } return r; }
+function pscale(p, n) { const r = {}; if (n === 0) return r; for (const k in p) r[k] = p[k] * n; return r; }
+function pneg(p) { return pscale(p, -1); }
+function psub(p, q) { return padd(p, pneg(q)); }
+function pmul(p, q) {
+    const r = {};
+    for (const k1 in p) { const e1 = k1.split(',').map(Number);
+        for (const k2 in q) { const e2 = k2.split(',').map(Number); ptAdd(r, p[k1] * q[k2], e1[0] + e2[0], e1[1] + e2[1]); } }
+    return r;
+}
+function sq(p) { return pmul(p, p); }
+function peq(p, q) { const k1 = Object.keys(p), k2 = Object.keys(q); return k1.length === k2.length && k1.every(k => p[k] === q[k]); }
+function cst(n) { return P([n, 0, 0]); }
+function lin(a, b) { return P([a, 1, 0], [b, 0, 0]); }          // ax + b
+
+function fmtMono(c, a, b, first) {
+    const abs = Math.abs(c);
+    let v = '';
+    if (a) v += 'x' + (a > 1 ? '^{' + a + '}' : '');
+    if (b) v += 'y' + (b > 1 ? '^{' + b + '}' : '');
+    const body = ((v === '' || abs !== 1) ? String(abs) : '') + v;
+    return (c < 0 ? '-' : (first ? '' : '+')) + body;
+}
+function fmt(p) {
+    const keys = Object.keys(p).sort((k1, k2) => {
+        const e1 = k1.split(',').map(Number), e2 = k2.split(',').map(Number);
+        return ((e2[0] + e2[1]) - (e1[0] + e1[1])) || (e2[0] - e1[0]);
+    });
+    if (!keys.length) return '0';
+    return keys.map((k, i) => { const e = k.split(',').map(Number); return fmtMono(p[k], e[0], e[1], i === 0); }).join('');
+}
+
+// A factored form: lead (a monomial or null) times a list of factors, each with exponent 1 or 2
+function F(p, e) { return { p: p, e: e || 1 }; }
+function fact(lead, fs) { return { lead: lead, fs: fs }; }
+function evalFact(f) {
+    let r = f.lead ? f.lead : cst(1);
+    f.fs.forEach(t => { r = pmul(r, t.e === 2 ? sq(t.p) : t.p); });
+    return r;
+}
+function fmtFact(f) {
+    let s = '';
+    if (f.lead) {
+        if (peq(f.lead, cst(-1))) s += '-';
+        else if (!peq(f.lead, cst(1))) s += fmt(f.lead);
+    }
+    f.fs.forEach(t => { s += '(' + fmt(t.p) + ')' + (t.e === 2 ? '^{2}' : ''); });
+    return s;
+}
+
+// ---------- choices builders (always 1 correct + 3 different wrong answers, or null -> retry) ----------
+function buildPolyChoices(correct, fakes) {
+    const cs = fmt(correct), seen = {}; seen[cs] = 1;
+    const out = [];
+    shuffleArray(fakes).forEach(f => {
+        if (out.length >= 3 || peq(f, correct)) return;
+        const s = fmt(f); if (seen[s]) return;
+        seen[s] = 1; out.push(s);
+    });
+    return out.length === 3 ? { solution: cs, pool: shuffleArray([cs].concat(out)) } : null;
+}
+// wrongs: factorizations that are NOT equal to P;  partials: equal to P but not fully factorized
+function buildFactorChoices(Pp, correctF, wrongs, partials) {
+    if (!peq(evalFact(correctF), Pp)) throw new Error('factor mismatch');
+    const cs = fmtFact(correctF), seen = {}; seen[cs] = 1;
+    const out = [];
+    const okPartials = shuffleArray(partials || []).filter(f => peq(evalFact(f), Pp) && !seen[fmtFact(f)]);
+    if (okPartials.length) { const s = fmtFact(okPartials[0]); seen[s] = 1; out.push(s); }
+    shuffleArray(wrongs).forEach(f => {
+        if (out.length >= 3 || peq(evalFact(f), Pp)) return;
+        const s = fmtFact(f); if (seen[s]) return;
+        seen[s] = 1; out.push(s);
+    });
+    return out.length === 3 ? { solution: cs, pool: shuffleArray([cs].concat(out)) } : null;
+}
+function buildNumberChoices(correct, fakes) {
+    const cs = String(correct), seen = {}; seen[cs] = 1; const out = [];
+    shuffleArray(fakes).forEach(v => { const s = String(v); if (out.length < 3 && !seen[s] && v > 0) { seen[s] = 1; out.push(s); } });
+    return out.length === 3 ? { solution: cs, pool: shuffleArray([cs].concat(out)) } : null;
+}
+function done(tier, cat, prompt, eq, ch) {
+    if (!ch) return null;
+    return { tier: tier, categoryType: cat, prompt: prompt, equation: eq, type: 'MCQ', pool: ch.pool, solution: ch.solution, venn: null };
+}
+
+// ---------- typical wrong answers ----------
+// (A+B)^2 where B carries its own sign
+function squareFakes(A, B) {
+    const AB = pmul(A, B);
+    return [
+        padd(sq(A), sq(B)),                                           // forgot the middle term
+        padd(padd(sq(A), AB), sq(B)),                                 // forgot the 2
+        padd(padd(sq(A), pscale(AB, -2)), sq(B)),                     // wrong sign of middle term
+        psub(padd(sq(A), pscale(AB, 2)), sq(B)),                      // last term negative
+        padd(sq(A), pscale(AB, 2))                                    // forgot to square B
+    ];
+}
+// (A-B)(A+B) with B positive
+function dosFakes(A, B) {
+    return [
+        padd(sq(A), sq(B)),                                           // A^2 + B^2
+        psub(sq(B), sq(A)),                                           // B^2 - A^2
+        sq(psub(A, B)),                                               // (A-B)^2
+        sq(padd(A, B)),                                               // (A+B)^2
+        psub(sq(A), B)                                                // forgot to square B
+    ];
+}
+
+// ---------- the 4 identities ----------
+const ID_DIST = "a(b+c)=ab+ac";
+const ID_SQP = "(a+b)^{2}=a^{2}+2ab+b^{2}";
+const ID_SQM = "(a-b)^{2}=a^{2}-2ab+b^{2}";
+const ID_DOS = "(a-b)(a+b)=a^{2}-b^{2}";
+
+// =========================================================== EASY
+function qExpandDist(tier) {
+    const kind = pick(['num', 'var', 'numvar']);
+    const g = kind === 'num' ? cst(ri(2, 7)) : (kind === 'var' ? P([1, 1, 0]) : P([ri(2, 5), 1, 0]));
+    const a = ri(1, 4), b = rsign() * ri(1, 9);
+    const Ax = P([a, 1, 0]), Bc = cst(b), Q = padd(Ax, Bc);
+    const correct = pmul(g, Q);
+    const fakes = [
+        padd(pmul(g, Ax), Bc),                      // second term not multiplied
+        pmul(g, padd(Ax, pneg(Bc))),                // sign error on the second term
+        padd(Ax, pmul(g, Bc)),                      // first term not multiplied
+        padd(g, Q),                                 // added instead of multiplying
+        pneg(correct)                               // overall sign error
+    ];
+    return done(tier, 'EXPAND_DISTRIBUTIVE', 'Expand using the identity \\(a(b+c)=ab+ac\\):',
+        fmtFact(fact(g, [F(Q)])), buildPolyChoices(correct, fakes));
+}
+
+function qFactorNum(tier) {
+    let k, a, b;
+    do { k = ri(2, 8); a = ri(1, 5); b = rsign() * ri(1, 7); } while (gcd(a, b) !== 1);
+    const Pp = pmul(cst(k), lin(a, b));
+    const correct = fact(cst(k), [F(lin(a, b))]);
+    const wrongs = [
+        fact(cst(k), [F(lin(a, k * b))]),
+        fact(cst(k), [F(lin(a, -b))]),
+        fact(cst(a), [F(lin(k, b))]),
+        fact(cst(k), [F(lin(k * a, b))]),
+        fact(cst(k), [F(lin(a, b + 1))])
+    ];
+    const partials = [];
+    for (let d = 2; d < k; d++) if (k % d === 0) { const m = k / d; partials.push(fact(cst(d), [F(lin(m * a, m * b))])); }
+    return done(tier, 'FACTOR_COMMON_NUMBER', 'Factorize completely (take out the greatest common factor) using \\(ab+ac=a(b+c)\\):',
+        fmt(Pp), buildFactorChoices(Pp, correct, wrongs, partials));
+}
+
+function qFactorVar(tier) {
+    let k, a, b;
+    do { k = ri(1, 4); a = ri(1, 4); b = rsign() * ri(1, 8); } while (gcd(a, b) !== 1);
+    const g = P([k, 1, 0]), Q = lin(a, b), Pp = pmul(g, Q);
+    const correct = fact(g, [F(Q)]);
+    const wrongs = [
+        fact(g, [F(lin(a, -b))]),
+        k > 1 ? fact(cst(k), [F(Q)]) : fact(null, [F(Q)]),
+        fact(g, [F(lin(a, k * b))]),
+        fact(g, [F(lin(b, a))]),
+        fact(g, [F(lin(a, b + rsign()))]),
+        fact(P([1, 1, 0]), [F(Q)])
+    ];
+    const partials = [];
+    if (k > 1) {
+        partials.push(fact(P([1, 1, 0]), [F(lin(k * a, k * b))]));
+        partials.push(fact(cst(k), [F(P([a, 2, 0], [b, 1, 0]))]));
+    }
+    return done(tier, 'FACTOR_COMMON_VARIABLE', 'Factorize completely (take out the greatest common factor):',
+        fmt(Pp), buildFactorChoices(Pp, correct, wrongs, partials));
+}
+
+function qExpandSquareX(tier) {
+    const b = ri(2, 9), s = rsign();
+    const A = P([1, 1, 0]), B = cst(s * b);
+    const expr = fact(null, [F(padd(A, B), 2)]);
+    return done(tier, 'EXPAND_SQUARE_IDENTITY', 'Expand using a remarkable identity:',
+        fmtFact(expr), buildPolyChoices(sq(padd(A, B)), squareFakes(A, B)));
+}
+
+function qIdentify(tier) {
+    const mode = pick(['expand', 'factor']);
+    const kind = pick(['sqp', 'sqm', 'dos', 'dist']);
+    const a = ri(1, 3), b = ri(1, 9);
+    let eq, ans;
+    if (mode === 'expand') {
+        if (kind === 'sqp') { eq = fmtFact(fact(null, [F(lin(a, b), 2)])); ans = ID_SQP; }
+        else if (kind === 'sqm') { eq = fmtFact(fact(null, [F(lin(a, -b), 2)])); ans = ID_SQM; }
+        else if (kind === 'dos') { const A = P([a, 1, 0]), B = cst(b); eq = fmtFact(fact(null, [F(psub(A, B)), F(padd(A, B))])); ans = ID_DOS; }
+        else { eq = fmtFact(fact(cst(ri(2, 7)), [F(lin(ri(1, 4), rsign() * ri(1, 9)))])); ans = ID_DIST; }
+    } else {
+        if (kind === 'sqp') { eq = fmt(sq(lin(a, b))); ans = ID_SQP; }
+        else if (kind === 'sqm') { eq = fmt(sq(lin(a, -b))); ans = ID_SQM; }
+        else if (kind === 'dos') { eq = fmt(psub(sq(P([a, 1, 0])), cst(b * b))); ans = ID_DOS; }
+        else { let k, c, d; do { k = ri(2, 7); c = ri(1, 4); d = ri(1, 7); } while (gcd(c, d) !== 1); eq = fmt(pmul(cst(k), lin(c, d))); ans = ID_DIST; }
+    }
+    const prompt = mode === 'expand' ? 'Which identity is the most useful to <b>expand</b> the expression below?'
+                                     : 'Which identity is the most useful to <b>factorize</b> the expression below?';
+    return done(tier, 'RECOGNISE_THE_IDENTITY', prompt, eq,
+        { solution: ans, pool: shuffleArray([ID_DIST, ID_SQP, ID_SQM, ID_DOS]) });
+}
+
+// ---- true / false (used in easy and medium)
+function qTrueFalse(tier) {
+    const easy = tier === 'easy';
+    const A = easy ? P([1, 1, 0]) : P([ri(2, 5), 1, 0]);
+    const B = cst(easy ? ri(2, 9) : ri(1, 9));
+    const kind = pick(['plus', 'minus', 'dos']);
+    let lhs, rhsTrue, falses;
+    if (kind === 'plus') { lhs = fact(null, [F(padd(A, B), 2)]); rhsTrue = sq(padd(A, B)); falses = squareFakes(A, B); }
+    else if (kind === 'minus') { const Bn = pneg(B); lhs = fact(null, [F(padd(A, Bn), 2)]); rhsTrue = sq(padd(A, Bn)); falses = squareFakes(A, Bn); }
+    else { lhs = fact(null, [F(psub(A, B)), F(padd(A, B))]); rhsTrue = psub(sq(A), sq(B)); falses = dosFakes(A, B); }
+    const truth = Math.random() < 0.5;
+    let rhs = rhsTrue;
+    if (!truth) { const c = falses.filter(f => !peq(f, rhsTrue)); if (!c.length) return null; rhs = pick(c); }
+    return { tier: tier, categoryType: 'TRUE_OR_FALSE', prompt: 'Decide whether the following statement is true or false:',
+        equation: fmtFact(lhs) + ' = ' + fmt(rhs), type: 'TF', pool: [], solution: truth ? 'TRUE' : 'FALSE', venn: null };
+}
+
+// =========================================================== MEDIUM
+function qDistTwo(tier) {
+    const v = pick([[1, 1, 0], [1, 0, 1]]);
+    const c = rsign() * ri(2, 5);
+    const g = P([c, v[1], v[2]]);
+    const a = rsign() * ri(1, 4), b = rsign() * ri(1, 5);
+    const Ax = P([a, 1, 0]), By = P([b, 0, 1]), Q = padd(Ax, By);
+    const correct = pmul(g, Q);
+    const fakes = [
+        padd(pmul(g, Ax), pneg(pmul(g, By))),
+        padd(pmul(g, Ax), By),
+        padd(Ax, pmul(g, By)),
+        padd(pneg(pmul(g, Ax)), pmul(g, By)),
+        pneg(correct)
+    ];
+    return done(tier, 'EXPAND_DISTRIBUTIVE_2_VARIABLES', 'Expand and simplify using \\(a(b+c)=ab+ac\\):',
+        fmtFact(fact(g, [F(Q)])), buildPolyChoices(correct, fakes));
+}
+
+function qSquareLin(tier) {
+    const a = ri(2, 5), b = ri(1, 7), s = rsign();
+    const A = P([a, 1, 0]), B = cst(s * b);
+    return done(tier, 'EXPAND_SQUARE_IDENTITY', 'Expand using the identities \\((a\\pm b)^2=a^2\\pm 2ab+b^2\\):',
+        fmtFact(fact(null, [F(padd(A, B), 2)])), buildPolyChoices(sq(padd(A, B)), squareFakes(A, B)));
+}
+
+function qDosLin(tier) {
+    const a = ri(2, 6), b = ri(1, 9);
+    const A = P([a, 1, 0]), B = cst(b);
+    const f = Math.random() < 0.5 ? fact(null, [F(padd(A, B)), F(psub(A, B))]) : fact(null, [F(psub(A, B)), F(padd(A, B))]);
+    return done(tier, 'EXPAND_DIFFERENCE_OF_SQUARES', 'Expand using the identity \\((a-b)(a+b)=a^2-b^2\\):',
+        fmtFact(f), buildPolyChoices(psub(sq(A), sq(B)), dosFakes(A, B)));
+}
+
+function qDosXY(tier) {
+    const A = Math.random() < 0.5 ? P([1, 2, 0]) : P([ri(2, 5), 1, 0]);
+    const B = P([ri(2, 9), 0, 1]);
+    const f = Math.random() < 0.5 ? fact(null, [F(padd(A, B)), F(psub(A, B))]) : fact(null, [F(psub(A, B)), F(padd(A, B))]);
+    return done(tier, 'EXPAND_DIFFERENCE_OF_SQUARES', 'Expand using the identity \\((a-b)(a+b)=a^2-b^2\\):',
+        fmtFact(f), buildPolyChoices(psub(sq(A), sq(B)), dosFakes(A, B)));
+}
+
+function qFactorDos(tier) {
+    let a, b; do { a = ri(1, 7); b = ri(1, 9); } while (gcd(a, b) !== 1);
+    const A = P([a, 1, 0]), B = cst(b), Pp = psub(sq(A), sq(B));
+    const correct = fact(null, [F(psub(A, B)), F(padd(A, B))]);
+    const wrongs = [
+        fact(null, [F(psub(A, B), 2)]),
+        fact(null, [F(padd(A, B), 2)]),
+        fact(null, [F(psub(A, cst(2 * b))), F(padd(A, cst(2 * b)))]),
+        fact(null, [F(psub(A, cst(b * b))), F(padd(A, cst(b * b)))]),
+        fact(null, [F(psub(P([a * a, 1, 0]), B)), F(padd(P([a * a, 1, 0]), B))]),
+        fact(null, [F(psub(A, B)), F(padd(A, cst(2 * b)))])
+    ];
+    return done(tier, 'FACTORIZE_DIFFERENCE_OF_SQUARES', 'Factorize using the identity \\(a^2-b^2=(a-b)(a+b)\\):',
+        fmt(Pp), buildFactorChoices(Pp, correct, wrongs, []));
+}
+
+function qFactorSq(tier) {
+    let a, b; do { a = ri(1, 4); b = ri(1, 8); } while (gcd(a, b) !== 1);
+    const s = rsign();
+    const A = P([a, 1, 0]), B = cst(s * b), Pp = sq(padd(A, B));
+    const correct = fact(null, [F(padd(A, B), 2)]);
+    const wrongs = [
+        fact(null, [F(psub(A, B), 2)]),
+        fact(null, [F(psub(A, B)), F(padd(A, B))]),
+        fact(null, [F(padd(A, pscale(B, 2)), 2)]),
+        fact(null, [F(padd(P([a * a, 1, 0]), cst(b * b)), 2)]),
+        fact(null, [F(padd(A, B)), F(padd(A, pscale(B, 2)))])
+    ];
+    return done(tier, 'FACTORIZE_PERFECT_SQUARE', 'Factorize using a remarkable identity:',
+        fmt(Pp), buildFactorChoices(Pp, correct, wrongs, []));
+}
+
+function qFactorCommonTwo(tier) {
+    let k, a, b;
+    do { k = ri(2, 5); a = ri(1, 4); b = rsign() * ri(1, 5); } while (gcd(a, b) !== 1);
+    const vv = pick([[1, 0], [0, 1]]);
+    const v = P([1, vv[0], vv[1]]), g = P([k, vv[0], vv[1]]);
+    const Ax = P([a, 1, 0]), By = P([b, 0, 1]), Q = padd(Ax, By), Pp = pmul(g, Q);
+    const correct = fact(g, [F(Q)]);
+    const wrongs = [
+        fact(cst(k), [F(Q)]),
+        fact(g, [F(psub(Ax, By))]),
+        fact(v, [F(Q)]),
+        fact(g, [F(padd(Ax, pscale(By, k)))]),
+        fact(g, [F(padd(pscale(Ax, k), By))])
+    ];
+    const partials = [fact(v, [F(pscale(Q, k))]), fact(cst(k), [F(pmul(v, Q))])];
+    return done(tier, 'FACTOR_COMMON_2_VARIABLES', 'Factorize completely using \\(ab+ac=a(b+c)\\):',
+        fmt(Pp), buildFactorChoices(Pp, correct, wrongs, partials));
+}
+
+// =========================================================== HARD
+function qExpandSqXY(tier) {
+    const A = pick([P([1, 2, 0]), P([ri(2, 4), 1, 0]), P([ri(2, 3), 2, 0])]);
+    const B = P([rsign() * ri(2, 7), 0, 1]);
+    return done(tier, 'EXPAND_SQUARE_2_VARIABLES', 'Expand and simplify using a remarkable identity:',
+        fmtFact(fact(null, [F(padd(A, B), 2)])), buildPolyChoices(sq(padd(A, B)), squareFakes(A, B)));
+}
+
+function qFactorDosXY(tier) {
+    let A, b;
+    do { A = pick([P([ri(1, 6), 1, 0]), P([1, 2, 0]), P([ri(2, 4), 2, 0])]); b = ri(1, 7); } while (gcd(Object.values(A)[0], b) !== 1);
+    const B = P([b, 0, 1]), Pp = psub(sq(A), sq(B));
+    const correct = fact(null, [F(psub(A, B)), F(padd(A, B))]);
+    const wrongs = [
+        fact(null, [F(psub(A, B), 2)]),
+        fact(null, [F(padd(A, B), 2)]),
+        fact(null, [F(psub(A, P([b * b, 0, 1]))), F(padd(A, P([b * b, 0, 1])))]),
+        fact(null, [F(psub(A, pscale(B, 2))), F(padd(A, pscale(B, 2)))]),
+        fact(null, [F(psub(A, B)), F(padd(A, pscale(B, 2)))])
+    ];
+    return done(tier, 'FACTORIZE_DIFFERENCE_OF_SQUARES_2_VARIABLES', 'Factorize using the identity \\(a^2-b^2=(a-b)(a+b)\\):',
+        fmt(Pp), buildFactorChoices(Pp, correct, wrongs, []));
+}
+
+function qFactorSqXY(tier) {
+    let a, b; do { a = ri(1, 4); b = ri(2, 7); } while (gcd(a, b) !== 1);
+    const s = rsign();
+    const A = P([a, 1, 0]), B = P([s * b, 0, 1]), Pp = sq(padd(A, B));
+    const correct = fact(null, [F(padd(A, B), 2)]);
+    const wrongs = [
+        fact(null, [F(psub(A, B), 2)]),
+        fact(null, [F(psub(A, B)), F(padd(A, B))]),
+        fact(null, [F(padd(A, pscale(B, 2)), 2)]),
+        fact(null, [F(padd(P([a * a, 1, 0]), P([b * b, 0, 1])), 2)]),
+        fact(null, [F(padd(A, B)), F(padd(A, pscale(B, 2)))])
+    ];
+    return done(tier, 'FACTORIZE_PERFECT_SQUARE_2_VARIABLES', 'Factorize using a remarkable identity:',
+        fmt(Pp), buildFactorChoices(Pp, correct, wrongs, []));
+}
+
+function qCommonThenIdentity(tier) {
+    const X = P([1, 1, 0]);
+    if (Math.random() < 0.5) {
+        const k = ri(2, 5), b = ri(2, 7);
+        const Pp = pmul(cst(k), psub(sq(X), cst(b * b)));
+        const correct = fact(cst(k), [F(psub(X, cst(b))), F(padd(X, cst(b)))]);
+        const wrongs = [
+            fact(cst(k), [F(psub(X, cst(b)), 2)]),
+            fact(null, [F(psub(X, cst(b))), F(padd(X, cst(b)))]),
+            fact(cst(k), [F(padd(X, cst(b)), 2)]),
+            fact(null, [F(psub(P([k, 1, 0]), cst(b))), F(padd(P([k, 1, 0]), cst(b)))])
+        ];
+        const partials = [fact(cst(k), [F(psub(sq(X), cst(b * b)))])];
+        return done(tier, 'FACTORIZE_COMMON_FACTOR_THEN_IDENTITY', 'Factorize completely (first take out a common factor, then use an identity):',
+            fmt(Pp), buildFactorChoices(Pp, correct, wrongs, partials));
+    }
+    const k = ri(2, 4), b = ri(1, 7), s = rsign();
+    const inner = lin(1, s * b), Pp = pmul(cst(k), sq(inner));
+    const correct = fact(cst(k), [F(inner, 2)]);
+    const wrongs = [
+        fact(cst(k), [F(lin(1, -s * b), 2)]),
+        fact(null, [F(inner, 2)]),
+        fact(null, [F(lin(k, s * b), 2)]),
+        fact(cst(k), [F(lin(1, -b)), F(lin(1, b))])
+    ];
+    const partials = [fact(cst(k), [F(sq(inner))])];
+    return done(tier, 'FACTORIZE_COMMON_FACTOR_THEN_IDENTITY', 'Factorize completely (first take out a common factor, then use an identity):',
+        fmt(Pp), buildFactorChoices(Pp, correct, wrongs, partials));
+}
+
+function qShifted(tier) {
+    let a, b;
+    do { a = rsign() * ri(1, 6); b = ri(1, 8); } while (b === Math.abs(a));
+    const Pp = psub(sq(lin(1, a)), cst(b * b));
+    const correct = fact(null, [F(lin(1, a - b)), F(lin(1, a + b))]);
+    const wrongs = [
+        fact(null, [F(lin(1, a - b), 2)]),
+        fact(null, [F(lin(1, a + b), 2)]),
+        fact(null, [F(lin(1, -a - b)), F(lin(1, -a + b))]),
+        fact(null, [F(lin(1, a - b * b)), F(lin(1, a + b * b))]),
+        fact(null, [F(lin(1, a)), F(lin(1, -b))])
+    ];
+    const eq = fmtFact(fact(null, [F(lin(1, a), 2)])) + '-' + (b * b);
+    return done(tier, 'FACTORIZE_SHIFTED_DIFFERENCE_OF_SQUARES', 'Factorize and simplify each factor using \\(a^2-b^2=(a-b)(a+b)\\):',
+        eq, buildFactorChoices(Pp, correct, wrongs, []));
+}
+
+function qNumeric(tier) {
+    const kind = pick(['sq', 'dos', 'diff']);
+    let eq, ans, fakes;
+    if (kind === 'sq') {
+        const n = pick([100, 100, 50, 200, 30]), d = ri(1, 3), s = rsign(), e = s * d, v = n + e;
+        eq = v + '^{2}'; ans = v * v;
+        fakes = [n * n + e * e, n * n + n * e + e * e, n * n - 2 * n * e + e * e, n * n + 2 * n * e - e * e, n * n + 2 * n * e];
+    } else if (kind === 'dos') {
+        const n = pick([100, 50, 200, 30, 60]), d = ri(1, 4);
+        eq = (n - d) + '\\times ' + (n + d); ans = n * n - d * d;
+        fakes = [n * n + d * d, n * n, n * n - d, n * n - 2 * d, (n - d) * (n - d)];
+    } else {
+        const t = ri(5, 40), a = 50 + t, b = 50 - t;
+        eq = a + '^{2}-' + b + '^{2}'; ans = a * a - b * b;
+        fakes = [(a - b) * (a - b), (a + b) * (a + b), a * a + b * b, (a - b) * (a + b) + 100, a - b];
+    }
+    return done(tier, 'IDENTITIES_IN_MENTAL_CALCULATION', 'Use a remarkable identity to compute without a calculator:',
+        eq, buildNumberChoices(ans, fakes));
+}
+
+function qExpandMixed(tier) {
+    let p, r;
+    do { p = ri(2, 4); r = ri(1, 3); } while (p === r);
+    const q = rsign() * ri(1, 5), s = ri(1, 5);
+    const A = P([p, 1, 0]), B = cst(q), R = P([r, 1, 0]);
+    const S = sq(padd(A, B)), D = psub(sq(R), cst(s * s));
+    const Sw = padd(sq(A), sq(B)), Dw = padd(sq(R), cst(s * s));
+    const correct = psub(S, D);
+    const fakes = [psub(S, Dw), psub(Sw, D), psub(Sw, Dw), padd(S, D)];
+    const eq = fmtFact(fact(null, [F(padd(A, B), 2)])) + ' - ' + fmtFact(fact(null, [F(padd(R, cst(s))), F(psub(R, cst(s)))]));
+    return done(tier, 'EXPAND_AND_SIMPLIFY_WITH_IDENTITIES', 'Expand and simplify:', eq, buildPolyChoices(correct, fakes));
+}
+
+function qFindK(tier) {
+    const v = pick(['A', 'B', 'C']);
+    let eq, ans, fakes, prompt;
+    if (v === 'A') {
+        const c = ri(2, 9);
+        eq = 'x^{2}+kx+' + (c * c); ans = 2 * c; fakes = [c, c * c, 4 * c, 2 * c + 2, 2 * c - 2, c + 2];
+        prompt = 'Find the <b>positive</b> value of \\(k\\) so that the expression is a perfect square \\((x+b)^2\\):';
+    } else if (v === 'B') {
+        const pp = ri(2, 4), c = ri(1, 7);
+        eq = (pp * pp) + 'x^{2}+kx+' + (c * c); ans = 2 * pp * c; fakes = [pp * c, 4 * pp * c, pp * pp * c * c, 2 * pp * c + 2, 2 * (pp + c), pp + c];
+        prompt = 'Find the <b>positive</b> value of \\(k\\) so that the expression is a perfect square \\((ax+b)^2\\):';
+    } else {
+        const pp = ri(2, 4), c = ri(1, 7), sg = rsign();
+        eq = (pp * pp) + 'x^{2}' + (sg < 0 ? '-' : '+') + (2 * pp * c) + 'x+k'; ans = c * c; fakes = [c, 2 * c, 2 * pp * c, pp * c, c * c + 1, c * c - 1, pp * pp];
+        prompt = 'Find the value of \\(k\\) so that the expression is a perfect square:';
+    }
+    return done(tier, 'PERFECT_SQUARE_MISSING_TERM', prompt, eq, buildNumberChoices(ans, fakes));
+}
+
+// ---------- registry ----------
+const TIER_TYPES = {
+    easy:   [qExpandDist, qFactorNum, qFactorVar, qExpandSquareX, qIdentify, qTrueFalse],
+    medium: [qDistTwo, qSquareLin, qDosLin, qDosXY, qFactorDos, qFactorSq, qFactorCommonTwo, qTrueFalse],
+    hard:   [qExpandSqXY, qFactorDosXY, qFactorSqXY, qCommonThenIdentity, qShifted, qNumeric, qExpandMixed, qFindK]
+};
+function buildFromFactory(factory, tier) {
+    for (let i = 0; i < 60; i++) {
+        try { const q = factory(tier); if (q) return q; } catch (e) { /* retry with new numbers */ }
+    }
+    return null;
+}
+function generateTier(tier, count) {
+    const out = [];
+    const factories = shuffleArray(TIER_TYPES[tier]).slice(0, count);
+    const seen = new Set();
+    factories.forEach(f => {
+        let q = null;
+        for (let i = 0; i < 40; i++) {
+            q = buildFromFactory(f, tier);
+            if (q && !seen.has(q.equation)) break;
+        }
+        seen.add(q.equation); out.push(q);
+    });
+    return out;
+}
+// ===GEN-END===
+
+
+    function generateEntireQuizSuite() {
+        generatedSuite = [].concat(
+            generateTier('easy', APP_LIMITS.tiers.easy),
+            generateTier('medium', APP_LIMITS.tiers.medium),
+            generateTier('hard', APP_LIMITS.tiers.hard)
+        );
+    }
+
+    // ========================================== -->
+    // INTERFACE VIEW SYNCHRONIZER                -->
+    // ========================================== -->
+    function renderMath(el) {
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(el, {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: BS + '(', right: BS + ')', display: false },
+                    { left: BS + '[', right: BS + ']', display: true }
+                ],
+                throwOnError: false
+            });
+        }
+    }
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+        document.getElementById('txt-tier-badge').innerText = activeProblem.tier + " tier";
+
+        const equationBlock = activeProblem.equation ? `
+            <div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 8px; text-align:center; overflow-x:auto;">
+                $$${activeProblem.equation}$$
+            </div>` : "";
+
+        document.getElementById('math-prompt-container').innerHTML = `
+            <div style="font-size:1.1rem; line-height:1.5; color: var(--text-main);">
+                ${activeProblem.prompt}
+                ${equationBlock}
+            </div>`;
+
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+
+            activeProblem.pool.forEach(choice => {
+                const b = document.createElement('button');
+                b.className = `opt-btn p-3 text-center transition flex justify-center items-center ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+                b.style.minHeight = "48px";
+                b.style.fontSize = "1.2rem";
+                b.innerHTML = BS + "(" + choice + BS + ")";
+                b.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    b.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(b);
+            });
+            renderMath(mcqContainer);
+        } else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        }
+
+        buildShortcutsGridMatrix();
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+        renderMath(document.getElementById('math-prompt-container'));
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; buildShortcutsGridMatrix(); }
+
+    function buildShortcutsGridMatrix() {
+        const grid = document.getElementById('navigation-shortcut-grid');
+        grid.innerHTML = "";
+        for (let i = 0; i < APP_LIMITS.totalItems; i++) {
+            const b = document.createElement('button');
+            b.innerText = i + 1;
+            let bgStyle = "bg-slate-100 text-slate-600 border border-slate-300";
+            if (traversalIndex === i) bgStyle = "bg-sky-600 text-white font-bold ring-2 ring-sky-300";
+            else if (storedResponses[i]) bgStyle = "bg-emerald-100 text-emerald-700 border border-emerald-400 font-semibold";
+            b.className = `p-2 text-xs text-center rounded-lg transition cursor-pointer min-w-[32px] ${bgStyle}`;
+            b.onclick = () => { traversalIndex = i; synchroniseQuestionIndex(); };
+            grid.appendChild(b);
+        }
+    }
+
+    // ========================================== -->
+    // TIMER, REPORT, PDF & EVENT LISTENERS       -->
+    // ========================================== -->
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            const m = Math.floor(timeTrackingRemaining / 60);
+            const s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            const pct = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${pct}%`;
+            progress.style.backgroundColor = pct < 25 ? 'var(--error)' : (pct < 50 ? '#d97706' : '');
+        }
+        pulse();
+        clearInterval(schedulerHandle);
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function sendGradesToTeacher(name, classroom, score, startStamp, quizTitle) {
+        // Google Web App link that receives the grades
+        const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+        fetch(url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name,
+                classroom: classroom,
+                score: score,
+                duration: startStamp,
+                quizTitle: quizTitle,
+                date: new Date().toLocaleString()
+            })
+        }).catch(err => console.log("Network trace: Client sync fallback triggered."));
+    }
+
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limit reached. Compiling final performance report now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+        generatedSuite.forEach((problem, index) => {
+            const userRaw = storedResponses[index];
+            const userAns = (userRaw || "").toString().trim().toUpperCase();
+            const correctAns = problem.solution.toString().trim().toUpperCase();
+            const ok = userAns === correctAns;
+            if (ok) tallyCorrect++;
+
+            const isPlain = s => /^(TRUE|FALSE|UNANSWERED)$/i.test(s);
+            const showAns = s => isPlain(String(s)) ? String(s) : (BS + "(" + s + BS + ")");
+            const answerColor = ok ? 'var(--success)' : 'var(--error)';
+
+            const answerBlock =
+                '<p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:' + answerColor + '; font-size:1.05rem;">' + (userRaw ? showAns(userRaw) : 'Unanswered') + '</span></p>' +
+                '<p style="margin:0; color: var(--text-muted);"><strong>Correct Verification Key:</strong> <span style="font-weight:600; color: var(--text-main); font-size:1.05rem;">' + showAns(problem.solution) + '</span></p>';
+
+            const badge = ok
+                ? `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>`
+                : `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+
+            compilationHtml += `
+            <div class="report-item" style="position: relative; overflow: auto; background:#ffffff; padding:16px; margin-bottom:12px; border-radius:12px; border-left: 5px solid ${ok ? 'var(--success)' : 'var(--error)'};">
+                ${badge}
+                <div style="font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+                    Question ${index + 1} &middot; Topic Category: <span style="color: var(--primary);">${problem.categoryType.replace(/_/g, ' ')}</span>
+                </div>
+                <div style="margin: 16px 0; text-align: center; font-size: 1.4rem; font-weight: bold; color: var(--text-main); overflow-x:auto;">
+                    ${problem.equation ? '$$' + problem.equation + '$$' : ''}
+                </div>
+                <div style="font-size: 0.95rem; line-height: 1.5; color: var(--text-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+                    <strong>Problem Prompt:</strong>
+                    <div style="margin-top: 4px; font-family: system-ui, sans-serif;">${problem.prompt}</div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; padding-left: 4px;">
+                    ${answerBlock}
+                </div>
+            </div>`;
+        });
+
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = document.getElementById('student-name').value.trim();
+        const sectionTitle = document.getElementById('student-section').value.trim();
+
+        const headerMetaHtml = `
+        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 0.95rem; line-height:1.4;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                <div><strong>Student Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+                <div><strong>Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem;">
+                <div><strong>Quiz Assessment:</strong> <span style="color: #475569; font-weight: 700;">${QUIZ_TITLE}</span></div>
+                <div><strong>Quiz Start Timestamp:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+            </div>
+        </div>`;
+
+        document.getElementById('report-injection-zone').innerHTML = headerMetaHtml + compilationHtml;
+        renderMath(document.getElementById('report-injection-zone'));
+
+        sendGradesToTeacher(userTitle, sectionTitle, `${tallyCorrect} / ${APP_LIMITS.totalItems}`, formattedQuizStartTimeStamp, QUIZ_TITLE);
+    }
+
+    function triggerDirectPdfDownload() {
+        const targetElement = document.getElementById('stage-summary');
+        const config = {
+            margin:       10,
+            filename:     'Algebraic_Expressions_Quiz_Report.pdf',
+            image:        { type: 'jpeg', quality: 0.99 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(config).from(targetElement).save();
+    }
+
+    document.getElementById('action-start').onclick = () => {
+        if (!document.getElementById('student-name').value.trim() || !document.getElementById('student-section').value.trim()) {
+            alert("Please complete credential parameters to unlock.");
+            return;
+        }
+        const now = new Date();
+        formattedQuizStartTimeStamp = now.toLocaleDateString() + " @ " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Finalize and compile report sheets?")) compileFinalPerformanceReport();
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) {
+            traversalIndex--;
+            synchroniseQuestionIndex();
+        }
+    };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+    // Print-optimized styles + "Save as PDF" buttons use the browser print dialog
+    if (!document.getElementById('print-fix-styles')) {
+        const style = document.createElement('style');
+        style.id = 'print-fix-styles';
+        style.innerHTML = `
+            @media print {
+                html, body { display: block !important; height: auto !important; overflow: visible !important; background: white !important; }
+                #stage-summary { display: block !important; max-width: 100% !important; width: 100% !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; }
+                footer, #stage-auth, #stage-engine, button, .bg-gradient-to-r button { display: none !important; }
+            }`;
+        document.head.appendChild(style);
+    }
+    document.querySelectorAll('button').forEach(button => {
+        if (button.textContent.includes('Save as PDF') || button.textContent.includes('Download as PDF')) {
+            button.removeAttribute('onclick');
+            button.addEventListener('click', (e) => { e.preventDefault(); window.print(); });
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Level Topics</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --accent: #3b82f6;
+            --bg-light: #f8fafc;
+            --text-dark: #0f172a;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            border-left: 10px solid var(--accent);
+        }
+
+        header h1 { margin: 0; color: var(--primary); }
+
+        .topic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .topic-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            transition: 0.2s ease;
+        }
+
+        .topic-item:hover {
+            border-color: var(--accent);
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.1);
+        }
+
+        .topic-info h3 { margin: 0; font-size: 1.2rem; }
+        .topic-info p { margin: 5px 0 0; color: #64748b; font-size: 0.9rem; }
+
+        .status-badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="back-btn">&#8592; Back to level selector</a>
+
+        <header>
+            <h1>Grade 12GS Mathematics</h1>
+            <p>Select a title to see practice quiz.</p>
+        </header>
+
+        <div class="topic-list">
+            <!-- Topic 1 -->
+            <a href="practice_advanced_functions.html" class="topic-item">
+                <div class="topic-info">
+                    <h3>Advanced properties of functions</h3>
+                    <p>Composition, Inverse, IVT, Concavity and inflection...</p>
+                </div>
+                <span class="status-badge">Available</span>
+            </a>
+
+
+
+              <!-- Add more topics here -->
+        </div>
+    </div>
+
+</body>
+</html>
