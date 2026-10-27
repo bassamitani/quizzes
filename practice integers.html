@@ -47,7 +47,7 @@
     <!-- Credentials Authentication Entry Stage -->
     <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
         <h1 class="text-3xl font-extrabold text-blue-900 text-center tracking-tight mb-2">Operations on Integers</h1>
-        <p class="text-sm text-slate-500 text-center mb-8">Grade 7 Mathematics Department[cite: 6] &middot; Advanced Diagnostic Assessment</p>
+        <p class="text-sm text-slate-500 text-center mb-8">Grade 7 Mathematics Department &middot; Advanced Diagnostic Assessment</p>
 
         <div class="space-y-5">
             <div>
@@ -145,7 +145,7 @@
     </div>
 
     <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
-        &copy; 2026 Mathematics Department[cite: 6] &bull; Operations on Integers Assessment Suite
+        &copy; 2026 Mathematics Department &bull; Operations on Integers Assessment Suite
     </footer>
 
 <script>
@@ -245,118 +245,118 @@
         () => {
             let a = getRandomInt(-40, -10), b = getRandomInt(10, 50), c = getRandomInt(-30, 30);
             let ans = a + b + c;
-            return { equation: `${a} + ${fmt(b)} + ${fmt(c)}`, category: "Signed Addition", prompt: "Evaluate the three-term signed addition[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${a} + ${fmt(b)} + ${fmt(c)}`, category: "Signed Addition", prompt: "Evaluate the three-term signed addition:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 2. Multi-Term Addition (Section I)
         () => {
             let a = getRandomInt(-20, 20), b = getRandomInt(-20, 20), c = getRandomInt(-20, 20), d = getRandomInt(-20, 20);
             let ans = a + b + c + d;
-            return { equation: `${fmt(a)} + ${fmt(b)} + ${fmt(c)} + ${fmt(d)}`, category: "Multi-Term Addition", prompt: "Evaluate the multi-term integer sum[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${fmt(a)} + ${fmt(b)} + ${fmt(c)} + ${fmt(d)}`, category: "Multi-Term Addition", prompt: "Evaluate the multi-term integer sum:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 3. Signed Subtraction (Section II)
         () => {
             let a = getRandomInt(-30, 30), b = getRandomInt(-30, 30);
             let ans = a - b;
-            return { equation: `${a} - ${fmt(b)}`, category: "Signed Subtraction", prompt: "Evaluate the subtraction of signed integers[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${a} - ${fmt(b)}`, category: "Signed Subtraction", prompt: "Evaluate the subtraction of signed integers:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 4. Subtraction Chain (Section II)
         () => {
             let a = getRandomInt(-20, 20), b = getRandomInt(-20, 20), c = getRandomInt(-20, 20);
             let ans = a - b - c;
-            return { equation: `${a} - ${fmt(b)} - ${fmt(c)}`, category: "Subtraction Chain", prompt: "Evaluate the multi-step subtraction[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${a} - ${fmt(b)} - ${fmt(c)}`, category: "Subtraction Chain", prompt: "Evaluate the multi-step subtraction:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 5. Parentheses Subtraction (Section II)
         () => {
             let a = getRandomInt(-25, 25), b = getRandomInt(-25, 25), c = getRandomInt(-25, 25);
-            let ans = a - (-b) + c;
-            return { equation: `${a} - (${b}) + ${fmt(c)}`, category: "Parentheses Subtraction", prompt: "Evaluate the expression with parentheses[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            let ans = a - b + c;
+            return { equation: `${a} - (${b}) + ${fmt(c)}`, category: "Parentheses Subtraction", prompt: "Evaluate the expression with parentheses:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 6. Large Integer Arithmetic (Section III)
         () => {
             let a = getRandomInt(100, 300), b = getRandomInt(50, 150), c = getRandomInt(50, 150);
             let ans = a - b + c;
-            return { equation: `${a} - ${b} + ${c}`, category: "Large Integer Arithmetic", prompt: "Evaluate the integer expression[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${a} - ${b} + ${c}`, category: "Large Integer Arithmetic", prompt: "Evaluate the integer expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 7. Integer Combination (Section III)
         () => {
             let a = getRandomInt(-200, 200), b = getRandomInt(-200, 200), c = getRandomInt(-200, 200);
             let ans = a + b - c;
-            return { equation: `${a} + ${fmt(b)} - ${fmt(c)}`, category: "Integer Combination", prompt: "Evaluate the expression[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${a} + ${fmt(b)} - ${fmt(c)}`, category: "Integer Combination", prompt: "Evaluate the expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 8. Nested Parentheses (Section IV)
         () => {
             let a = getRandomInt(-15, 15), b = getRandomInt(-15, 15), c = getRandomInt(-15, 15), d = getRandomInt(-15, 15);
             let ans = (a - b) + (-c + d);
-            return { equation: `(${a} - ${fmt(b)}) + (${-c} + ${fmt(d)})`, category: "Nested Parentheses", prompt: "Simplify the grouped integer expression[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `(${a} - ${fmt(b)}) + (${-c} + ${fmt(d)})`, category: "Nested Parentheses", prompt: "Simplify the grouped integer expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 9. Grouped Subtraction (Section IV)
         () => {
             let a = getRandomInt(10, 30), b = getRandomInt(10, 30), c = getRandomInt(10, 30), d = getRandomInt(10, 30);
             let ans = (a - b) - (c - d);
-            return { equation: `(${a} - ${b}) - (${c} - ${d})`, category: "Grouped Subtraction", prompt: "Simplify the expression following order of operations[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `(${a} - ${b}) - (${c} - ${d})`, category: "Grouped Subtraction", prompt: "Simplify the expression following order of operations:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 10. Bracket Nesting (Section IV)
         () => {
             let a = getRandomInt(10, 40), b = getRandomInt(5, 20), c = getRandomInt(1, 10);
             let ans = a - (b - (-c));
-            return { equation: `${a} - [${b} - (${-c})]`, category: "Bracket Nesting", prompt: "Evaluate the expression with square brackets[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${a} - [${b} - (${-c})]`, category: "Bracket Nesting", prompt: "Evaluate the expression with square brackets:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 11. Multi-Bracket PEMDAS (Section IV)
         () => {
             let k = getRandomInt(10, 30), a = getRandomInt(10, 25), b = getRandomInt(10, 25), c = getRandomInt(5, 15);
             let ans = k - (a - (b - c));
-            return { equation: `${k} - [${a} - (${b} - ${fmt(c)})]`, category: "Multi-Bracket PEMDAS", prompt: "Evaluate the multi-bracket expression[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${k} - [${a} - (${b} - ${fmt(c)})]`, category: "Multi-Bracket PEMDAS", prompt: "Evaluate the multi-bracket expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 12. Signed Multiplication (Section V)
         () => {
             let a = getRandomNonZeroInt(-12, 12), b = getRandomNonZeroInt(-12, 12);
             let ans = a * b;
-            return { equation: `${fmt(a)} ${tx("@times")} ${fmt(b)}`, category: "Signed Multiplication", prompt: "Evaluate the product of signed integers[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${fmt(a)} ${tx("@times")} ${fmt(b)}`, category: "Signed Multiplication", prompt: "Evaluate the product of signed integers:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 13. Triple Multiplication (Section V)
         () => {
             let a = getRandomNonZeroInt(-6, 6), b = getRandomNonZeroInt(-6, 6), c = getRandomNonZeroInt(-6, 6);
             let ans = a * b * c;
-            return { equation: `${fmt(a)} ${tx("@times")} ${fmt(b)} ${tx("@times")} ${fmt(c)}`, category: "Triple Multiplication", prompt: "Evaluate the multi-factor product[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${fmt(a)} ${tx("@times")} ${fmt(b)} ${tx("@times")} ${fmt(c)}`, category: "Triple Multiplication", prompt: "Evaluate the multi-factor product:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 14. Exact Division (Section V)
         () => {
             let divisor = getRandomNonZeroInt(-10, 10);
             let ans = getRandomNonZeroInt(-12, 12);
             let dividend = divisor * ans;
-            return { equation: `${fmt(dividend)} ${tx("@div")} ${fmt(divisor)}`, category: "Exact Division", prompt: "Evaluate the integer division[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${fmt(dividend)} ${tx("@div")} ${fmt(divisor)}`, category: "Exact Division", prompt: "Evaluate the integer division:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 15. Product & Addition (Section V)
         () => {
             let a = getRandomNonZeroInt(-8, 8), b = getRandomNonZeroInt(-8, 8), c = getRandomInt(-30, 30);
             let ans = (a * b) + c;
-            return { equation: `${fmt(a)} ${tx("@times")} ${fmt(b)} + ${fmt(c)}`, category: "Product & Addition", prompt: "Evaluate the combined product and sum expression[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${fmt(a)} ${tx("@times")} ${fmt(b)} + ${fmt(c)}`, category: "Product & Addition", prompt: "Evaluate the combined product and sum expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 16. Difference of Products (Section V & VI)
         () => {
             let m1 = getRandomNonZeroInt(-10, 10), m2 = getRandomNonZeroInt(-10, 10);
             let m3 = getRandomNonZeroInt(-10, 10), m4 = getRandomNonZeroInt(-10, 10);
             let ans = (m1 * m2) - (m3 * m4);
-            return { equation: `${fmt(m1)} ${tx("@times")} ${fmt(m2)} - ${fmt(m3)} ${tx("@times")} ${fmt(m4)}`, category: "Difference of Products", prompt: "Calculate the difference of the integer products[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${fmt(m1)} ${tx("@times")} ${fmt(m2)} - ${fmt(m3)} ${tx("@times")} ${fmt(m4)}`, category: "Difference of Products", prompt: "Calculate the difference of the integer products:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 17. Order of Operations Basic (Section VI)
         () => {
             let a = getRandomInt(1, 10), b = getRandomNonZeroInt(2, 6), c = getRandomNonZeroInt(2, 6);
             let ans = a - (b * c);
-            return { equation: `${a} - ${fmt(b)} ${tx("@times")} ${fmt(c)}`, category: "Order of Operations", prompt: "Apply strict order of operations (PEMDAS)[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${a} - ${fmt(b)} ${tx("@times")} ${fmt(c)}`, category: "Order of Operations", prompt: "Apply strict order of operations (PEMDAS):", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 18. Distributive PEMDAS (Section VI)
         () => {
             let k = getRandomNonZeroInt(-4, 4), a = getRandomInt(1, 10), b = getRandomNonZeroInt(2, 5), c = getRandomNonZeroInt(2, 5);
             let ans = k * (a - (b * c));
-            return { equation: `${fmt(k)} (${a} - ${fmt(b)} ${tx("@times")} ${fmt(c)})`, category: "Distributive PEMDAS", prompt: "Evaluate the parenthetical expression[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${fmt(k)} (${a} - ${fmt(b)} ${tx("@times")} ${fmt(c)})`, category: "Distributive PEMDAS", prompt: "Evaluate the parenthetical expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 19. Exponents & PEMDAS (Section VI)
         () => {
             let base = getRandomInt(-3, -2), exp = getRandomInt(2, 4);
             let mult = getRandomNonZeroInt(-6, 6), sub = getRandomInt(-15, 15);
             let ans = Math.pow(base, exp) * mult - sub;
-            return { equation: `(${base})^{${exp}} ${tx("@times")} ${fmt(mult)} - ${fmt(sub)}`, category: "Exponents & PEMDAS", prompt: "Evaluate the expression with integer exponents[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `(${base})^{${exp}} ${tx("@times")} ${fmt(mult)} - ${fmt(sub)}`, category: "Exponents & PEMDAS", prompt: "Evaluate the expression with integer exponents:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 20. Dual PEMDAS Group (Section VI #1 style)
         () => {
@@ -364,58 +364,60 @@
             let d = getRandomInt(1, 10), e = getRandomNonZeroInt(2, 4), f = getRandomNonZeroInt(2, 4);
             let left = a - (b * c), right = d - (e * f);
             let ans = left - right;
-            return { equation: `(${a} - ${fmt(b)} ${tx("@times")} ${fmt(c)}) - (${d} - ${fmt(e)} ${tx("@times")} ${fmt(f)})`, category: "Advanced PEMDAS", prompt: "Evaluate the dual-parenthesis PEMDAS expression[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `(${a} - ${fmt(b)} ${tx("@times")} ${fmt(c)}) - (${d} - ${fmt(e)} ${tx("@times")} ${fmt(f)})`, category: "Advanced PEMDAS", prompt: "Evaluate the dual-parenthesis PEMDAS expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 21. Signed Dual PEMDAS Group (Section VI #2 style)
         () => {
             let a = getRandomInt(1, 10), b = getRandomNonZeroInt(2, 4), c = getRandomNonZeroInt(2, 4);
             let d = getRandomInt(1, 10), e = getRandomNonZeroInt(2, 4), f = getRandomNonZeroInt(2, 4);
-            let left = 3 - (a - (b * c)), right = d - (e * f);
+            let left = 3 - (a * b), right = d - (e * f);
             let ans = -left + right;
-            return { equation: `-(${3} - ${a} ${tx("@times")} ${fmt(b)}) + (${d} - ${fmt(e)} ${tx("@times")} ${fmt(f)})`, category: "Advanced PEMDAS", prompt: "Evaluate the signed multi-step expression[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `-(${3} - ${a} ${tx("@times")} ${fmt(b)}) + (${d} - ${fmt(e)} ${tx("@times")} ${fmt(f)})`, category: "Advanced PEMDAS", prompt: "Evaluate the signed multi-step expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 22. Linear Bracket Expansion (Section VI #3 style)
         () => {
             let m1 = getRandomNonZeroInt(-4, 4), m2 = getRandomNonZeroInt(-4, 4);
             let c1 = getRandomInt(1, 5), c2 = getRandomInt(1, 5);
             let ans = (-m1 * (1 - c1)) + (m2 * (1 - c2));
-            return { equation: `${fmt(-m1)}(1 - ${c1}) + ${fmt(m2)}(1 - ${c2})`, category: "Bracket Expansion", prompt: "Evaluate the bracketed product sum[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${fmt(-m1)}(1 - ${c1}) + ${fmt(m2)}(1 - ${c2})`, category: "Bracket Expansion", prompt: "Evaluate the bracketed product sum:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 23. Nested Bracket with Multiplication (Section VI #4 style)
         () => {
             let a = getRandomInt(1, 10), b = getRandomNonZeroInt(2, 4), c = getRandomNonZeroInt(2, 4), d = getRandomNonZeroInt(2, 4);
             let ans = 1 - a * (b - (c * d));
-            return { equation: `1 - ${fmt(a)}(${b} - ${fmt(c)} ${tx("@times")} ${fmt(d)})`, category: "Nested Bracket PEMDAS", prompt: "Apply order of operations to the nested bracket[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `1 - ${fmt(a)}(${b} - ${fmt(c)} ${tx("@times")} ${fmt(d)})`, category: "Nested Bracket PEMDAS", prompt: "Apply order of operations to the nested bracket:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 24. Division with Bracket Denominator (Section VI #5 style)
         () => {
-            let numerator = getRandomNonZeroInt(-20, 20);
-            let a = getRandomNonZeroInt(-5, 5), b = getRandomNonZeroInt(-3, 3), c = getRandomNonZeroInt(2, 4);
-            let denom = a - (b * c);
-            let targetAns = Math.round(numerator / denom);
+            let a, b, c, denom;
+            do {
+                a = getRandomNonZeroInt(-5, 5); b = getRandomNonZeroInt(-3, 3); c = getRandomNonZeroInt(2, 4);
+                denom = a - (b * c);
+            } while (denom === 0);
+            let targetAns = getRandomNonZeroInt(-9, 9);
             let adjustedNum = denom * targetAns;
-            return { equation: `${tx("@frac")}{${adjustedNum}}{${a} - (${fmt(b)} ${tx("@times")} ${fmt(c)})}`, category: "Complex Division", prompt: "Evaluate the fraction with a PEMDAS denominator[cite: 6]:", solution: String(targetAns), pool: buildShuffledNumericChoices(targetAns) };
+            return { equation: `${tx("@frac")}{${adjustedNum}}{${a} - (${fmt(b)} ${tx("@times")} ${fmt(c)})}`, category: "Complex Division", prompt: "Evaluate the fraction with a PEMDAS denominator:", solution: String(targetAns), pool: buildShuffledNumericChoices(targetAns) };
         },
         // 25. Product of two PEMDAS binomials
         () => {
             let a = getRandomInt(1, 5), b = getRandomNonZeroInt(2, 4), c = getRandomInt(1, 5), d = getRandomNonZeroInt(2, 4);
             let term1 = a - b, term2 = c - d;
             let ans = term1 * term2;
-            return { equation: `(${a} - ${fmt(b)}) (${c} - ${fmt(d)})`, category: "Binomial Product", prompt: "Evaluate the product of parenthetical terms[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `(${a} - ${fmt(b)}) (${c} - ${fmt(d)})`, category: "Binomial Product", prompt: "Evaluate the product of parenthetical terms:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 26. Square Power Minus Product (Section VI style)
         () => {
             let base = getRandomInt(2, 6);
             let m1 = getRandomNonZeroInt(-4, 4), m2 = getRandomNonZeroInt(-4, 4);
             let ans = Math.pow(base, 2) - (m1 * m2);
-            return { equation: `${base}^2 - ${fmt(m1)} ${tx("@times")} ${fmt(m2)}`, category: "Powers & Products", prompt: "Evaluate the power and product combination[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${base}^2 - ${fmt(m1)} ${tx("@times")} ${fmt(m2)}`, category: "Powers & Products", prompt: "Evaluate the power and product combination:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 27. Double Bracket Expansion
         () => {
             let a = getRandomNonZeroInt(-4, 4), b = getRandomInt(-5, 5), c = getRandomInt(-5, 5);
             let d = getRandomNonZeroInt(-4, 4), e = getRandomInt(-5, 5), f = getRandomInt(-5, 5);
             let ans = a * (b - c) + d * (e - f);
-            return { equation: `${fmt(a)}(${b} - ${fmt(c)}) + ${fmt(d)}(${e} - ${fmt(f)})`, category: "Double Expansion", prompt: "Evaluate the expanded bracket expression[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${fmt(a)}(${b} - ${fmt(c)}) + ${fmt(d)}(${e} - ${fmt(f)})`, category: "Double Expansion", prompt: "Evaluate the expanded bracket expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 28. Rational Fraction Reduction
         () => {
@@ -423,13 +425,13 @@
             let targetAns = getRandomNonZeroInt(-12, 12);
             let numProduct = denom * targetAns;
             let a = getRandomInt(-20, 20), b = numProduct - a;
-            return { equation: `${tx("@frac")}{${a} + ${fmt(b)}}{${fmt(denom)}}`, category: "Rational Reduction", prompt: "Simplify the rational expression to an exact integer[cite: 6]:", solution: String(targetAns), pool: buildShuffledNumericChoices(targetAns) };
+            return { equation: `${tx("@frac")}{${a} + ${fmt(b)}}{${fmt(denom)}}`, category: "Rational Reduction", prompt: "Simplify the rational expression to an exact integer:", solution: String(targetAns), pool: buildShuffledNumericChoices(targetAns) };
         },
         // 29. Triple Product with Sum
         () => {
             let a = getRandomNonZeroInt(-4, 4), b = getRandomNonZeroInt(-4, 4), c = getRandomNonZeroInt(-4, 4), d = getRandomInt(-20, 20);
             let ans = (a * b * c) + d;
-            return { equation: `${fmt(a)} ${tx("@times")} ${fmt(b)} ${tx("@times")} ${fmt(c)} + ${fmt(d)}`, category: "Triple Product Sum", prompt: "Evaluate the triple product sum[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${fmt(a)} ${tx("@times")} ${fmt(b)} ${tx("@times")} ${fmt(c)} + ${fmt(d)}`, category: "Triple Product Sum", prompt: "Evaluate the triple product sum:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 30. Cube Power Combined
         () => {
@@ -437,7 +439,7 @@
             if (base === 0) base = 2;
             let m = getRandomNonZeroInt(-5, 5), add = getRandomInt(-15, 15);
             let ans = Math.pow(base, 3) + (m * 4) + add;
-            return { equation: `(${base})^3 + ${fmt(m)} ${tx("@times")} 4 + ${fmt(add)}`, category: "Cubed PEMDAS", prompt: "Evaluate the expression with cubed integers[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `(${base})^3 + ${fmt(m)} ${tx("@times")} 4 + ${fmt(add)}`, category: "Cubed PEMDAS", prompt: "Evaluate the expression with cubed integers:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 31. Multi-Step Bracket Division
         () => {
@@ -446,20 +448,20 @@
             let num = targetAns * denom;
             let a = getRandomInt(1, 10), b = getRandomInt(1, 10);
             let c = num - (a - b);
-            return { equation: `${tx("@frac")}{(${a} - ${b}) + ${fmt(c)}}{${fmt(denom)}}`, category: "Fractional PEMDAS", prompt: "Evaluate the fractional expression[cite: 6]:", solution: String(targetAns), pool: buildShuffledNumericChoices(targetAns) };
+            return { equation: `${tx("@frac")}{(${a} - ${b}) + ${fmt(c)}}{${fmt(denom)}}`, category: "Fractional PEMDAS", prompt: "Evaluate the fractional expression:", solution: String(targetAns), pool: buildShuffledNumericChoices(targetAns) };
         },
         // 32. Complex Subtraction Chain with Brackets
         () => {
             let a = getRandomInt(10, 30), b = getRandomInt(1, 10), c = getRandomInt(1, 10), d = getRandomInt(1, 10);
             let ans = a - (b + c - d);
-            return { equation: `${a} - (${b} + ${c} - ${fmt(d)})`, category: "Bracket Subtraction", prompt: "Simplify the bracketed subtraction[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `${a} - (${b} + ${c} - ${fmt(d)})`, category: "Bracket Subtraction", prompt: "Simplify the bracketed subtraction:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 33. Quad Product Difference
         () => {
             let a = getRandomNonZeroInt(-5, 5), b = getRandomNonZeroInt(-5, 5);
             let c = getRandomNonZeroInt(-5, 5), d = getRandomNonZeroInt(-5, 5);
             let ans = (a * b) - (c * d);
-            return { equation: `(${fmt(a)} ${tx("@times")} ${fmt(b)}) - (${fmt(c)} ${tx("@times")} ${fmt(d)})`, category: "Product Difference", prompt: "Calculate the difference of products[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `(${fmt(a)} ${tx("@times")} ${fmt(b)}) - (${fmt(c)} ${tx("@times")} ${fmt(d)})`, category: "Product Difference", prompt: "Calculate the difference of products:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 34. Negative Exponent Base Power
         () => {
@@ -467,7 +469,7 @@
             let exp = 2;
             let ans = Math.pow(base, exp) + getRandomInt(-10, 10);
             let offset = ans - Math.pow(base, exp);
-            return { equation: `(${base})^2 + ${fmt(offset)}`, category: "Square Power", prompt: "Evaluate the square power expression[cite: 6]:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+            return { equation: `(${base})^2 + ${fmt(offset)}`, category: "Square Power", prompt: "Evaluate the square power expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
         },
         // 35. Ordering Model 1 (Ascending Order) [isOrdering: true]
         () => {
@@ -477,10 +479,11 @@
                 if (!setNums.includes(r)) setNums.push(r);
             }
             let sortedArr = setNums.slice().sort((a, b) => a - b);
-            return { equation: setNums.join(", "), category: "Number Ordering", prompt: "Arrange the following integers in <strong>Ascending Order</strong> (least to greatest)[cite: 6]:", solution: sortedArr.join(", "), pool: buildShuffledOrderChoices(sortedArr), isOrdering: true };
+            return { equation: setNums.join(", "), category: "Number Ordering", prompt: "Arrange the following integers in <strong>Ascending Order</strong> (least to greatest):", solution: sortedArr.join(", "), pool: buildShuffledOrderChoices(sortedArr), isOrdering: true };
         },
         // 36. Ordering Model 2 (Ascending Order Mixed) [isOrdering: true]
         () => {
+          while (true) {
             let rawItems = [];
             let evaluatedItems = [];
             let v1 = getRandomInt(-30, -15);
@@ -494,10 +497,12 @@
             let v4 = getRandomInt(-10, 20);
             rawItems.push(String(v4)); evaluatedItems.push(v4);
             
+            if (new Set(evaluatedItems).size < evaluatedItems.length) continue;
             let paired = evaluatedItems.map((val, idx) => ({ val: val, text: rawItems[idx] }));
             paired.sort((a, b) => a.val - b.val);
             let sortedDisplay = paired.map(p => p.text);
-            return { equation: rawItems.join(", "), category: "Number Ordering", prompt: "Arrange the mixed values in <strong>Ascending Order</strong> (least to greatest)[cite: 6]:", solution: sortedDisplay.join(", "), pool: buildShuffledOrderChoices(sortedDisplay), isOrdering: true };
+            return { equation: rawItems.join(", "), category: "Number Ordering", prompt: "Arrange the mixed values in <strong>Ascending Order</strong> (least to greatest):", solution: sortedDisplay.join(", "), pool: buildShuffledOrderChoices(sortedDisplay), isOrdering: true };
+          }
         }
     ];
 
@@ -763,6 +768,7 @@
     document.getElementById('action-retry').onclick = () => {
         storedResponses = {}; traversalIndex = 0;
         timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('meter-progress').style.backgroundColor = '';
         document.getElementById('stage-summary').classList.add('hidden');
         document.getElementById('stage-auth').classList.remove('hidden');
     };
