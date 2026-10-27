@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operations on Integers Quiz</title>
+    <!-- Tailwind CSS Styling Framework CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX Mathematical Typography Notation Engine Setup CDN -->                  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #1e3a8a; --primary-hover: #1e40af; --bg-main: #f8fafc;
+            --bg-surface: #ffffff; --border-color: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #16a34a; --error: #dc2626;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; }
+        .hidden { display: none !important; }
+        .opt-btn {
+            background-color: var(--bg-surface); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 1.05rem;
+        }
+        .opt-btn:hover { border-color: var(--primary); background-color: #eff6ff; }
+        .opt-btn.active { border-color: var(--primary); background-color: #dbeafe; font-weight: 600; box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.15); }
+        .report-item { background: var(--bg-surface); border-radius: 10px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #cbd5e1; }
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+        .katex { font-size: 1.15em; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Credentials Authentication Entry Stage -->
+    <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
+        <h1 class="text-3xl font-extrabold text-blue-900 text-center tracking-tight mb-2">Operations on Integers</h1>
+        <p class="text-sm text-slate-500 text-center mb-8">Grade 7 Mathematics Department &middot; Advanced Diagnostic Assessment</p>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Student Full Name</label>
+                <input type="text" id="student-name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-sm transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Assigned Class Section</label>
+                <input type="text" id="student-section" placeholder="Grade 7-A" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-sm transition">
+            </div>
+            <button id="action-start" class="w-full bg-blue-900 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-blue-800 transition cursor-pointer text-sm tracking-wider uppercase mt-4">Unlock Examination Matrix</button>
+        </div>
+    </div>
+
+    <!-- Active Test Core Engine Stage -->
+    <div id="stage-engine" class="hidden max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+        <div class="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between min-h-[550px]">
+
+            <!-- HEADER INFO BAR -->
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-5 flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-blue-900 uppercase tracking-widest">Question Tracker &middot; <span id="idx-current">0</span> / <span id="idx-total">20</span></span>
+                    <span id="txt-tier-badge" class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase bg-slate-100 text-slate-600">Model</span>
+                </div>
+
+                <!-- TIMER COMPONENT (20 Minutes) -->
+                <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
+                    <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-blue-400">20:00</span>
+                    <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                        <div id="meter-progress" class="bg-blue-400 h-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Content Presentation Window -->
+            <div class="flex-grow flex flex-col justify-center">
+                <div id="math-prompt-container" class="mb-6"></div>
+
+                <div id="interactive-zone" class="w-full flex flex-col items-center justify-center mb-6">
+                    <div id="box-mcq" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"></div>
+                </div>
+            </div>
+
+            <!-- Lower Layout Shortcut Matrix Navigation Row -->
+            <div class="border-t border-slate-100 pt-4 mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden md:block">Overview:</span>
+                    <div id="navigation-shortcut-grid" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <div class="flex gap-3 justify-end w-full sm:w-auto">
+                    <button id="action-back" class="px-5 py-2 border border-slate-300 rounded-xl font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 text-sm transition cursor-pointer">&larr; Back</button>
+                    <button id="action-forward" class="px-6 py-2 bg-blue-900 text-white rounded-xl font-bold hover:bg-blue-800 text-sm shadow transition cursor-pointer">Next &rarr;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Final Diagnostic Summary Sheet Layout -->
+    <div id="stage-summary" class="hidden max-w-3xl mx-auto w-full px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-blue-900 to-indigo-900 p-6 text-white flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">Performance Summary Report</h1>
+                    <p class="text-blue-200 text-xs mt-1">Operations on Integers Curriculum Assessment Key</p>
+                </div>
+                <button onclick="triggerDirectPdfDownload()" class="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition cursor-pointer shadow-sm border border-white/10 text-white">Download as PDF</button>
+            </div>
+
+            <div class="grid grid-cols-3 text-center border-b border-slate-100 bg-slate-50 py-4">
+                <div>
+                    <div id="m-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div id="m-incorrect" class="text-2xl font-extrabold text-rose-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Incorrect</div>
+                </div>
+                <div>
+                    <div id="m-percent" class="text-2xl font-extrabold text-blue-900">0%</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score Rate</div>
+                </div>
+            </div>
+
+            <!-- Dynamic Question Injections -->
+            <div id="report-injection-zone" class="p-6 space-y-4 bg-slate-50/50"></div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
+            <button id="action-pdf-bottom" onclick="triggerDirectPdfDownload()" class="flex-grow bg-blue-900 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-blue-800 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
+            <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
+        </div>
+    </div>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
+        &copy; 2026 Mathematics Department &bull; Operations on Integers Assessment Suite
+    </footer>
+
+<script>
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 1200
+    };
+
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+    let formattedQuizStartTimeStamp = "";
+
+    const BS = String.fromCharCode(92);
+    function tx(s) { return s.split('@').join(BS); }
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function getRandomNonZeroInt(min, max) {
+        let val = 0;
+        while (val === 0) val = getRandomInt(min, max);
+        return val;
+    }
+
+    function fmt(n) {
+        return n < 0 ? `(${n})` : `${n}`;
+    }
+
+    function shuffleArray(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function buildShuffledNumericChoices(correctVal) {
+        const options = [String(correctVal)];
+        const offsets = [-2, 2, -4, 4, -8, 8, -12, 12, -20, 20, -30, 30];
+        let attempts = 0;
+        
+        while (options.length < 4 && attempts < 100) {
+            attempts++;
+            let offset = offsets[Math.floor(Math.random() * offsets.length)];
+            let fake = correctVal + offset;
+            if (correctVal !== 0 && Math.random() > 0.4) fake = -correctVal + offset;
+            if (!options.includes(String(fake))) {
+                options.push(String(fake));
+            }
+        }
+        while (options.length < 4) {
+            let fake = correctVal + getRandomInt(-35, 35);
+            if (!options.includes(String(fake))) options.push(String(fake));
+        }
+        return shuffleArray(options);
+    }
+
+    function buildShuffledOrderChoices(correctArr) {
+        const correctStr = correctArr.join(", ");
+        const options = [correctStr];
+
+        const desc = correctArr.slice().reverse().join(", ");
+        if (!options.includes(desc)) options.push(desc);
+
+        let swapped1 = correctArr.slice();
+        if (swapped1.length >= 2) {
+            [swapped1[0], swapped1[1]] = [swapped1[1], swapped1[0]];
+            let sStr = swapped1.join(", ");
+            if (!options.includes(sStr)) options.push(sStr);
+        }
+
+        let swapped2 = correctArr.slice();
+        if (swapped2.length >= 3) {
+            [swapped2[1], swapped2[2]] = [swapped2[2], swapped2[1]];
+            let sStr = swapped2.join(", ");
+            if (!options.includes(sStr)) options.push(sStr);
+        }
+
+        while (options.length < 4) {
+            let randArr = shuffleArray(correctArr.slice()).join(", ");
+            if (!options.includes(randArr)) options.push(randArr);
+        }
+
+        return shuffleArray(options);
+    }
+
+    // ==========================================
+    // EXTENSIVE BANK OF 36+ ADVANCED PARAMETRIC QUESTION MODELS (MODELLED AFTER Supplementary7 Mak.html)
+    // ==========================================
+    const questionModelsBank = [
+        // 1. Signed Addition (Section I)
+        () => {
+            let a = getRandomInt(-40, -10), b = getRandomInt(10, 50), c = getRandomInt(-30, 30);
+            let ans = a + b + c;
+            return { equation: `${a} + ${fmt(b)} + ${fmt(c)}`, category: "Signed Addition", prompt: "Evaluate the three-term signed addition:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 2. Multi-Term Addition (Section I)
+        () => {
+            let a = getRandomInt(-20, 20), b = getRandomInt(-20, 20), c = getRandomInt(-20, 20), d = getRandomInt(-20, 20);
+            let ans = a + b + c + d;
+            return { equation: `${fmt(a)} + ${fmt(b)} + ${fmt(c)} + ${fmt(d)}`, category: "Multi-Term Addition", prompt: "Evaluate the multi-term integer sum:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 3. Signed Subtraction (Section II)
+        () => {
+            let a = getRandomInt(-30, 30), b = getRandomInt(-30, 30);
+            let ans = a - b;
+            return { equation: `${a} - ${fmt(b)}`, category: "Signed Subtraction", prompt: "Evaluate the subtraction of signed integers:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 4. Subtraction Chain (Section II)
+        () => {
+            let a = getRandomInt(-20, 20), b = getRandomInt(-20, 20), c = getRandomInt(-20, 20);
+            let ans = a - b - c;
+            return { equation: `${a} - ${fmt(b)} - ${fmt(c)}`, category: "Subtraction Chain", prompt: "Evaluate the multi-step subtraction:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 5. Parentheses Subtraction (Section II)
+        () => {
+            let a = getRandomInt(-25, 25), b = getRandomInt(-25, 25), c = getRandomInt(-25, 25);
+            let ans = a - b + c;
+            return { equation: `${a} - (${b}) + ${fmt(c)}`, category: "Parentheses Subtraction", prompt: "Evaluate the expression with parentheses:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 6. Large Integer Arithmetic (Section III)
+        () => {
+            let a = getRandomInt(100, 300), b = getRandomInt(50, 150), c = getRandomInt(50, 150);
+            let ans = a - b + c;
+            return { equation: `${a} - ${b} + ${c}`, category: "Large Integer Arithmetic", prompt: "Evaluate the integer expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 7. Integer Combination (Section III)
+        () => {
+            let a = getRandomInt(-200, 200), b = getRandomInt(-200, 200), c = getRandomInt(-200, 200);
+            let ans = a + b - c;
+            return { equation: `${a} + ${fmt(b)} - ${fmt(c)}`, category: "Integer Combination", prompt: "Evaluate the expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 8. Nested Parentheses (Section IV)
+        () => {
+            let a = getRandomInt(-15, 15), b = getRandomInt(-15, 15), c = getRandomInt(-15, 15), d = getRandomInt(-15, 15);
+            let ans = (a - b) + (-c + d);
+            return { equation: `(${a} - ${fmt(b)}) + (${-c} + ${fmt(d)})`, category: "Nested Parentheses", prompt: "Simplify the grouped integer expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 9. Grouped Subtraction (Section IV)
+        () => {
+            let a = getRandomInt(10, 30), b = getRandomInt(10, 30), c = getRandomInt(10, 30), d = getRandomInt(10, 30);
+            let ans = (a - b) - (c - d);
+            return { equation: `(${a} - ${b}) - (${c} - ${d})`, category: "Grouped Subtraction", prompt: "Simplify the expression following order of operations:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 10. Bracket Nesting (Section IV)
+        () => {
+            let a = getRandomInt(10, 40), b = getRandomInt(5, 20), c = getRandomInt(1, 10);
+            let ans = a - (b - (-c));
+            return { equation: `${a} - [${b} - (${-c})]`, category: "Bracket Nesting", prompt: "Evaluate the expression with square brackets:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 11. Multi-Bracket PEMDAS (Section IV)
+        () => {
+            let k = getRandomInt(10, 30), a = getRandomInt(10, 25), b = getRandomInt(10, 25), c = getRandomInt(5, 15);
+            let ans = k - (a - (b - c));
+            return { equation: `${k} - [${a} - (${b} - ${fmt(c)})]`, category: "Multi-Bracket PEMDAS", prompt: "Evaluate the multi-bracket expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 12. Signed Multiplication (Section V)
+        () => {
+            let a = getRandomNonZeroInt(-12, 12), b = getRandomNonZeroInt(-12, 12);
+            let ans = a * b;
+            return { equation: `${fmt(a)} ${tx("@times")} ${fmt(b)}`, category: "Signed Multiplication", prompt: "Evaluate the product of signed integers:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 13. Triple Multiplication (Section V)
+        () => {
+            let a = getRandomNonZeroInt(-6, 6), b = getRandomNonZeroInt(-6, 6), c = getRandomNonZeroInt(-6, 6);
+            let ans = a * b * c;
+            return { equation: `${fmt(a)} ${tx("@times")} ${fmt(b)} ${tx("@times")} ${fmt(c)}`, category: "Triple Multiplication", prompt: "Evaluate the multi-factor product:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 14. Exact Division (Section V)
+        () => {
+            let divisor = getRandomNonZeroInt(-10, 10);
+            let ans = getRandomNonZeroInt(-12, 12);
+            let dividend = divisor * ans;
+            return { equation: `${fmt(dividend)} ${tx("@div")} ${fmt(divisor)}`, category: "Exact Division", prompt: "Evaluate the integer division:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 15. Product & Addition (Section V)
+        () => {
+            let a = getRandomNonZeroInt(-8, 8), b = getRandomNonZeroInt(-8, 8), c = getRandomInt(-30, 30);
+            let ans = (a * b) + c;
+            return { equation: `${fmt(a)} ${tx("@times")} ${fmt(b)} + ${fmt(c)}`, category: "Product & Addition", prompt: "Evaluate the combined product and sum expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 16. Difference of Products (Section V & VI)
+        () => {
+            let m1 = getRandomNonZeroInt(-10, 10), m2 = getRandomNonZeroInt(-10, 10);
+            let m3 = getRandomNonZeroInt(-10, 10), m4 = getRandomNonZeroInt(-10, 10);
+            let ans = (m1 * m2) - (m3 * m4);
+            return { equation: `${fmt(m1)} ${tx("@times")} ${fmt(m2)} - ${fmt(m3)} ${tx("@times")} ${fmt(m4)}`, category: "Difference of Products", prompt: "Calculate the difference of the integer products:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 17. Order of Operations Basic (Section VI)
+        () => {
+            let a = getRandomInt(1, 10), b = getRandomNonZeroInt(2, 6), c = getRandomNonZeroInt(2, 6);
+            let ans = a - (b * c);
+            return { equation: `${a} - ${fmt(b)} ${tx("@times")} ${fmt(c)}`, category: "Order of Operations", prompt: "Apply strict order of operations (PEMDAS):", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 18. Distributive PEMDAS (Section VI)
+        () => {
+            let k = getRandomNonZeroInt(-4, 4), a = getRandomInt(1, 10), b = getRandomNonZeroInt(2, 5), c = getRandomNonZeroInt(2, 5);
+            let ans = k * (a - (b * c));
+            return { equation: `${fmt(k)} (${a} - ${fmt(b)} ${tx("@times")} ${fmt(c)})`, category: "Distributive PEMDAS", prompt: "Evaluate the parenthetical expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 19. Exponents & PEMDAS (Section VI)
+        () => {
+            let base = getRandomInt(-3, -2), exp = getRandomInt(2, 4);
+            let mult = getRandomNonZeroInt(-6, 6), sub = getRandomInt(-15, 15);
+            let ans = Math.pow(base, exp) * mult - sub;
+            return { equation: `(${base})^{${exp}} ${tx("@times")} ${fmt(mult)} - ${fmt(sub)}`, category: "Exponents & PEMDAS", prompt: "Evaluate the expression with integer exponents:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 20. Dual PEMDAS Group (Section VI #1 style)
+        () => {
+            let a = getRandomInt(1, 10), b = getRandomNonZeroInt(2, 4), c = getRandomNonZeroInt(2, 4);
+            let d = getRandomInt(1, 10), e = getRandomNonZeroInt(2, 4), f = getRandomNonZeroInt(2, 4);
+            let left = a - (b * c), right = d - (e * f);
+            let ans = left - right;
+            return { equation: `(${a} - ${fmt(b)} ${tx("@times")} ${fmt(c)}) - (${d} - ${fmt(e)} ${tx("@times")} ${fmt(f)})`, category: "Advanced PEMDAS", prompt: "Evaluate the dual-parenthesis PEMDAS expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 21. Signed Dual PEMDAS Group (Section VI #2 style)
+        () => {
+            let a = getRandomInt(1, 10), b = getRandomNonZeroInt(2, 4), c = getRandomNonZeroInt(2, 4);
+            let d = getRandomInt(1, 10), e = getRandomNonZeroInt(2, 4), f = getRandomNonZeroInt(2, 4);
+            let left = 3 - (a * b), right = d - (e * f);
+            let ans = -left + right;
+            return { equation: `-(${3} - ${a} ${tx("@times")} ${fmt(b)}) + (${d} - ${fmt(e)} ${tx("@times")} ${fmt(f)})`, category: "Advanced PEMDAS", prompt: "Evaluate the signed multi-step expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 22. Linear Bracket Expansion (Section VI #3 style)
+        () => {
+            let m1 = getRandomNonZeroInt(-4, 4), m2 = getRandomNonZeroInt(-4, 4);
+            let c1 = getRandomInt(1, 5), c2 = getRandomInt(1, 5);
+            let ans = (-m1 * (1 - c1)) + (m2 * (1 - c2));
+            return { equation: `${fmt(-m1)}(1 - ${c1}) + ${fmt(m2)}(1 - ${c2})`, category: "Bracket Expansion", prompt: "Evaluate the bracketed product sum:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 23. Nested Bracket with Multiplication (Section VI #4 style)
+        () => {
+            let a = getRandomInt(1, 10), b = getRandomNonZeroInt(2, 4), c = getRandomNonZeroInt(2, 4), d = getRandomNonZeroInt(2, 4);
+            let ans = 1 - a * (b - (c * d));
+            return { equation: `1 - ${fmt(a)}(${b} - ${fmt(c)} ${tx("@times")} ${fmt(d)})`, category: "Nested Bracket PEMDAS", prompt: "Apply order of operations to the nested bracket:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 24. Division with Bracket Denominator (Section VI #5 style)
+        () => {
+            let a, b, c, denom;
+            do {
+                a = getRandomNonZeroInt(-5, 5); b = getRandomNonZeroInt(-3, 3); c = getRandomNonZeroInt(2, 4);
+                denom = a - (b * c);
+            } while (denom === 0);
+            let targetAns = getRandomNonZeroInt(-9, 9);
+            let adjustedNum = denom * targetAns;
+            return { equation: `${tx("@frac")}{${adjustedNum}}{${a} - (${fmt(b)} ${tx("@times")} ${fmt(c)})}`, category: "Complex Division", prompt: "Evaluate the fraction with a PEMDAS denominator:", solution: String(targetAns), pool: buildShuffledNumericChoices(targetAns) };
+        },
+        // 25. Product of two PEMDAS binomials
+        () => {
+            let a = getRandomInt(1, 5), b = getRandomNonZeroInt(2, 4), c = getRandomInt(1, 5), d = getRandomNonZeroInt(2, 4);
+            let term1 = a - b, term2 = c - d;
+            let ans = term1 * term2;
+            return { equation: `(${a} - ${fmt(b)}) (${c} - ${fmt(d)})`, category: "Binomial Product", prompt: "Evaluate the product of parenthetical terms:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 26. Square Power Minus Product (Section VI style)
+        () => {
+            let base = getRandomInt(2, 6);
+            let m1 = getRandomNonZeroInt(-4, 4), m2 = getRandomNonZeroInt(-4, 4);
+            let ans = Math.pow(base, 2) - (m1 * m2);
+            return { equation: `${base}^2 - ${fmt(m1)} ${tx("@times")} ${fmt(m2)}`, category: "Powers & Products", prompt: "Evaluate the power and product combination:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 27. Double Bracket Expansion
+        () => {
+            let a = getRandomNonZeroInt(-4, 4), b = getRandomInt(-5, 5), c = getRandomInt(-5, 5);
+            let d = getRandomNonZeroInt(-4, 4), e = getRandomInt(-5, 5), f = getRandomInt(-5, 5);
+            let ans = a * (b - c) + d * (e - f);
+            return { equation: `${fmt(a)}(${b} - ${fmt(c)}) + ${fmt(d)}(${e} - ${fmt(f)})`, category: "Double Expansion", prompt: "Evaluate the expanded bracket expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 28. Rational Fraction Reduction
+        () => {
+            let denom = getRandomNonZeroInt(-6, 6);
+            let targetAns = getRandomNonZeroInt(-12, 12);
+            let numProduct = denom * targetAns;
+            let a = getRandomInt(-20, 20), b = numProduct - a;
+            return { equation: `${tx("@frac")}{${a} + ${fmt(b)}}{${fmt(denom)}}`, category: "Rational Reduction", prompt: "Simplify the rational expression to an exact integer:", solution: String(targetAns), pool: buildShuffledNumericChoices(targetAns) };
+        },
+        // 29. Triple Product with Sum
+        () => {
+            let a = getRandomNonZeroInt(-4, 4), b = getRandomNonZeroInt(-4, 4), c = getRandomNonZeroInt(-4, 4), d = getRandomInt(-20, 20);
+            let ans = (a * b * c) + d;
+            return { equation: `${fmt(a)} ${tx("@times")} ${fmt(b)} ${tx("@times")} ${fmt(c)} + ${fmt(d)}`, category: "Triple Product Sum", prompt: "Evaluate the triple product sum:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 30. Cube Power Combined
+        () => {
+            let base = getRandomInt(-3, 3);
+            if (base === 0) base = 2;
+            let m = getRandomNonZeroInt(-5, 5), add = getRandomInt(-15, 15);
+            let ans = Math.pow(base, 3) + (m * 4) + add;
+            return { equation: `(${base})^3 + ${fmt(m)} ${tx("@times")} 4 + ${fmt(add)}`, category: "Cubed PEMDAS", prompt: "Evaluate the expression with cubed integers:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 31. Multi-Step Bracket Division
+        () => {
+            let targetAns = getRandomNonZeroInt(-6, 6);
+            let denom = getRandomNonZeroInt(-4, 4);
+            let num = targetAns * denom;
+            let a = getRandomInt(1, 10), b = getRandomInt(1, 10);
+            let c = num - (a - b);
+            return { equation: `${tx("@frac")}{(${a} - ${b}) + ${fmt(c)}}{${fmt(denom)}}`, category: "Fractional PEMDAS", prompt: "Evaluate the fractional expression:", solution: String(targetAns), pool: buildShuffledNumericChoices(targetAns) };
+        },
+        // 32. Complex Subtraction Chain with Brackets
+        () => {
+            let a = getRandomInt(10, 30), b = getRandomInt(1, 10), c = getRandomInt(1, 10), d = getRandomInt(1, 10);
+            let ans = a - (b + c - d);
+            return { equation: `${a} - (${b} + ${c} - ${fmt(d)})`, category: "Bracket Subtraction", prompt: "Simplify the bracketed subtraction:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 33. Quad Product Difference
+        () => {
+            let a = getRandomNonZeroInt(-5, 5), b = getRandomNonZeroInt(-5, 5);
+            let c = getRandomNonZeroInt(-5, 5), d = getRandomNonZeroInt(-5, 5);
+            let ans = (a * b) - (c * d);
+            return { equation: `(${fmt(a)} ${tx("@times")} ${fmt(b)}) - (${fmt(c)} ${tx("@times")} ${fmt(d)})`, category: "Product Difference", prompt: "Calculate the difference of products:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 34. Negative Exponent Base Power
+        () => {
+            let base = getRandomInt(-4, -2);
+            let exp = 2;
+            let ans = Math.pow(base, exp) + getRandomInt(-10, 10);
+            let offset = ans - Math.pow(base, exp);
+            return { equation: `(${base})^2 + ${fmt(offset)}`, category: "Square Power", prompt: "Evaluate the square power expression:", solution: String(ans), pool: buildShuffledNumericChoices(ans) };
+        },
+        // 35. Ordering Model 1 (Ascending Order) [isOrdering: true]
+        () => {
+            let setNums = [];
+            while (setNums.length < 4) {
+                let r = getRandomInt(-25, 25);
+                if (!setNums.includes(r)) setNums.push(r);
+            }
+            let sortedArr = setNums.slice().sort((a, b) => a - b);
+            return { equation: setNums.join(", "), category: "Number Ordering", prompt: "Arrange the following integers in <strong>Ascending Order</strong> (least to greatest):", solution: sortedArr.join(", "), pool: buildShuffledOrderChoices(sortedArr), isOrdering: true };
+        },
+        // 36. Ordering Model 2 (Ascending Order Mixed) [isOrdering: true]
+        () => {
+          while (true) {
+            let rawItems = [];
+            let evaluatedItems = [];
+            let v1 = getRandomInt(-30, -15);
+            rawItems.push(String(v1)); evaluatedItems.push(v1);
+            let base = getRandomInt(-3, -2), exp = getRandomInt(2, 4);
+            let v2 = Math.pow(base, exp);
+            rawItems.push(`(-${Math.abs(base)})^{${exp}}`); evaluatedItems.push(v2);
+            let m1 = getRandomNonZeroInt(-5, 5), m2 = getRandomNonZeroInt(-4, 4);
+            let v3 = m1 * m2;
+            rawItems.push(`${fmt(m1)} ${tx("@times")} ${fmt(m2)}`); evaluatedItems.push(v3);
+            let v4 = getRandomInt(-10, 20);
+            rawItems.push(String(v4)); evaluatedItems.push(v4);
+            
+            if (new Set(evaluatedItems).size < evaluatedItems.length) continue;
+            let paired = evaluatedItems.map((val, idx) => ({ val: val, text: rawItems[idx] }));
+            paired.sort((a, b) => a.val - b.val);
+            let sortedDisplay = paired.map(p => p.text);
+            return { equation: rawItems.join(", "), category: "Number Ordering", prompt: "Arrange the mixed values in <strong>Ascending Order</strong> (least to greatest):", solution: sortedDisplay.join(", "), pool: buildShuffledOrderChoices(sortedDisplay), isOrdering: true };
+          }
+        }
+    ];
+
+    function generateEntireQuizSuite() {
+        generatedSuite = [];
+        let suite = [];
+
+        let orderingGenerators = questionModelsBank.filter(m => m().isOrdering);
+        let calculationGenerators = questionModelsBank.filter(m => !m().isOrdering);
+
+        // Exactly 2 ordering questions in the entire quiz
+        shuffleArray(orderingGenerators).slice(0, 2).forEach(gen => {
+            suite.push(gen());
+        });
+
+        // Fill the remaining 18 slots randomly from the 34+ calculation models
+        while (suite.length < APP_LIMITS.totalItems) {
+            let randomGen = calculationGenerators[Math.floor(Math.random() * calculationGenerators.length)];
+            let problem = randomGen();
+            if (!suite.some(p => p.equation === problem.equation)) {
+                suite.push(problem);
+            }
+        }
+
+        generatedSuite = shuffleArray(suite);
+    }
+
+    // ==========================================
+    // INTERFACE VIEW SYNCHRONIZER
+    // ==========================================
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+        document.getElementById('txt-tier-badge').innerText = activeProblem.category;
+
+        let equationBlock = activeProblem.equation ? `
+            <div style="font-size:1.5rem; font-weight:bold; color: var(--primary); margin-top: 14px; text-align:center;">
+                $$${activeProblem.equation}$$
+            </div>
+        ` : "";
+
+        document.getElementById('math-prompt-container').innerHTML = `
+            <div style="font-size:1.1rem; line-height:1.5; color: var(--text-main);">
+                ${activeProblem.prompt}
+                ${equationBlock}
+            </div>
+        `;
+
+        const mcqContainer = document.getElementById('box-mcq');
+        mcqContainer.innerHTML = "";
+        mcqContainer.classList.remove('hidden');
+
+        activeProblem.pool.forEach(choice => {
+            const buttonElement = document.createElement('button');
+            buttonElement.className = `opt-btn p-3 text-center transition flex justify-center items-center ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+            buttonElement.style.minHeight = "54px";
+            buttonElement.style.fontSize = "1.2rem";
+            
+            buttonElement.innerHTML = `\\(${choice}\\)`;
+            
+            buttonElement.onclick = () => {
+                document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                buttonElement.classList.add('active');
+                recordInput(choice);
+            };
+            mcqContainer.appendChild(buttonElement);
+        });
+
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(mcqContainer);
+        }
+
+        buildShortcutsGridMatrix();
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(document.getElementById('math-prompt-container'));
+        }
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; buildShortcutsGridMatrix(); }
+
+    function buildShortcutsGridMatrix() {
+        const grid = document.getElementById('navigation-shortcut-grid');
+        grid.innerHTML = "";
+        for (let i = 0; i < APP_LIMITS.totalItems; i++) {
+            const b = document.createElement('button');
+            b.innerText = i + 1;
+            let bgStyle = "bg-slate-100 text-slate-600 border border-slate-300";
+            if (traversalIndex === i) bgStyle = "bg-blue-900 text-white font-bold ring-2 ring-blue-300";
+            else if (storedResponses[i]) bgStyle = "bg-emerald-100 text-emerald-700 border border-emerald-400 font-semibold";
+
+            b.className = `p-2 text-xs text-center rounded-lg transition cursor-pointer min-w-[32px] ${bgStyle}`;
+            b.onclick = () => { traversalIndex = i; synchroniseQuestionIndex(); };
+            grid.appendChild(b);
+        }
+    }
+
+    // ==========================================
+    // TIMERS & SUMMARY REPORTS
+    // ==========================================
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            let m = Math.floor(timeTrackingRemaining / 60);
+            let s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            let dynamicPercentage = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${dynamicPercentage}%`;
+
+            if (dynamicPercentage < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (dynamicPercentage < 50) progress.style.backgroundColor = '#d97706';
+        }
+        pulse();
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limit reached. Compiling final performance report now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+        generatedSuite.forEach((problem, index) => {
+            const userRaw = storedResponses[index];
+            const userAns = (userRaw || "").toString().trim();
+            const correctAns = problem.solution.toString().trim();
+            const outcomeState = userAns === correctAns;
+            if (outcomeState) tallyCorrect++;
+
+            const answerColor = outcomeState ? 'var(--success)' : 'var(--error)';
+            let answerBlock = 
+                '<p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:' + answerColor + '; font-size:1.05rem;">' + (userRaw ? `\\(${userRaw}\\)` : 'Unanswered') + '</span></p>' +
+                '<p style="margin:0; color: var(--text-muted);"><strong>Correct Key:</strong> <span style="font-weight:600; color: var(--text-main); font-size:1.05rem;">' + `\\(${problem.solution}\\)` + '</span></p>';
+
+            let itemScoreBadge = outcomeState ?
+            `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>` :
+            `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+
+            compilationHtml += `
+            <div class="report-item" style="position: relative; overflow: auto; background:#ffffff; padding:16px; margin-bottom:12px; border-radius:12px; border-left: 5px solid ${outcomeState ? 'var(--success)' : 'var(--error)'};">
+            ${itemScoreBadge}
+            <div style="font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+            Question ${index + 1} &middot; Model: <span style="color: var(--primary);">${problem.category}</span>
+            </div>
+            <div style="margin: 12px 0; text-align: center; font-size: 1.4rem; font-weight: bold; color: var(--text-main);">
+            ${problem.equation ? '$$' + problem.equation + '$$' : ''}
+            </div>
+            <div style="font-size: 0.95rem; line-height: 1.5; color: var(--text-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+            <strong>Problem Prompt:</strong>
+            <div style="margin-top: 4px; font-family: system-ui, sans-serif;">${problem.prompt}</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; padding-left: 4px;">
+            ${answerBlock}
+            </div>
+            </div>
+            `;
+        });
+
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = document.getElementById('student-name').value.trim();
+        const sectionTitle = document.getElementById('student-section').value.trim();
+
+        let headerMetaHtml = `
+        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 0.95rem; line-height:1.4;">
+        <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+        <div><strong>Student Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+        <div><strong>Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem;">
+        <div><strong>Quiz Assessment:</strong> <span style="color: #475569; font-weight: 700;">Operations on Integers</span></div>
+        <div><strong>Quiz Start Timestamp:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+        </div>
+        </div>
+        `;
+
+        document.getElementById('report-injection-zone').innerHTML = headerMetaHtml + compilationHtml;
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(document.getElementById('report-injection-zone'));
+        }
+
+        sendGradesToTeacher(
+            userTitle,
+            sectionTitle,
+            `${tallyCorrect} / ${APP_LIMITS.totalItems}`,
+            formattedQuizStartTimeStamp,
+            "Operations on Integers"
+        );
+    }
+
+    function sendGradesToTeacher(name, classroom, score, duration, quizTitle) {
+        const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+        fetch(url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name,
+                classroom: classroom,
+                score: score,
+                duration: duration,
+                quizTitle: "Operations on Integers",
+                date: new Date().toLocaleString()
+            })
+        }).catch(err => console.log("Network trace: Client sync fallback triggered."));
+    }
+
+    function triggerDirectPdfDownload() {
+        window.print();
+    }
+
+    document.getElementById('action-start').onclick = () => {
+        if (!document.getElementById('student-name').value.trim() || !document.getElementById('student-section').value.trim()) {
+            alert("Please complete credential parameters to unlock.");
+            return;
+        }
+        const now = new Date();
+        formattedQuizStartTimeStamp = now.toLocaleDateString() + " @ " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Finalize and compile report sheets?")) compileFinalPerformanceReport();
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) {
+            traversalIndex--;
+            synchroniseQuestionIndex();
+        }
+    };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('meter-progress').style.backgroundColor = '';
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+    if (!document.getElementById('print-fix-styles')) {
+        const style = document.createElement('style');
+        style.id = 'print-fix-styles';
+        style.innerHTML = `
+            @media print {
+                html, body {
+                    display: block !important;
+                    height: auto !important;
+                    overflow: visible !important;
+                    background: white !important;
+                }
+                #stage-summary {
+                    display: block !important;
+                    max-width: 100% !important;
+                    width: 100% !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                }
+                footer, #stage-auth, #stage-engine, button, .bg-gradient-to-r button {
+                    display: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+</script>
+</body>
+</html>
