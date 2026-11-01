@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compound Fractions Quiz · Grade 8</title>
+    <!-- Tailwind CSS Styling Framework CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX Mathematical Typography Notation Engine Setup CDN -->                  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7; --primary-hover: #0369a1; --bg-main: #f8fafc;
+            --bg-surface: #ffffff; --border-color: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #16a34a; --error: #dc2626;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; }
+        .hidden { display: none !important; }
+        .opt-btn {
+            background-color: var(--bg-surface); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 1.05rem;
+        }
+        .opt-btn:hover { border-color: var(--primary); background-color: #f0f9ff; }
+        .opt-btn.active { border-color: var(--primary); background-color: #e0f2fe; font-weight: 600; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+        .report-item { background: var(--bg-surface); border-radius: 10px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #cbd5e1; }
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+            .katex { font-size: 1.12em; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Credentials Authentication Entry Stage -->
+    <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
+        <h2 class="text-3xl font-extrabold text-slate-800 text-center tracking-tight mb-2">Compound Fractions Quiz</h2>
+        <p class="text-sm text-slate-500 text-center mb-8">Grade 8 &middot; 20 questions &middot; 30 minutes</p>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Student Full Name</label>
+                <input type="text" id="student-name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Assigned Class Section</label>
+                <input type="text" id="student-section" placeholder="Grade 8-A" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <button id="action-start" class="w-full bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm tracking-wider uppercase mt-4">Unlock Examination Matrix</button>
+        </div>
+    </div>
+
+    <!-- FIXED: Active Test Core Engine Integrated Inside One Single Unified Main Box Header Layout -->
+    <div id="stage-engine" class="hidden max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+        <div class="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between min-h-[550px]">
+
+            <!-- HEADER INFO BAR: Time tracking and Question counts grouped inside the single main container block -->
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-5 flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Question Tracker &middot; <span id="idx-current">0</span> / <span id="idx-total">0</span></span>
+                    <span id="txt-tier-badge" class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase bg-slate-100 text-slate-600">Tier</span>
+                </div>
+
+                <!-- TIMER COMPONENT: Grouped tightly inside the primary top header control area -->
+                <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
+                    <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">30:00</span>
+                    <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                        <div id="meter-progress" class="bg-sky-400 h-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Content Presentation Window -->
+            <div class="flex-grow flex flex-col justify-center">
+                <div id="math-prompt-container" class="mb-6"></div>
+
+                <div id="interactive-zone" class="w-full flex flex-col items-center justify-center mb-6">
+                    <div id="diagram-canvas" class="mb-5 w-full"></div>
+                    <div id="box-mcq" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"></div>
+                    <div id="box-tf" class="hidden flex gap-4 w-full justify-center">
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="TRUE">TRUE</button>
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="FALSE">FALSE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Layout Shortcut Matrix Navigation Row -->
+            <div class="border-t border-slate-100 pt-4 mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <!-- Grid Shortcuts inline at the bottom left -->
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden md:block">Overview:</span>
+                    <div id="navigation-shortcut-grid" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="flex gap-3 justify-end w-full sm:w-auto">
+                    <button id="action-back" class="px-5 py-2 border border-slate-300 rounded-xl font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 text-sm transition cursor-pointer">&larr; Back</button>
+                    <button id="action-forward" class="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 text-sm shadow transition cursor-pointer">Next &rarr;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Final Diagnostic Summary Sheet Layout -->
+    <div id="stage-summary" class="hidden max-w-3xl mx-auto w-full px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 p-6 text-white flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">Performance Summary Report</h1>
+                    <p class="text-sky-100 text-xs mt-1">Compound Fractions Assessment Key &middot; Grade 8</p>
+                </div>
+                <button onclick="triggerDirectPdfDownload()" class="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition cursor-pointer shadow-sm border border-white/10 text-white">Download as PDF</button>
+            </div>
+
+            <div class="grid grid-cols-3 text-center border-b border-slate-100 bg-slate-50 py-4">
+                <div>
+                    <div id="m-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div id="m-incorrect" class="text-2xl font-extrabold text-rose-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Incorrect</div>
+                </div>
+                <div>
+                    <div id="m-percent" class="text-2xl font-extrabold text-sky-600">0%</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score Rate</div>
+                </div>
+            </div>
+
+                    <!-- Dynamic Question Injections -->
+                        <div id="report-injection-zone" class="p-6 space-y-4 bg-slate-50/50"></div>
+                </div>
+
+                <!-- FIXED: Repositioned standalone PDF action handler bar to the absolute bottom of the page structure -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
+                        <button id="action-pdf-bottom" onclick="triggerDirectPdfDownload()" class="flex-grow bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
+                        <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
+                </div>
+        </div>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
+        &copy; 2026 Compound Fractions Assessment Suite &bull; Academic Diagnostic Engine
+    </footer>
+
+<script>
+    // ==========================================================
+    // COMPOUND FRACTIONS ENGINE  (exact arithmetic, no rounding)
+    // ==========================================================
+    const QUIZ_TITLE = "Compound Fractions";
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 1800, // 30 minutes
+        tiers: { easy: 6, medium: 8, hard: 6 }
+    };
+
+    // ---------- exact fractions ----------
+    function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a; }
+    function Fr(n, d) {
+        if (d === undefined) d = 1;
+        if (d === 0) throw new Error('div0');
+        if (d < 0) { n = -n; d = -d; }
+        const g = gcd(n, d) || 1;
+        return { n: n / g, d: d / g };
+    }
+    const fAdd = (a, b) => Fr(a.n * b.d + b.n * a.d, a.d * b.d);
+    const fSub = (a, b) => Fr(a.n * b.d - b.n * a.d, a.d * b.d);
+    const fMul = (a, b) => Fr(a.n * b.n, a.d * b.d);
+    const fDiv = (a, b) => { if (b.n === 0) throw new Error('div0'); return Fr(a.n * b.d, a.d * b.n); };
+    const fNeg = a => Fr(-a.n, a.d);
+    const fInv = a => Fr(a.d, a.n);
+    const fEq = (a, b) => a.n === b.n && a.d === b.d;
+    const fPow = (a, e) => { let r = Fr(1); for (let i = 0; i < e; i++) r = fMul(r, a); return r; };
+
+    // ---------- random helpers ----------
+    const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+    const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+    function shuffleArray(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+        return a;
+    }
+    const sampleN = (arr, n) => shuffleArray(arr).slice(0, n);
+    function bad() { throw new Error('retry'); }
+    function bound(v, lim) { if (Math.abs(v.n) > lim || v.d > lim) bad(); return v; }
+    function rndFrac(o) {
+        o = Object.assign({ dmin: 2, dmax: 9, nmax: 9, proper: false, neg: false }, o || {});
+        for (let g = 0; g < 100; g++) {
+            const d = ri(o.dmin, o.dmax);
+            const n = ri(1, o.proper ? d - 1 : o.nmax);
+            if (n < 1 || gcd(n, d) !== 1) continue;
+            return Fr(o.neg && Math.random() < 0.5 ? -n : n, d);
+        }
+        return Fr(1, 2);
+    }
+
+    // ---------- LaTeX helpers ----------
+    function frTex(r, cmd) {
+        cmd = cmd || 'dfrac';
+        if (r.d === 1) return String(r.n);
+        return (r.n < 0 ? '-' : '') + '\\' + cmd + '{' + Math.abs(r.n) + '}{' + r.d + '}';
+    }
+    const grp = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\\,');
+    const moneyTex = n => grp(n) + '\\ \\text{LL}';
+    const moneyHtml = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '&nbsp;') + '&nbsp;LL';
+    const inl = s => '\\(' + s + '\\)';
+    const decToFr = s => { const parts = s.split('.'); const dec = parts[1] || ''; return Fr(parseInt(parts[0] + dec, 10), Math.pow(10, dec.length)); };
+
+    // ---------- expression trees ----------
+    // lit (number / fraction / decimal), var, add, sub, mul, div (the ÷ sign), big (fraction bar), imul (ab), pow
+    const L = (n, d, raw) => ({ t: 'lit', v: Fr(n, d === undefined ? 1 : d), n: n, d: d === undefined ? 1 : d, raw: !!raw });
+    const LF = fr => ({ t: 'lit', v: fr, n: fr.n, d: fr.d, raw: false });
+    const D = s => ({ t: 'lit', v: decToFr(s), dec: s });
+    const V = name => ({ t: 'var', name: name });
+    const op = (t, a, b) => ({ t: t, a: a, b: b });
+    const P = (a, e) => ({ t: 'pow', a: a, e: e });
+
+    function litTex(n) {
+        if (n.dec) return n.dec;
+        if (n.raw) return n.d === 1 ? String(n.n) : '\\frac{' + n.n + '}{' + n.d + '}';
+        const v = n.v;
+        if (v.d === 1) return String(v.n);
+        return (v.n < 0 ? '-' : '') + '\\frac{' + Math.abs(v.n) + '}{' + v.d + '}';
+    }
+    function prec(n) { return (n.t === 'add' || n.t === 'sub') ? 1 : (n.t === 'mul' || n.t === 'div') ? 2 : 4; }
+    const isNegLit = n => n.t === 'lit' && n.v.n < 0;
+    const paren = s => '\\left(' + s + '\\right)';
+    const SP = '\\;\\;';                       // two thick spaces: makes the main fraction bar wider than the minor bars
+    const padF = s => (/^-?\\frac\{/.test(s) ? SP + s + SP : s);
+    function R(n, minPrec) {
+        minPrec = minPrec || 0;
+        const RR = (c, mp) => isNegLit(c) ? paren(R(c)) : R(c, mp);
+        let s;
+        switch (n.t) {
+            case 'lit': s = litTex(n); break;
+            case 'var': s = n.name; break;
+            case 'imul': s = R(n.a, 4) + R(n.b, 4); break;
+            case 'add': s = R(n.a, 1) + '+' + RR(n.b, 1); break;
+            case 'sub': s = R(n.a, 1) + '-' + RR(n.b, 2); break;
+            case 'mul': s = R(n.a, 2) + '\\times ' + RR(n.b, 2); break;
+            case 'div': s = R(n.a, 2) + '\\div ' + RR(n.b, 3); break;
+            case 'big': {
+                const side = c => (c.t === 'big' || (c.t === 'lit' && !c.dec && /frac/.test(litTex(c)))) ? SP + R(c) + SP : R(c);
+                s = '\\dfrac{' + side(n.a) + '}{' + side(n.b) + '}';
+                break;
+            }
+            case 'pow': {
+                const b = n.a;
+                const needs = (b.t === 'lit' && (b.v.d !== 1 || b.v.n < 0)) || (b.t !== 'lit' && b.t !== 'var');
+                s = (needs ? paren(R(b)) : R(b)) + '^{' + n.e + '}';
+                break;
+            }
+            default: bad();
+        }
+        return prec(n) < minPrec ? paren(s) : s;
+    }
+    function E(n, env) {
+        switch (n.t) {
+            case 'lit': return n.v;
+            case 'var': if (!env || !env[n.name]) bad(); return env[n.name];
+            case 'add': return fAdd(E(n.a, env), E(n.b, env));
+            case 'sub': return fSub(E(n.a, env), E(n.b, env));
+            case 'mul': case 'imul': return fMul(E(n.a, env), E(n.b, env));
+            case 'div': case 'big': return fDiv(E(n.a, env), E(n.b, env));
+            case 'pow': return fPow(E(n.a, env), n.e);
+        }
+        bad();
+    }
+
+    // ---------- answer-choice builders ----------
+    function makeChoices(correct, fakes) {
+        const opts = [correct];
+        shuffleArray(fakes).forEach(f => { if (opts.length < 4 && f !== undefined && f !== null && f !== '' && !opts.includes(f)) opts.push(f); });
+        if (opts.length < 4) bad();
+        return shuffleArray(opts);
+    }
+    function numChoices(r, extras, fmt) {
+        fmt = fmt || (x => frTex(x, 'dfrac'));
+        const gen = [];
+        if (r.n !== 0) gen.push(fInv(r));
+        gen.push(fNeg(r), Fr(r.n + 1, r.d), Fr(r.n - 1, r.d), Fr(r.n, r.d + 1), fAdd(r, Fr(1)), fSub(r, Fr(1)), fMul(r, Fr(2)), fDiv(r, Fr(2)));
+        if (r.d > 1) gen.push(Fr(r.n, r.d - 1));
+        const correct = fmt(r);
+        const fakes = [];
+        shuffleArray(extras || []).concat(shuffleArray(gen)).forEach(x => {
+            const t = fmt(x);
+            if (t !== correct && !fakes.includes(t)) fakes.push(t);
+        });
+        return makeChoices(correct, fakes.slice(0, 3));
+    }
+    function intChoices(n, extras, fmt, deltas) {
+        fmt = fmt || String;
+        deltas = deltas || [1, -1, 2, -2];
+        const set = [];
+        const add = v => { if (Number.isInteger(v) && v > 0 && v !== n && !set.includes(v)) set.push(v); };
+        shuffleArray(extras || []).forEach(add);
+        shuffleArray(deltas.map(d => n + d).concat([n * 2, n / 2])).forEach(add);
+        let g = 0; while (set.length < 3 && g++ < 60) add(n + ri(-9, 9));
+        return makeChoices(fmt(n), set.slice(0, 3).map(fmt));
+    }
+    function numQ(cat, prompt, eq, val, extras, o) {
+        o = o || {};
+        const fmt = o.fmt || (x => frTex(x, 'dfrac'));
+        return { categoryType: cat, prompt: prompt, equation: eq || '', type: 'MCQ', solution: fmt(val), pool: numChoices(val, extras, fmt), diagram: o.diagram || '' };
+    }
+    function strQ(cat, prompt, eq, sol, fakes, diagram) {
+        return { categoryType: cat, prompt: prompt, equation: eq || '', type: 'MCQ', solution: sol, pool: makeChoices(sol, fakes), diagram: diagram || '' };
+    }
+
+    // ---------- monomials (for algebraic fractions) ----------
+    const VAR_SETS = [['a', 'b', 'c'], ['x', 'y', 'z'], ['m', 'n', 'p'], ['a', 'b', 'c']];
+    function mMul(a, b) { const e = Object.assign({}, a.e); for (const k in b.e) { e[k] = (e[k] || 0) + b.e[k]; if (e[k] === 0) delete e[k]; } return { c: fMul(a.c, b.c), e: e }; }
+    function mDiv(a, b) { const e = Object.assign({}, a.e); for (const k in b.e) { e[k] = (e[k] || 0) - b.e[k]; if (e[k] === 0) delete e[k]; } return { c: fDiv(a.c, b.c), e: e }; }
+    function mTex(m, vars, cmd) {
+        const pos = [], neg = [];
+        vars.forEach(v => {
+            const x = m.e[v] || 0;
+            if (x > 0) pos.push(v + (x > 1 ? '^{' + x + '}' : ''));
+            else if (x < 0) neg.push(v + (x < -1 ? '^{' + (-x) + '}' : ''));
+        });
+        const n = Math.abs(m.c.n), d = m.c.d;
+        const num = ((n !== 1 || pos.length === 0) ? String(n) : '') + pos.join('');
+        const den = (d !== 1 ? String(d) : '') + neg.join('');
+        const sign = m.c.n < 0 ? '-' : '';
+        if (!den) return sign + num;
+        return sign + '\\' + (cmd || 'frac') + '{' + num + '}{' + den + '}';
+    }
+    function mEval(m, env) {
+        let r = m.c;
+        for (const k in m.e) { const p = fPow(env[k], Math.abs(m.e[k])); r = m.e[k] > 0 ? fMul(r, p) : fDiv(r, p); }
+        return r;
+    }
+    function rndMono(vars, o) {
+        o = Object.assign({ maxExp: 2, nMax: 9, dMax: 9, minVars: 1, maxVars: 3 }, o || {});
+        const cnt = ri(o.minVars, Math.min(o.maxVars, vars.length));
+        const e = {};
+        sampleN(vars, cnt).forEach(v => { let x = ri(1, o.maxExp); if (Math.random() < 0.4) x = -x; e[v] = x; });
+        return { c: Fr(ri(1, o.nMax), ri(1, o.dMax)), e: e };
+    }
+    function monoFakes(m, vars, cmd) {
+        const base = mTex(m, vars, cmd), out = [];
+        const tryAdd = x => { if (!x.c.n) return; const t = mTex(x, vars, cmd); if (t !== base && !out.includes(t)) out.push(t); };
+        for (let i = 0; i < 60 && out.length < 6; i++) {
+            const x = { c: m.c, e: Object.assign({}, m.e) };
+            const keys = Object.keys(x.e);
+            switch (ri(0, 6)) {
+                case 0: x.c = fInv(m.c); break;
+                case 1: x.c = Fr(m.c.n + 1, m.c.d); break;
+                case 2: x.c = Fr(m.c.n, m.c.d + 1); break;
+                case 3: if (keys.length) { const k = pick(keys); x.e[k] += pick([-1, 1]); if (x.e[k] === 0) delete x.e[k]; } break;
+                case 4: if (keys.length) { const k = pick(keys); x.e[k] = -x.e[k]; } break;
+                case 5: x.c = fMul(m.c, Fr(2)); break;
+                case 6: { const k = pick(vars); x.e[k] = (x.e[k] || 0) + pick([-1, 1]); if (x.e[k] === 0) delete x.e[k]; }
+            }
+            tryAdd(x);
+        }
+        return out;
+    }
+    function randEnv(vars) { const env = {}; vars.forEach(v => env[v] = Fr(ri(2, 7), ri(1, 4))); return env; }
+    const polyTex = (terms) => terms.map((t, i) => {
+        const c = t.c, a = Math.abs(c);
+        const body = (a !== 1 ? String(a) : '') + t.v;
+        return (c < 0 ? '-' : (i > 0 ? '+' : '')) + body;
+    }).join('');
+
+    // ---------- little SVG diagrams for the geometry questions ----------
+    const fs = r => r.d === 1 ? String(r.n) : r.n + '/' + r.d;
+    const svgWrap = inner => '<svg viewBox="0 0 320 190" style="display:block;margin:0 auto;max-width:300px;width:100%" role="img" aria-label="shape">' + inner + '</svg>';
+    const svgText = (x, y, s, c) => '<text x="' + x + '" y="' + y + '" font-size="15" font-weight="700" fill="' + (c || '#0f172a') + '" text-anchor="middle" font-family="system-ui,sans-serif">' + s + '</text>';
+    function svgParallelogram(a, b) {
+        return svgWrap('<polygon points="50,150 100,40 280,40 230,150" fill="#e0f2fe" stroke="#0369a1" stroke-width="3"/>' +
+            svgText(38, 168, 'A') + svgText(92, 30, 'B') + svgText(292, 30, 'C') + svgText(240, 168, 'D') +
+            svgText(52, 98, 'AB = ' + fs(a) + ' cm', '#b91c1c').replace('text-anchor="middle"', 'text-anchor="end"') +
+            svgText(190, 30 - 14, 'BC = ' + fs(b) + ' cm', '#1d4ed8'));
+    }
+    function svgTriangle(a, b) {
+        return svgWrap('<polygon points="40,160 280,160 200,30" fill="#e0f2fe" stroke="#0369a1" stroke-width="3"/>' +
+            '<line x1="200" y1="30" x2="200" y2="160" stroke="#b91c1c" stroke-width="2.5" stroke-dasharray="6 5"/>' +
+            svgText(160, 182, 'base = ' + fs(a) + ' cm', '#1d4ed8') + svgText(262, 100, 'height = ' + fs(b) + ' cm', '#b91c1c'));
+    }
+    function svgRect(a, b) {
+        return svgWrap('<rect x="50" y="35" width="220" height="110" fill="#e0f2fe" stroke="#0369a1" stroke-width="3"/>' +
+            svgText(160, 170, 'length = ' + fs(a) + ' cm', '#1d4ed8') + svgText(160, 95, 'width = ' + fs(b) + ' cm', '#b91c1c'));
+    }
+
+    // ==========================================================
+    // QUESTION TEMPLATES
+    // ==========================================================
+
+    // ---- numeric compound fractions (basic) ----
+    function tNumBasic() {
+        const v = ri(0, 2);
+        let expr, extras = [];
+        if (v === 0) {                       // (1 + x)/(x - 1) ÷ 1/r
+            const q = ri(3, 9), p = ri(1, q - 1);
+            if (gcd(p, q) !== 1) bad();
+            const x = L(p, q), r = ri(2, 5);
+            expr = op('div', op('big', op('add', L(1), x), op('sub', x, L(1))), L(1, r));
+            const base = fDiv(fAdd(Fr(1), E(x)), fSub(E(x), Fr(1)));
+            extras = [base, fDiv(base, Fr(r))];
+        } else if (v === 1) {
+            expr = op('big', LF(rndFrac()), LF(rndFrac()));
+        } else {
+            expr = op('big', op(pick(['add', 'sub']), LF(rndFrac()), LF(rndFrac())), LF(rndFrac()));
+        }
+        const val = bound(E(expr), 150);
+        if (val.n === 0) bad();
+        return numQ('NUMERIC_COMPOUND', 'Simplify the compound fraction:', R(expr), val, extras);
+    }
+
+    // ---- sum / difference of fractions, then divided by a fraction ----
+    function tSumThenDivide() {
+        let sum;
+        if (ri(0, 1) === 0) { const c = ri(4, 9), a = ri(1, c - 1), b = ri(1, 2 * c); sum = op('add', L(-a, c, true), L(b, c, true)); }
+        else sum = op(pick(['add', 'sub']), LF(rndFrac()), LF(rndFrac()));
+        if (E(sum).n === 0) bad();
+        const expr = op('div', sum, LF(rndFrac({ dmax: 7 })));
+        const val = bound(E(expr), 150);
+        return numQ('SUM_THEN_DIVIDE', 'Evaluate:', R(expr), val, [fMul(E(sum), E(expr.b)), fDiv(E(expr.b), E(sum))]);
+    }
+
+    // ---- geometry with fractions ----
+    function tGeometry() {
+        const a = rndFrac({ dmax: 8 }), b = rndFrac({ dmax: 8 });
+        const v = ri(0, 2);
+        const cm = x => frTex(x, 'dfrac') + '\\ \\text{cm}';
+        const cm2 = x => frTex(x, 'dfrac') + '\\ \\text{cm}^2';
+        if (v === 0) {
+            const val = fMul(Fr(2), fAdd(a, b));
+            return numQ('GEOMETRY', 'ABCD is a parallelogram with AB = ' + inl(frTex(a, 'frac')) + ' cm and BC = ' + inl(frTex(b, 'frac')) + ' cm. The perimeter of ABCD is equal to:', '', val,
+                [fAdd(a, b), fMul(a, b), fMul(Fr(2), fMul(a, b))], { fmt: cm, diagram: svgParallelogram(a, b) });
+        }
+        if (v === 1) {
+            const val = fMul(Fr(1, 2), fMul(a, b));
+            return numQ('GEOMETRY', 'The area of a triangle of base ' + inl(frTex(a, 'frac')) + ' cm and height ' + inl(frTex(b, 'frac')) + ' cm is:', '', val,
+                [fMul(a, b), fAdd(a, b), fMul(Fr(1, 2), fAdd(a, b))], { fmt: cm2, diagram: svgTriangle(a, b) });
+        }
+        const val = fMul(a, b);
+        return numQ('GEOMETRY', 'The area of a rectangle of length ' + inl(frTex(a, 'frac')) + ' cm and width ' + inl(frTex(b, 'frac')) + ' cm is:', '', val,
+            [fMul(Fr(2), fAdd(a, b)), fAdd(a, b), fDiv(a, b)], { fmt: cm2, diagram: svgRect(a, b) });
+    }
+
+    // ---- true / false ----
+    function tTrueFalse() {
+        const v = ri(0, 2);
+        let expr;
+        if (v === 0) expr = op('big', LF(rndFrac()), LF(rndFrac()));
+        else if (v === 1) expr = op('big', op(pick(['add', 'sub']), LF(rndFrac()), LF(rndFrac())), LF(rndFrac()));
+        else expr = op('div', LF(rndFrac()), LF(rndFrac()));
+        const val = bound(E(expr), 150);
+        if (val.n === 0) bad();
+        const truth = Math.random() < 0.5;
+        let shown = val;
+        if (!truth) {
+            const alts = [fInv(val), fNeg(val), Fr(val.n + 1, val.d), Fr(val.n, val.d + 1), fMul(val, Fr(2))].filter(x => !fEq(x, val));
+            shown = pick(alts);
+        }
+        return { categoryType: 'TRUE_FALSE', prompt: 'Decide whether the following statement is true or false:', equation: R(expr) + '=' + frTex(shown, 'dfrac'),
+            type: 'TF', solution: truth ? 'TRUE' : 'FALSE', pool: [], diagram: '' };
+    }
+
+    // ---- word: fraction of a total ----
+    function tSavings() {
+        const q = ri(3, 8), p = ri(1, q - 1);
+        if (gcd(p, q) !== 1) bad();
+        const u = pick([1000, 5000, 10000]), k = ri(3, 12);
+        const X = p * k * u, T = q * k * u;
+        const ctx = pick([
+            ['The ' + inl('\\frac{' + p + '}{' + q + '}') + ' of my savings are equal to ' + moneyHtml(X) + '. How much money did I save?'],
+            ['Karim paid ' + inl('\\frac{' + p + '}{' + q + '}') + ' of the price of a bicycle, and this payment was ' + moneyHtml(X) + '. What is the full price of the bicycle?'],
+            [inl('\\frac{' + p + '}{' + q + '}') + ' of my monthly salary is equal to ' + moneyHtml(X) + '. What is my monthly salary?']
+        ]);
+        const extras = [Math.round(X * p / q), k * u * (q + 1), k * u * (q - 1), X + k * u];
+        return { categoryType: 'WORD_FRACTION_OF_TOTAL', prompt: ctx[0], equation: '', type: 'MCQ', solution: moneyTex(T),
+            pool: intChoices(T, extras.filter(x => x !== T), moneyTex, [u, -u, 2 * u, -2 * u]), diagram: '' };
+    }
+
+    // ---- word: how many pieces / steps ----
+    function tPieces() {
+        const v = ri(0, 2);
+        if (v < 2) {
+            const q = ri(3, 9), p = ri(2, q - 1);
+            if (gcd(p, q) !== 1) bad();
+            const m = ri(2, 6), len = p * m, n = q * m;
+            const prompt = v === 0
+                ? 'To cross a street ' + len + ' m wide, how many steps of ' + inl('\\frac{' + p + '}{' + q + '}') + ' m should be made?'
+                : 'A ribbon ' + len + ' m long is cut into pieces, each of length ' + inl('\\frac{' + p + '}{' + q + '}') + ' m. How many pieces are obtained?';
+            return { categoryType: 'WORD_HOW_MANY', prompt: prompt, equation: '', type: 'MCQ', solution: String(n),
+                pool: intChoices(n, [Math.round(len * p / q) || n + 3, n + q, len * q], String), diagram: '' };
+        }
+        const c = rndFrac({ dmax: 6 }), cnt = ri(3, 12), total = fMul(Fr(cnt), c);
+        if (total.d === 1) bad();
+        return { categoryType: 'WORD_HOW_MANY', prompt: 'A rope of length ' + inl(frTex(total, 'frac')) + ' m is cut into equal pieces, each of length ' + inl(frTex(c, 'frac')) + ' m. How many pieces are obtained?',
+            equation: '', type: 'MCQ', solution: String(cnt), pool: intChoices(cnt, [cnt * 2, cnt + 3], String), diagram: '' };
+    }
+
+    // ---- substitution ----
+    function rawFr(base) {
+        const k = pick([1, 2, 3]);
+        let n = Math.abs(base.n) * k, d = base.d * k;
+        if (base.n < 0) { if (Math.random() < 0.5) n = -n; else d = -d; }
+        return L(n, d, true);
+    }
+    function tSubs(tier) {
+        const easy = tier === 'easy';
+        const shape = pick(easy ? ['xy', 'recip', 'harm'] : ['abc1', 'abc2', 'abc3', 'abc4']);
+        let env = {}, givens = [], expr;
+        if (shape === 'xy') {
+            const p = ri(2, 8), q = ri(2, 8); if (p === q) bad();
+            givens = [['x', L(1, p)], ['y', L(1, q)]];
+            expr = op('big', op('imul', V('x'), V('y')), op('add', V('x'), V('y')));
+        } else if (shape === 'recip') {
+            givens = [['a', LF(rndFrac())], ['b', LF(rndFrac())]];
+            expr = op('big', op('big', L(1), V('b')), op('big', L(1), V('a')));
+        } else if (shape === 'harm') {
+            givens = [['x', LF(rndFrac())], ['y', LF(rndFrac())]];
+            expr = op('big', L(1), op('add', op('big', L(1), V('x')), op('big', L(1), V('y'))));
+        } else {
+            const nodes = ['a', 'b', 'c'].map(() => rawFr(rndFrac({ neg: true, dmax: 9, nmax: 9 })));
+            givens = [['a', nodes[0]], ['b', nodes[1]], ['c', nodes[2]]];
+            if (shape === 'abc1') expr = op('big', op('imul', V('a'), V('b')), V('c'));
+            else if (shape === 'abc2') expr = op('big', V('a'), op('imul', V('b'), V('c')));
+            else if (shape === 'abc3') expr = op('big', op(pick(['add', 'sub']), V('a'), V('b')), V('c'));
+            else { givens = givens.slice(0, 2); expr = op('big', op('imul', V('a'), V('b')), op('add', V('a'), V('b'))); }
+        }
+        givens.forEach(g => env[g[0]] = g[1].v);
+        const val = bound(E(expr, env), 200);
+        const gt = givens.map(g => inl(g[0] + '=' + litTex(g[1]))).join(', ');
+        const extras = [fNeg(val)];
+        return numQ('SUBSTITUTION', 'Given that ' + gt + ', find the value of:', R(expr), val, extras);
+    }
+
+    // ---- nested (continued) fractions ----
+    function tNested() {
+        const x = rndFrac({ proper: true, dmax: 7 });
+        const n = ri(1, 4), m = ri(1, 3);
+        const inner = op(pick(['add', 'sub']), L(1), LF(x));
+        const den = op(pick(['add', 'add', 'sub']), L(m), op('big', L(1), inner));
+        const expr = op('big', L(n), den);
+        const val = bound(E(expr), 150);
+        if (val.n === 0) bad();
+        return numQ('NESTED_FRACTION', 'Simplify:', R(expr), val);
+    }
+    function tContinued() {
+        const a = ri(1, 3), b = ri(2, 4), a2 = ri(1, 3), b2 = ri(2, 4), c = ri(1, 3), d = ri(1, 2), e = ri(2, 3);
+        const top = op('add', L(a), L(1, b));
+        const inner = op('big', op('add', L(a2), L(1, b2)), op('add', L(d), L(1, e)));
+        const expr = op('big', top, op('add', L(c), inner));
+        const val = bound(E(expr), 250);
+        return numQ('CONTINUED_FRACTION', 'Simplify the compound fraction:', R(expr), val);
+    }
+
+    function tSumRatio() {
+        const f = () => LF(rndFrac({ proper: true, dmax: 6 }));
+        const top = op(pick(['add', 'sub']), op('add', L(ri(1, 3)), f()), f());
+        const bot = op(pick(['add', 'sub']), op('add', L(ri(1, 3)), f()), f());
+        const expr = op('big', top, bot);
+        const val = bound(E(expr), 150);
+        if (val.n === 0) bad();
+        return numQ('SUM_OVER_SUM', 'Simplify:', R(expr), val);
+    }
+
+    // ---- mixed operations ----
+    function prodPair() {
+        const a = ri(1, 9), b = ri(2, 9), c = ri(2, 9), k = ri(1, 3);
+        const x = LF(Fr(a, b)), y = LF(Fr(b * k, c));
+        return Math.random() < 0.5 ? [x, y] : [y, x];
+    }
+    function mixedQ(shape) {
+        let expr;
+        const f = (o) => LF(rndFrac(o || { dmax: 7 }));
+        if (shape === 1) { const [p, q] = prodPair(); expr = op('big', op('add', L(ri(2, 9)), op('mul', p, q)), op('sub', f(), f())); }
+        else if (shape === 2) { const [p, q] = prodPair(); expr = op('big', op('sub', LF(rndFrac({ nmax: 25, dmax: 7 })), op('mul', p, q)), op('sub', f(), f())); }
+        else if (shape === 3) { const [p, q] = prodPair(), [r, s] = prodPair(); expr = op('big', op('add', f(), op('mul', p, q)), op('sub', f(), op('mul', r, s))); }
+        else { const [p, q] = prodPair(); expr = op('big', op('sub', f(), f()), op('add', L(ri(2, 4)), op('mul', p, q))); }
+        const val = bound(E(expr), 120);
+        if (val.n === 0) bad();
+        return numQ('MIXED_OPERATIONS', 'Simplify the compound fraction:', R(expr), val);
+    }
+    const tMixedA = () => mixedQ(pick([1, 2]));
+    const tMixedB = () => mixedQ(pick([3, 4]));
+
+    function tPower() {
+        const c = ri(2, 5), b = pick([c, c, ri(2, 6)]), a = ri(1, 2 * b);
+        if (gcd(a, b) !== 1) bad();
+        const e = ri(2, 9), d = ri(1, e - 1);
+        const base = Fr(pick([-1, 1]), c);
+        const expr = op('big', op('add', L(a, b), P(LF(base), pick([2, 2, 3]))), op('sub', L(1), L(d, e)));
+        const val = bound(E(expr), 150);
+        if (val.n === 0) bad();
+        return numQ('POWERS_IN_FRACTIONS', 'Simplify:', R(expr), val);
+    }
+    function tDecimal() {
+        const decs = ['0.5', '1.5', '2.5', '0.25', '0.75', '3.5', '4.5', '1.25'];
+        const top = op('add', op('add', L(ri(1, 6)), D(pick(decs))), D(pick(decs)));
+        const expr = op('big', top, op('sub', LF(rndFrac({ dmax: 6, nmax: 13 })), LF(rndFrac({ dmax: 6, nmax: 13 }))));
+        const val = bound(E(expr), 250);
+        if (val.n === 0) bad();
+        return numQ('DECIMALS_AND_FRACTIONS', 'Simplify and give the answer as a fraction in simplest form:', R(expr), val);
+    }
+
+    // ---- two numbers: equal / opposite / reciprocal ----
+    let TRIPS = null;
+    function tPair() {
+        if (!TRIPS) { TRIPS = []; for (let d = -9; d <= 9; d++) { if (!d) continue; for (let e = -9; e <= 9; e++) { if (!e) continue; for (let f = -9; f <= 9; f++) { if (f) TRIPS.push([d, e, f]); } } } }
+        const val = t => Fr(t[0] * t[2], t[1]);
+        const t1 = pick(TRIPS), v = val(t1);
+        if (v.n === 0 || (v.d === 1 && Math.abs(v.n) === 1)) bad();
+        const rel = pick(['recip', 'opp', 'equal', 'none']);
+        const w = rel === 'recip' ? fInv(v) : rel === 'opp' ? fNeg(v) : v;
+        let cands;
+        if (rel === 'none') cands = TRIPS.filter(t => { const x = val(t); return x.n !== 0 && !fEq(x, v) && !fEq(x, fNeg(v)) && !fEq(x, fInv(v)); });
+        else cands = TRIPS.filter(t => fEq(val(t), w) && !(t[0] === t1[0] && t[1] === t1[1] && t[2] === t1[2]));
+        if (!cands.length) bad();
+        const t2 = pick(cands);
+        const node = t => op('big', L(t[0]), op('big', L(t[1]), L(t[2])));
+        const names = { recip: '\\text{reciprocals}', opp: '\\text{opposites}', equal: '\\text{equal}', none: '\\text{none of these}' };
+        return strQ('RECIPROCAL_OPPOSITE_EQUAL', 'Consider the two numbers ' + inl('A') + ' and ' + inl('B') + '. They are:',
+            'A=' + R(node(t1)) + '\\qquad B=' + R(node(t2)), names[rel], Object.keys(names).filter(k => k !== rel).map(k => names[k]));
+    }
+
+    // ---- solving for x ----
+    function tEquation() {
+        const f1 = rndFrac({ dmax: 8 }), f2 = rndFrac({ dmax: 8 });
+        const v = ri(0, 2);
+        let eq, val, extras;
+        if (v === 0) { eq = '\\dfrac{x}{' + padF(frTex(f1, 'frac')) + '}=' + frTex(f2, 'frac'); val = fMul(f2, f1); extras = [fDiv(f2, f1), fDiv(f1, f2)]; }
+        else if (v === 1) { eq = '\\dfrac{' + padF(frTex(f1, 'frac')) + '}{x}=' + frTex(f2, 'frac'); val = fDiv(f1, f2); extras = [fMul(f1, f2), fDiv(f2, f1)]; }
+        else { const n = ri(2, 6); eq = '\\dfrac{' + padF(frTex(f1, 'frac')) + '}{' + padF(frTex(f2, 'frac')) + '}=\\dfrac{x}{' + n + '}'; val = fMul(Fr(n), fDiv(f1, f2)); extras = [fDiv(fDiv(f1, f2), Fr(n)), fDiv(f1, f2)]; }
+        bound(val, 200);
+        return numQ('SOLVE_COMPOUND_EQUATION', 'Find the value of ' + inl('x') + ':', eq, val, extras);
+    }
+
+    // ---- algebraic compound fractions ----
+    function tAlgCompound(tier) {
+        const vars = pick(VAR_SETS), hard = tier === 'hard';
+        const o = { maxExp: hard ? 3 : 2, nMax: 9, dMax: hard ? 9 : 6, minVars: 2, maxVars: 3 };
+        const T1 = rndMono(vars, o), T2 = rndMono(vars, o), Rm = mDiv(T1, T2);
+        if (!Object.values(Rm.e).every(x => Math.abs(x) <= 4) || Rm.c.n > 40 || Rm.c.d > 40 || Object.keys(Rm.e).length < 1) bad();
+        const env = randEnv(vars);
+        if (!fEq(fDiv(mEval(T1, env), mEval(T2, env)), mEval(Rm, env))) bad();
+        const sol = mTex(Rm, vars, 'dfrac');
+        return strQ('ALGEBRAIC_COMPOUND', 'Simplify. (All the letters represent non-zero numbers.)', '\\dfrac{' + padF(mTex(T1, vars, 'frac')) + '}{' + padF(mTex(T2, vars, 'frac')) + '}', sol, monoFakes(Rm, vars, 'dfrac'));
+    }
+    function tAlgProduct() {
+        const vars = pick(VAR_SETS);
+        const Rm = rndMono(vars, { maxExp: 3, nMax: 6, dMax: 3, minVars: 1, maxVars: 2 });
+        Object.keys(Rm.e).forEach(k => Rm.e[k] = Math.abs(Rm.e[k]));
+        const T1 = rndMono(vars, { maxExp: 2, nMax: 9, dMax: 4, minVars: 2, maxVars: 3 });
+        const T2 = rndMono(vars, { maxExp: 5, nMax: 3, dMax: 30, minVars: 1, maxVars: 3 });
+        const T3 = mDiv(mMul(T1, T2), Rm);
+        if (T3.c.n > 60 || T3.c.d > 120 || !Object.values(T3.e).every(x => Math.abs(x) <= 6) || Object.keys(T3.e).length < 1) bad();
+        const env = randEnv(vars);
+        if (!fEq(fDiv(fMul(mEval(T1, env), mEval(T2, env)), mEval(T3, env)), mEval(Rm, env))) bad();
+        const eq = '\\left(' + mTex(T1, vars, 'frac') + '\\times ' + mTex(T2, vars, 'frac') + '\\right)\\div ' + mTex(T3, vars, 'frac');
+        return strQ('ALGEBRAIC_PRODUCT_QUOTIENT', 'Simplify. (All the letters represent non-zero numbers.)', eq, mTex(Rm, vars, 'dfrac'), monoFakes(Rm, vars, 'dfrac'));
+    }
+
+    // ---- simplify a sum of algebraic fractions times a monomial (+ evaluate) ----
+    function tAlgSumTimes() {
+        const vars = pick(VAR_SETS);
+        const [v1, v2, v3] = vars;
+        const dens = shuffleArray([[v1, v2, v3], [v2, v3, v1], [v1, v3, v2]]); // [letter, letter, missing letter]
+        const terms = dens.map((d, i) => ({ n: ri(1, 6), d: ri(2, 6), sg: i === 0 ? 1 : pick([1, -1]), a: d[0], b: d[1], miss: d[2] }));
+        const lcm = (x, y) => x / gcd(x, y) * y;
+        let Lc = 1; terms.forEach(t => { Lc = lcm(Lc, Fr(t.n, t.d).d); });
+        if (Lc > 30) bad();
+        const poly = terms.map(t => ({ c: t.sg * Fr(t.n, t.d).n * (Lc / Fr(t.n, t.d).d), v: t.miss }));
+        const sumTex = terms.map((t, i) => (t.sg < 0 ? '-' : (i > 0 ? '+' : '')) + '\\frac{' + t.n + '}{' + (t.d + '').replace(/^1$/, '') + t.a + t.b + '}').join('');
+        const mult = (Lc !== 1 ? Lc : '') + v1 + v2 + v3;
+        const eq = 'B=\\left(' + sumTex + '\\right)\\times ' + mult;
+        const evalPoly = (pl, env) => pl.reduce((s, t) => fAdd(s, fMul(Fr(t.c), env[t.v])), Fr(0));
+        // self-check against the unsimplified expression
+        const chk = randEnv(vars);
+        let orig = Fr(0);
+        terms.forEach(t => { orig = fAdd(orig, fMul(Fr(t.sg), fDiv(Fr(t.n, t.d), fMul(chk[t.a], chk[t.b])))); });
+        orig = fMul(orig, fMul(Fr(Lc), fMul(chk[v1], fMul(chk[v2], chk[v3]))));
+        if (!fEq(orig, evalPoly(poly, chk))) bad();
+        const mutate = () => {
+            const p = poly.map(t => Object.assign({}, t)); const k = ri(0, 2);
+            switch (ri(0, 3)) {
+                case 0: p[k].c += pick([-1, 1, 2, -2]); break;
+                case 1: p[k].c = -p[k].c; break;
+                case 2: { const j = (k + 1) % 3; const tmp = p[k].v; p[k].v = p[j].v; p[j].v = tmp; break; }
+                case 3: p[k].c = p[k].c * 2; break;
+            }
+            return p.some(t => t.c === 0) ? null : p;
+        };
+        if (ri(0, 1) === 0) {
+            const sol = polyTex(poly), fakes = [];
+            for (let i = 0; i < 40 && fakes.length < 6; i++) { const p = mutate(); if (!p) continue; const t = polyTex(p); if (t !== sol && !fakes.includes(t)) fakes.push(t); }
+            return strQ('ALGEBRAIC_SUM_TIMES', 'Simplify ' + inl('B') + ' (all the letters represent non-zero numbers):', eq, sol, fakes);
+        }
+        const vals = {}; vars.forEach(v => vals[v] = Fr(pick([-2, -1, 1, 2, 3])));
+        const val = evalPoly(poly, vals);
+        const fakes = [];
+        for (let i = 0; i < 40 && fakes.length < 6; i++) { const p = mutate(); if (!p) continue; const x = evalPoly(p, vals); if (!fEq(x, val) && !fakes.includes(String(x.n))) fakes.push(String(x.n)); }
+        [val.n + 1, val.n - 1, val.n + 2].forEach(x => { if (x !== val.n && !fakes.includes(String(x))) fakes.push(String(x)); });
+        const given = vars.map(v => v + '=' + vals[v].n).join(',\\ ');
+        return strQ('ALGEBRAIC_SUM_TIMES', 'Calculate ' + inl('B') + ' if ' + inl(given) + ':', eq, String(val.n), fakes);
+    }
+
+    // ---- one-variable compound fraction ----
+    function linTex(c1, c0, v) {
+        let s = '';
+        if (c1 !== 0) s += (c1 === 1 ? '' : String(c1)) + v;
+        if (c0 !== 0) s += (s ? (c0 > 0 ? '+' : '-') : (c0 < 0 ? '-' : '')) + Math.abs(c0);
+        return s || '0';
+    }
+    function tAlgSingleVar() {
+        const v = pick(['x', 'y', 't']), a = ri(1, 4), k = ri(2, 5), m = ri(2, 5);
+        let N1 = m * a * k, N0 = m * (k + 1), D1 = k, D0 = k * m;
+        const g = gcd(gcd(N1, N0), gcd(D1, D0));
+        N1 /= g; N0 /= g; D1 /= g; D0 /= g;
+        const X = Fr(3);
+        const orig = fDiv(fAdd(fAdd(Fr(a), fDiv(Fr(1), X)), fDiv(Fr(1), fMul(Fr(k), X))), fAdd(Fr(1, m), fDiv(Fr(1), X)));
+        if (!fEq(orig, Fr(N1 * 3 + N0, D1 * 3 + D0))) bad();
+        const fmt = t => '\\dfrac{' + linTex(t[0], t[1], v) + '}{' + linTex(t[2], t[3], v) + '}';
+        const sol = fmt([N1, N0, D1, D0]);
+        const cand = [[N1, N0 + 1, D1, D0], [N1, N0 - 1, D1, D0], [N1, N0, D1, D0 + 1], [N1, N0, D1, D0 - 1], [N1 + 1, N0, D1, D0], [N1, N0, D1 + 1, D0], [D1, D0, N1, N0], [N0, N1, D1, D0], [N1, N0, D0, D1]];
+        const fakes = [];
+        cand.forEach(t => { if (t.every(x => x >= 0) && !(t[0] === 0 && t[1] === 0) && !(t[2] === 0 && t[3] === 0)) { const s = fmt(t); if (s !== sol && !fakes.includes(s)) fakes.push(s); } });
+        const kx = (k === 1 ? '' : k) + v;
+        const eq = 'A=\\dfrac{' + a + '+\\frac{1}{' + v + '}+\\frac{1}{' + kx + '}}{\\frac{1}{' + m + '}+\\frac{1}{' + v + '}}';
+        return strQ('ALGEBRAIC_ONE_VARIABLE', inl(v) + ' is a non-zero natural number. Simplify:', eq, sol, fakes);
+    }
+
+    // ---- symbolic compound fractions (answers are expressions) ----
+    function tSymbolic() {
+        const [u, w] = pick([['a', 'b'], ['x', 'y'], ['m', 'n'], ['p', 'q']]);
+        const pats = [
+            { eq: '\\dfrac{\\frac{1}{u}\\times\\frac{1}{w}}{\\frac{u}{w}+\\frac{w}{u}}', sol: '\\dfrac{1}{u^2+w^2}', f: ['uw', '\\dfrac{u^2w^2}{u^2+w^2}', '\\dfrac{uw}{u^2+w^2}', '\\dfrac{1}{u^2w^2}'] },
+            { eq: '\\dfrac{\\frac{1}{u}+\\frac{1}{w}}{\\frac{1}{u}-\\frac{1}{w}}', sol: '\\dfrac{u+w}{w-u}', f: ['\\dfrac{u+w}{u-w}', '\\dfrac{w-u}{u+w}', '\\dfrac{u-w}{u+w}', '\\dfrac{1}{uw}'] },
+            { eq: '\\dfrac{\\frac{u}{w}-\\frac{w}{u}}{\\frac{1}{u}+\\frac{1}{w}}', sol: 'u-w', f: ['u+w', '\\dfrac{u-w}{uw}', '\\dfrac{u^2-w^2}{uw}', 'uw(u-w)'] },
+            { eq: '\\dfrac{\\frac{u}{w}+\\frac{w}{u}}{\\frac{1}{uw}}', sol: 'u^2+w^2', f: ['\\dfrac{u^2+w^2}{uw}', '(u+w)^2', '\\dfrac{1}{u^2+w^2}', 'u+w'] },
+            { eq: '\\dfrac{\\;\\;\\frac{u}{w}\\;\\;}{\\;\\;\\frac{w}{u}\\;\\;}', sol: '\\dfrac{u^2}{w^2}', f: ['\\dfrac{w^2}{u^2}', '\\dfrac{u}{w}', '1', '\\dfrac{u^2}{w}'] }
+        ];
+        const p = pick(pats);
+        const sub = s => s.replace(/u/g, '§').replace(/w/g, w).replace(/§/g, u);
+        // the replacement above must not touch LaTeX words, so only use it on safe strings
+        const safe = s => s.replace(/\\dfrac/g, '@D').replace(/\\frac/g, '@F').replace(/\\times/g, '@T');
+        const back = s => s.replace(/@D/g, '\\dfrac').replace(/@F/g, '\\frac').replace(/@T/g, '\\times');
+        const S = s => back(sub(safe(s)));
+        return strQ('SYMBOLIC_COMPOUND', 'Simplify. (All the letters represent non-zero numbers.)', S(p.eq), S(p.sol), p.f.map(S));
+    }
+
+    // ---- word: remainder problems ----
+    function tRemainder() {
+        const q = ri(3, 6), p = ri(1, q - 1), s = ri(2, 5), r = ri(1, s - 1);
+        if (gcd(p, q) !== 1 || gcd(r, s) !== 1) bad();
+        const k = ri(1, 9), T = q * s * k * 1000, Lft = k * 1000 * (q - p) * (s - r);
+        const wrong1 = Math.round(Lft / (1 - p / q - r / s));
+        const fakes = [wrong1 > 0 ? wrong1 : T + 3000, Math.round(Lft * q / (q - p)), Math.round(Lft * s / (s - r)), T + k * 1000, T - k * 1000];
+        return { categoryType: 'WORD_REMAINDER', prompt: 'I spent ' + inl('\\frac{' + p + '}{' + q + '}') + ' of my money on a book, then ' + inl('\\frac{' + r + '}{' + s + '}') + ' of the remaining money on a gift. I still have ' + moneyHtml(Lft) + '. How much money did I have at the beginning?',
+            equation: '', type: 'MCQ', solution: moneyTex(T), pool: intChoices(T, fakes.filter(x => x > 0 && x !== T), moneyTex, [1000, -1000, 2000, -2000]), diagram: '' };
+    }
+    function tTheater() {
+        const q = pick([3, 4, 5, 6]), p = ri(1, q - 1), s = pick([2, 3, 4, 5, 6]), r = ri(1, s - 1);
+        if (gcd(p, q) !== 1 || gcd(r, s) !== 1) bad();
+        const k = ri(1, 4), N = q * s * k * ri(1, 3);
+        if (N < 60 || N > 600) bad();
+        const sold = N * p / q, full = sold * r / s, rest = sold - full;
+        if (!Number.isInteger(sold) || !Number.isInteger(full) || rest <= 0) bad();
+        const P1 = pick([24000, 30000, 20000, 15000]), P2 = P1 / 2;
+        const total = full * P1 + rest * P2;
+        const fakes = [sold * P1, full * P1, full * P1 + (N - full) * P2, sold * P2, total + P2 * 4, total - P1];
+        return { categoryType: 'WORD_THEATER', prompt: 'Of the ' + N + ' places in a theater, only ' + inl('\\frac{' + p + '}{' + q + '}') + ' of the places were sold for Monday evening. ' + inl('\\frac{' + r + '}{' + s + '}') + ' of the sold places were sold at full price (' + moneyHtml(P1) + ') and the remaining sold places were sold at a special price (' + moneyHtml(P2) + ').<br>What is the sum of money collected for Monday evening?',
+            equation: '', type: 'MCQ', solution: moneyTex(total), pool: intChoices(total, fakes.filter(x => x > 0 && x !== total), moneyTex, [P2, -P2, P1, -P1]), diagram: '' };
+    }
+
+    // ==========================================================
+    // TEMPLATE REGISTRY + SUITE GENERATOR
+    // ==========================================================
+    const TEMPLATES = {
+        easy: [
+            { id: 'NUMERIC_COMPOUND', fn: tNumBasic }, { id: 'SUM_THEN_DIVIDE', fn: tSumThenDivide }, { id: 'GEOMETRY', fn: tGeometry },
+            { id: 'TRUE_FALSE', fn: tTrueFalse }, { id: 'WORD_FRACTION_OF_TOTAL', fn: tSavings }, { id: 'WORD_HOW_MANY', fn: tPieces },
+            { id: 'SUBSTITUTION', fn: tSubs }
+        ],
+        medium: [
+            { id: 'NESTED_FRACTION', fn: tNested }, { id: 'SUM_OVER_SUM', fn: tSumRatio }, { id: 'MIXED_OPERATIONS', fn: tMixedA },
+            { id: 'POWERS_IN_FRACTIONS', fn: tPower }, { id: 'DECIMALS_AND_FRACTIONS', fn: tDecimal }, { id: 'SUBSTITUTION', fn: tSubs },
+            { id: 'RECIPROCAL_OPPOSITE_EQUAL', fn: tPair }, { id: 'SOLVE_COMPOUND_EQUATION', fn: tEquation }, { id: 'ALGEBRAIC_COMPOUND', fn: tAlgCompound },
+            { id: 'SYMBOLIC_COMPOUND', fn: tSymbolic }, { id: 'WORD_REMAINDER', fn: tRemainder }
+        ],
+        hard: [
+            { id: 'MIXED_OPERATIONS', fn: tMixedB }, { id: 'CONTINUED_FRACTION', fn: tContinued }, { id: 'ALGEBRAIC_PRODUCT_QUOTIENT', fn: tAlgProduct },
+            { id: 'ALGEBRAIC_SUM_TIMES', fn: tAlgSumTimes }, { id: 'ALGEBRAIC_ONE_VARIABLE', fn: tAlgSingleVar }, { id: 'WORD_THEATER', fn: tTheater },
+            { id: 'ALGEBRAIC_COMPOUND', fn: tAlgCompound }
+        ]
+    };
+
+    function sanity(p) {
+        const badRx = /NaN|undefined|Infinity|\[object/;
+        [p.prompt, p.equation, p.solution].concat(p.pool || []).forEach(s => { if (badRx.test(String(s))) bad(); });
+        if (p.type === 'MCQ' && (p.pool.length !== 4 || new Set(p.pool).size !== 4 || !p.pool.includes(p.solution))) bad();
+    }
+    function buildProblem(tpl, tier) {
+        for (let i = 0; i < 600; i++) {
+            try { const p = tpl.fn(tier); p.tier = tier; sanity(p); return p; } catch (e) { /* retry with new random numbers */ }
+        }
+        throw new Error('Template failed: ' + tpl.id);
+    }
+    function generateTier(tier, count) {
+        const pool = TEMPLATES[tier];
+        let order = shuffleArray(pool), idx = 0, guard = 0;
+        const items = [], seen = new Set();
+        while (items.length < count && guard++ < 300) {
+            const tpl = order[idx % order.length]; idx++;
+            if (idx % order.length === 0) order = shuffleArray(pool);
+            let p; try { p = buildProblem(tpl, tier); } catch (e) { continue; }
+            const fp = (p.prompt + '||' + p.equation).replace(/\s+/g, '');
+            if (seen.has(fp)) continue;
+            seen.add(fp); items.push(p);
+        }
+        return items;
+    }
+    let generatedSuite = [];
+    function generateEntireQuizSuite() {
+        generatedSuite = [].concat(
+            generateTier('easy', APP_LIMITS.tiers.easy),
+            generateTier('medium', APP_LIMITS.tiers.medium),
+            generateTier('hard', APP_LIMITS.tiers.hard));
+    }
+
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+    let formattedQuizStartTimeStamp = "";
+    const BS = String.fromCharCode(92);
+
+    function renderMath(el) {
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(el, {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: BS + '(', right: BS + ')', display: false },
+                    { left: BS + '[', right: BS + ']', display: true }
+                ],
+                throwOnError: false
+            });
+        }
+    }
+
+    // ========================================== -->
+    // INTERFACE VIEW SYNCHRONIZER                -->
+    // ========================================== -->
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+        document.getElementById('txt-tier-badge').innerText = activeProblem.tier + " tier";
+        const equationBlock = activeProblem.equation ? `
+            <div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 8px; text-align:center; overflow-x:auto;">
+                $$${activeProblem.equation}$$
+            </div>` : "";
+        document.getElementById('math-prompt-container').innerHTML = `
+            <div style="font-size:1.1rem; line-height:1.5; color: var(--text-main);">
+                ${activeProblem.prompt}
+                ${equationBlock}
+            </div>`;
+        document.getElementById('diagram-canvas').innerHTML = activeProblem.diagram || "";
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+            activeProblem.pool.forEach(choice => {
+                const b = document.createElement('button');
+                b.className = `opt-btn p-3 text-center transition flex justify-center items-center ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+                b.style.minHeight = "56px";
+                b.style.fontSize = "1.2rem";
+                b.innerHTML = BS + "(" + choice + BS + ")";
+                b.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    b.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(b);
+            });
+            renderMath(mcqContainer);
+        } else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        }
+        buildShortcutsGridMatrix();
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+        renderMath(document.getElementById('math-prompt-container'));
+    }
+    function recordInput(value) { storedResponses[traversalIndex] = value; buildShortcutsGridMatrix(); }
+    function buildShortcutsGridMatrix() {
+        const grid = document.getElementById('navigation-shortcut-grid');
+        grid.innerHTML = "";
+        for (let i = 0; i < APP_LIMITS.totalItems; i++) {
+            const b = document.createElement('button');
+            b.innerText = i + 1;
+            let bgStyle = "bg-slate-100 text-slate-600 border border-slate-300";
+            if (traversalIndex === i) bgStyle = "bg-sky-600 text-white font-bold ring-2 ring-sky-300";
+            else if (storedResponses[i]) bgStyle = "bg-emerald-100 text-emerald-700 border border-emerald-400 font-semibold";
+            b.className = `p-2 text-xs text-center rounded-lg transition cursor-pointer min-w-[32px] ${bgStyle}`;
+            b.onclick = () => { traversalIndex = i; synchroniseQuestionIndex(); };
+            grid.appendChild(b);
+        }
+    }
+
+    // ========================================== -->
+    // TIMER, REPORT, PDF, EVENT LISTENERS        -->
+    // ========================================== -->
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            const m = Math.floor(timeTrackingRemaining / 60), s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            const pct = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${pct}%`;
+            progress.style.backgroundColor = pct < 25 ? 'var(--error)' : pct < 50 ? '#d97706' : '';
+        }
+        pulse();
+        clearInterval(schedulerHandle);
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) { clearInterval(schedulerHandle); compileFinalPerformanceReport(true); }
+        }, 1000);
+    }
+
+    function sendGradesToTeacher(name, classroom, score, startStamp, quizTitle) {
+        // Google Web App link (unchanged from your previous quiz)
+        const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+        fetch(url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name,
+                classroom: classroom,
+                score: score,
+                duration: startStamp,
+                quizTitle: quizTitle,
+                date: new Date().toLocaleString()
+            })
+        }).catch(err => console.log("Network trace: Client sync fallback triggered."));
+    }
+
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+        if (isTimeout) alert("Time limit reached. Compiling final performance report now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+        generatedSuite.forEach((problem, index) => {
+            const userRaw = storedResponses[index];
+            const userAns = (userRaw || "").toString().trim();
+            const ok = userAns === problem.solution.toString().trim();
+            if (ok) tallyCorrect++;
+            const isPlain = s => /^(TRUE|FALSE|UNANSWERED)$/i.test(s);
+            const showAns = s => isPlain(String(s)) ? String(s) : (BS + "(" + s + BS + ")");
+            const color = ok ? 'var(--success)' : 'var(--error)';
+            const badge = ok
+                ? `<span style="float:right; font-weight:700; color:var(--success); background:#f0fdf4; padding:2px 8px; border-radius:6px; border:1px solid var(--success); font-size:0.85rem;">Score: 1 / 1</span>`
+                : `<span style="float:right; font-weight:700; color:var(--error); background:#fef2f2; padding:2px 8px; border-radius:6px; border:1px solid var(--error); font-size:0.85rem;">Score: 0 / 1</span>`;
+            compilationHtml += `
+            <div class="report-item" style="position:relative; overflow:auto; background:#ffffff; padding:16px; margin-bottom:12px; border-radius:12px; border-left:5px solid ${ok ? 'var(--success)' : 'var(--error)'};">
+                ${badge}
+                <div style="font-size:0.85rem; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:6px;">
+                    Question ${index + 1} &middot; Topic Category: <span style="color:var(--primary);">${problem.categoryType.replace(/_/g, ' ')}</span>
+                </div>
+                <div style="font-size:0.95rem; line-height:1.5; color:var(--text-main); padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:12px;">
+                    <strong>Problem Prompt:</strong>
+                    <div style="margin-top:4px; font-family:system-ui,sans-serif;">${problem.prompt}</div>
+                    ${problem.equation ? `<div style="margin:12px 0 4px; text-align:center; font-size:1.3rem; font-weight:bold; overflow-x:auto;">$$${problem.equation}$$</div>` : ''}
+                </div>
+                ${problem.diagram ? `<div style="margin:8px 0;">${problem.diagram}</div>` : ''}
+                <div style="display:flex; flex-direction:column; gap:6px; font-size:0.9rem; padding-left:4px;">
+                    <p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:${color}; font-size:1.05rem;">${userRaw ? showAns(userRaw) : 'Unanswered'}</span></p>
+                    <p style="margin:0; color:var(--text-muted);"><strong>Correct Verification Key:</strong> <span style="font-weight:600; color:var(--text-main); font-size:1.05rem;">${showAns(problem.solution)}</span></p>
+                </div>
+            </div>`;
+        });
+
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = document.getElementById('student-name').value.trim();
+        const sectionTitle = document.getElementById('student-section').value.trim();
+        const headerMetaHtml = `
+        <div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:12px; padding:14px; margin-bottom:16px; font-size:0.95rem; line-height:1.4;">
+            <div style="display:flex; justify-content:space-between; border-bottom:1px dashed #cbd5e1; padding-bottom:6px; margin-bottom:6px; flex-wrap:wrap; gap:8px;">
+                <div><strong>Student Name:</strong> <span style="color:var(--primary); font-weight:600;">${userTitle}</span></div>
+                <div><strong>Class Section:</strong> <span style="color:var(--primary); font-weight:600;">${sectionTitle}</span></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px; font-size:0.9rem;">
+                <div><strong>Quiz Assessment:</strong> <span style="color:#475569; font-weight:700;">${QUIZ_TITLE} &middot; Grade 8</span></div>
+                <div><strong>Quiz Start Timestamp:</strong> <span style="font-family:monospace; font-weight:600;">${formattedQuizStartTimeStamp}</span></div>
+            </div>
+        </div>`;
+        document.getElementById('report-injection-zone').innerHTML = headerMetaHtml + compilationHtml;
+        renderMath(document.getElementById('report-injection-zone'));
+
+        sendGradesToTeacher(userTitle, sectionTitle, `${tallyCorrect} / ${APP_LIMITS.totalItems}`, formattedQuizStartTimeStamp, QUIZ_TITLE);
+    }
+
+    document.getElementById('action-start').onclick = () => {
+        if (!document.getElementById('student-name').value.trim() || !document.getElementById('student-section').value.trim()) {
+            alert("Please complete credential parameters to unlock.");
+            return;
+        }
+        const now = new Date();
+        formattedQuizStartTimeStamp = now.toLocaleDateString() + " @ " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        traversalIndex = 0; storedResponses = {};
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) { traversalIndex++; synchroniseQuestionIndex(); }
+        else if (confirm("Finalize and compile report sheets?")) compileFinalPerformanceReport();
+    };
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) { traversalIndex--; synchroniseQuestionIndex(); }
+    };
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+    // Print-friendly PDF export (same behaviour as the previous quiz)
+    if (!document.getElementById('print-fix-styles')) {
+        const style = document.createElement('style');
+        style.id = 'print-fix-styles';
+        style.innerHTML = `
+            @media print {
+                html, body { display:block !important; height:auto !important; overflow:visible !important; background:white !important; }
+                #stage-summary { display:block !important; max-width:100% !important; width:100% !important; padding:0 !important; margin:0 !important; box-shadow:none !important; border:none !important; }
+                footer, #stage-auth, #stage-engine, button, .bg-gradient-to-r button { display:none !important; }
+                .report-item { break-inside: avoid; }
+            }`;
+        document.head.appendChild(style);
+    }
+    document.querySelectorAll('button').forEach(button => {
+        if (button.textContent.includes('Save as PDF') || button.textContent.includes('Download as PDF')) {
+            button.removeAttribute('onclick');
+            button.addEventListener('click', e => { e.preventDefault(); window.print(); });
+        }
+    });
+</script>
+</body>
+</html>
