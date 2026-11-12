@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absolute Values - Grade 10</title>
+    <!-- Tailwind CSS Styling Framework CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX Mathematical Typography Notation Engine Setup CDN -->                  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7; --primary-hover: #0369a1; --bg-main: #f8fafc;
+            --bg-surface: #ffffff; --border-color: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #16a34a; --error: #dc2626;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; }
+        .hidden { display: none !important; }
+        .opt-btn {
+            background-color: var(--bg-surface); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 1.05rem;
+        }
+        .opt-btn:hover { border-color: var(--primary); background-color: #f0f9ff; }
+        .opt-btn.active { border-color: var(--primary); background-color: #e0f2fe; font-weight: 600; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+        .venn-region { cursor: pointer; transition: fill 0.2s ease; }
+        .report-item { background: var(--bg-surface); border-radius: 10px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #cbd5e1; }
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+            .katex { font-size: 1.12em; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Credentials Authentication Entry Stage -->
+    <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
+        <h2 class="text-3xl font-extrabold text-slate-800 text-center tracking-tight mb-2">Absolute Values</h2>
+        <p class="text-sm text-slate-500 text-center mb-8">Grade 10 &middot; Equations, inequalities &amp; expressions with absolute value</p>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Student Full Name</label>
+                <input type="text" id="student-name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Assigned Class Section</label>
+                <input type="text" id="student-section" placeholder="Grade 10-A" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <button id="action-start" class="w-full bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm tracking-wider uppercase mt-4">Start the Quiz</button>
+        </div>
+    </div>
+
+    <!-- FIXED: Active Test Core Engine Integrated Inside One Single Unified Main Box Header Layout -->
+    <div id="stage-engine" class="hidden max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+        <div class="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between min-h-[550px]">
+
+            <!-- HEADER INFO BAR: Time tracking and Question counts grouped inside the single main container block -->
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-5 flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Question Tracker &middot; <span id="idx-current">0</span> / <span id="idx-total">0</span></span>
+                    <span id="txt-tier-badge" class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase bg-slate-100 text-slate-600">Tier</span>
+                </div>
+
+                <!-- TIMER COMPONENT: Grouped tightly inside the primary top header control area -->
+                <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
+                    <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">25:00</span>
+                    <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                        <div id="meter-progress" class="bg-sky-400 h-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Content Presentation Window -->
+            <div class="flex-grow flex flex-col justify-center">
+                <div id="math-prompt-container" class="mb-6"></div>
+
+                <div id="interactive-zone" class="w-full flex flex-col items-center justify-center mb-6">
+                    <div id="box-mcq" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"></div>
+                    <div id="box-tf" class="hidden flex gap-4 w-full justify-center">
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="TRUE">TRUE</button>
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="FALSE">FALSE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Layout Shortcut Matrix Navigation Row -->
+            <div class="border-t border-slate-100 pt-4 mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <!-- Grid Shortcuts inline at the bottom left -->
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden md:block">Overview:</span>
+                    <div id="navigation-shortcut-grid" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="flex gap-3 justify-end w-full sm:w-auto">
+                    <button id="action-back" class="px-5 py-2 border border-slate-300 rounded-xl font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 text-sm transition cursor-pointer">&larr; Back</button>
+                    <button id="action-forward" class="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 text-sm shadow transition cursor-pointer">Next &rarr;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Final Diagnostic Summary Sheet Layout -->
+    <div id="stage-summary" class="hidden max-w-3xl mx-auto w-full px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 p-6 text-white flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">Performance Summary Report</h1>
+                    <p class="text-sky-100 text-xs mt-1">Absolute Values &middot; Grade 10</p>
+                </div>
+                <button onclick="triggerDirectPdfDownload()" class="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition cursor-pointer shadow-sm border border-white/10 text-white">Download as PDF</button>
+            </div>
+
+            <div class="grid grid-cols-3 text-center border-b border-slate-100 bg-slate-50 py-4">
+                <div>
+                    <div id="m-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div id="m-incorrect" class="text-2xl font-extrabold text-rose-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Incorrect</div>
+                </div>
+                <div>
+                    <div id="m-percent" class="text-2xl font-extrabold text-sky-600">0%</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score Rate</div>
+                </div>
+            </div>
+
+                    <!-- Dynamic Question Injections -->
+                        <div id="report-injection-zone" class="p-6 space-y-4 bg-slate-50/50"></div>
+                </div>
+
+                <!-- FIXED: Repositioned standalone PDF action handler bar to the absolute bottom of the page structure -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
+                        <button id="action-pdf-bottom" onclick="triggerDirectPdfDownload()" class="flex-grow bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
+                        <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
+                </div>
+        </div>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
+        &copy; 2026 Absolute Values &bull; Grade 10 Assessment
+    </footer>
+
+<script>
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 1500, // 25 minutes
+        tiers: { easy: 6, medium: 8, hard: 6 }
+    };
+
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+    let formattedQuizStartTimeStamp = "";
+
+    // ---------- helpers: LaTeX is written with @ instead of a backslash, tx() converts it ----------
+    const BS = String.fromCharCode(92);
+    function tx(s) { return s.split('@').join(BS); }
+    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }   // so a < in maths is never read as an HTML tag
+    function M(s) { return '$' + esc(tx(s)) + '$'; }               // inline maths for prompts / explanations
+    const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+    const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+    const nz = (a, b) => { let v; do { v = rnd(a, b); } while (v === 0); return v; };
+
+    function shuffleArray(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    // ---------- exact fractions ----------
+    function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a; }
+    function F(n, d) {
+        d = (d === undefined) ? 1 : d;
+        if (d < 0) { n = -n; d = -d; }
+        const g = gcd(n, d) || 1;
+        return { n: n / g, d: d / g };
+    }
+    const fadd = (a, b) => F(a.n * b.d + b.n * a.d, a.d * b.d);
+    const fsub = (a, b) => F(a.n * b.d - b.n * a.d, a.d * b.d);
+    const fdiv = (a, b) => F(a.n * b.d, a.d * b.n);
+    const fneg = a => F(-a.n, a.d);
+    const fval = a => a.n / a.d;
+    function fT(f) {                                           // LaTeX of a fraction
+        if (f.d === 1) return String(f.n);
+        return (f.n < 0 ? '-' : '') + tx('@frac{') + Math.abs(f.n) + '}{' + f.d + '}';
+    }
+    function setF(list) {                                      // LaTeX of a finite set of fractions
+        const sorted = list.slice().sort((a, b) => fval(a) - fval(b));
+        const u = [];
+        sorted.forEach(f => { if (!u.some(g => g.n === f.n && g.d === f.d)) u.push(f); });
+        if (!u.length) return tx('@emptyset');
+        return tx('@{') + u.map(fT).join(', ') + tx('@}');
+    }
+    const setI = ints => setF(ints.map(n => F(n)));
+
+    // ---------- linear expressions ----------
+    // lin(c,k,v): constant first  ->  c + k v   (e.g. 2-5x)
+    function lin(c, k, v) {
+        v = v || 'x';
+        let s = '';
+        if (c !== 0) s += c;
+        if (k !== 0) {
+            const a = Math.abs(k);
+            s += (k < 0 ? '-' : (s ? '+' : '')) + (a === 1 ? '' : a) + v;
+        }
+        return s || '0';
+    }
+    // linV(k,c): variable first -> k x + c   (e.g. 2x-6)
+    function linV(k, c) {
+        let s = '';
+        if (k !== 0) { const a = Math.abs(k); s += (k < 0 ? '-' : '') + (a === 1 ? '' : a) + 'x'; }
+        if (c !== 0) s += (c < 0 ? '-' : (s ? '+' : '')) + Math.abs(c);
+        return s || '0';
+    }
+
+    // ---------- inequalities / intervals ----------
+    const OPT = { '<=': '@le', '<': '<', '>=': '@ge', '>': '>' };
+    const FLIP = { '<=': '>=', '<': '>', '>=': '<=', '>': '<' };
+    const STRICT = { '<=': '<', '<': '<=', '>=': '>', '>': '>=' };
+    // solution of |E| op r  when the roots of |E| = r are lo < hi (LaTeX strings), notation ] a , b [
+    function ineqTex(op, loT, hiT) {
+        const closed = (op === '<=' || op === '>=');
+        if (op.charAt(0) === '<') return (closed ? '[' : ']') + loT + ' , ' + hiT + (closed ? ']' : '[');
+        return ']-' + tx('@infty') + ' , ' + loT + (closed ? ']' : '[') + ' ' + tx('@cup') + ' ' + (closed ? '[' : ']') + hiT + ' , +' + tx('@infty') + '[';
+    }
+    function fakeIntervals(op, lo, hi, altLo, altHi) {
+        return [ineqTex(FLIP[op], lo, hi), ineqTex(STRICT[op], lo, hi), ineqTex(op, altLo, altHi),
+                ineqTex(FLIP[op], altLo, altHi), ineqTex(STRICT[op], altLo, altHi), ineqTex(STRICT[FLIP[op]], lo, hi)];
+    }
+
+    function buildChoices(correct, fakes) {
+        const out = [correct];
+        shuffleArray(fakes).forEach(f => { if (out.length < 4 && f && !out.includes(f)) out.push(f); });
+        const fb = [tx('@emptyset'), tx('@mathbb{R}'), tx('@{0@}'), tx('@{1@}'), tx('@{-1@}'), tx('@{2@}')];
+        fb.forEach(f => { if (out.length < 4 && !out.includes(f)) out.push(f); });
+        return shuffleArray(out);
+    }
+    const IR = '@mathbb{R}';
+
+    // =====================================================================
+    //  QUESTION ENGINES  (each call draws new random parameters)
+    //  Part I   : write without the absolute value
+    //  Part II  : solve equations in R
+    //  Part III : solve equations / inequalities
+    //  Part IV  : true or false (with justification shown in the report)
+    // =====================================================================
+    const ENG = {};
+
+    // ---- I-a : |x - a| with a condition on x
+    ENG.I_basic = () => {
+        const a = nz(-8, 9), below = Math.random() < 0.5;
+        const inner = linV(1, -a);
+        const res = below ? lin(a, -1) : linV(1, -a);
+        return {
+            cat: 'Remove the absolute value', type: 'MCQ',
+            prompt: 'Write the expression below without using the absolute value:',
+            equation: tx('A=|' + inner + '|,@quad ' + (below ? 'x<' : 'x>') + a),
+            pool: buildChoices(res, [linV(1, -a), lin(a, -1), lin(a, 1), lin(-a, -1)]), solution: res,
+            expl: below
+                ? M('x<' + a) + ' gives ' + M(inner + '<0') + ', so ' + M('|' + inner + '|=-(' + inner + ')=' + res) + '.'
+                : M('x>' + a) + ' gives ' + M(inner + '>0') + ', so ' + M('|' + inner + '|=' + inner) + '.'
+        };
+    };
+
+    // ---- I-a' : |a - sqrt b|
+    ENG.I_abs_val = () => {
+        let a, b;
+        do { a = rnd(2, 7); b = pick([2, 3, 5, 6, 7, 10, 11, 13, 15, 17, 19, 21, 23, 26, 30, 35]); }
+        while (Math.abs(a - Math.sqrt(b)) < 0.3);
+        const sb = '@sqrt{' + b + '}';
+        const flipOrder = Math.random() < 0.5;
+        const inside = flipOrder ? (sb + '-' + a) : (a + '-' + sb);
+        const aBigger = a > Math.sqrt(b);
+        const res = aBigger ? (a + '-' + sb) : (sb + '-' + a);
+        return {
+            cat: 'Remove the absolute value', type: 'MCQ',
+            prompt: 'Write the number below without using the absolute value:',
+            equation: tx('A=|' + inside + '|'),
+            pool: buildChoices(tx(res), [tx(a + '-' + sb), tx(sb + '-' + a), tx(a + '+' + sb), tx('-' + a + '-' + sb)]), solution: tx(res),
+            expl: M(sb) + ' is ' + (aBigger ? 'smaller' : 'larger') + ' than ' + M(String(a)) + ' (because ' + M(b + (aBigger ? '<' : '>') + (a * a)) + '), so the inside is ' + (flipOrder === aBigger ? 'negative' : 'positive') + ' and ' + M('|' + inside + '|=' + res) + '.'
+        };
+    };
+
+    // ---- I-a'' : |p - qx| with a condition on x
+    ENG.I_coef = () => {
+        const p = nz(-6, 9), q = rnd(2, 5), below = Math.random() < 0.5;
+        const inner = lin(p, -q), root = fT(F(p, q));
+        const res = below ? lin(p, -q) : linV(q, -p);
+        return {
+            cat: 'Remove the absolute value', type: 'MCQ',
+            prompt: 'Write the expression below without using the absolute value:',
+            equation: tx('A=|' + inner + '|,@quad x' + (below ? '<' : '>') + root),
+            pool: buildChoices(res, [linV(q, -p), lin(p, -q), lin(p, q), lin(-p, -q)]), solution: res,
+            expl: below
+                ? M('x<' + root) + ' gives ' + M(inner + '>0') + ', so ' + M('|' + inner + '|=' + inner) + '.'
+                : M('x>' + root) + ' gives ' + M(inner + '<0') + ', so ' + M('|' + inner + '|=-(' + inner + ')=' + res) + '.'
+        };
+    };
+
+    // ---- I-b : |p - x| + x - q
+    ENG.I_sum = () => {
+        const p = rnd(1, 8), q = rnd(1, 9), right = Math.random() < 0.5;
+        const res = right ? linV(2, -p - q) : linV(0, p - q);
+        return {
+            cat: 'Remove the absolute value', type: 'MCQ',
+            prompt: 'Write B without using the absolute value:',
+            equation: tx('B=|' + lin(p, -1) + '|+x-' + q + ',@quad x' + (right ? '>' : '<') + p),
+            pool: buildChoices(res, [linV(2, -p - q), linV(2, p - q), linV(0, p - q), linV(0, -p - q), linV(2, p + q), linV(0, p + q)]), solution: res,
+            expl: right
+                ? M('x>' + p) + ' gives ' + M('|' + lin(p, -1) + '|=x-' + p) + ', so ' + M('B=(x-' + p + ')+x-' + q + '=' + res) + '.'
+                : M('x<' + p) + ' gives ' + M('|' + lin(p, -1) + '|=' + lin(p, -1)) + ', so ' + M('B=(' + lin(p, -1) + ')+x-' + q + '=' + res) + '.'
+        };
+    };
+
+    // ---- I (hard) : |x-a| -/+ |x-b| in a given zone
+    ENG.I_diff = () => {
+        const a = rnd(-4, 3), b = a + rnd(2, 6), mode = pick(['diff', 'sum']);
+        const zone = pick(['L', 'M', 'R']);
+        const term = (z, t, isB) => { const s = z === 'L' ? -1 : (z === 'R' ? 1 : (isB ? -1 : 1)); return [s, -s * t]; };
+        const result = z => {
+            const ta = term(z, a, false), tb = term(z, b, true);
+            const k = mode === 'diff' ? ta[0] - tb[0] : ta[0] + tb[0];
+            const c = mode === 'diff' ? ta[1] - tb[1] : ta[1] + tb[1];
+            return [k, c];
+        };
+        const [k, c] = result(zone);
+        const res = linV(k, c);
+        const fakes = ['L', 'M', 'R'].filter(z => z !== zone).map(z => linV(result(z)[0], result(z)[1]));
+        fakes.push(linV(-k, -c), linV(-k, c), linV(k, -c));
+        const ia = linV(1, -a), ib = linV(1, -b);
+        const cond = zone === 'L' ? 'x<' + a : (zone === 'R' ? 'x>' + b : a + '<x<' + b);
+        const ta = term(zone, a, false), tb = term(zone, b, true);
+        const dec = (inn, t) => M('|' + inn + '|=' + linV(t[0], t[1]));
+        return {
+            cat: 'Remove the absolute value', type: 'MCQ',
+            prompt: 'Write C without using the absolute value:',
+            equation: tx('C=|' + ia + '|' + (mode === 'diff' ? '-' : '+') + '|' + ib + '|,@quad ' + cond),
+            pool: buildChoices(res, fakes), solution: res,
+            expl: 'For ' + M(cond) + ': ' + dec(ia, ta) + ' and ' + dec(ib, tb) + '. Hence ' + M('C=' + res) + '.'
+        };
+    };
+
+    // ---- II-a/b : |x-a| -/+ b = 0
+    ENG.II_ab = () => {
+        const a = nz(-6, 8), b = rnd(2, 9), none = Math.random() < 0.3;
+        const inner = linV(1, -a);
+        const sol = none ? setI([]) : setI([a - b, a + b]);
+        const fakes = [setI([a - b]), setI([a + b]), setI([b - a, -a - b]), setI([a - b, a + b]), setI([]), setI([-b, b]), setI([a])];
+        return {
+            cat: 'Solve in R (equation)', type: 'MCQ',
+            prompt: 'Solve in ' + M(IR) + ':',
+            equation: tx('|' + inner + '|' + (none ? '+' : '-') + b + '=0'),
+            pool: buildChoices(sol, fakes), solution: sol,
+            expl: none
+                ? M('|' + inner + '|=-' + b) + ' is impossible because an absolute value is never negative: no solution.'
+                : M('|' + inner + '|=' + b) + ' gives ' + M(inner + '=' + b) + ' or ' + M(inner + '=-' + b) + ', so ' + M('x=' + (a + b)) + ' or ' + M('x=' + (a - b)) + '.'
+        };
+    };
+
+    // ---- II : |qx - p| = r
+    ENG.II_eqx = () => {
+        const q = rnd(2, 4), p = nz(-6, 8), r = rnd(1, 8);
+        const inner = linV(q, -p);
+        const s1 = F(p - r, q), s2 = F(p + r, q);
+        const sol = setF([s1, s2]);
+        const fakes = [setF([F(-p - r, q), F(-p + r, q)]), setF([s2]), setF([s1]), setF([F(p - r), F(p + r)]), setF([])];
+        return {
+            cat: 'Solve in R (equation)', type: 'MCQ',
+            prompt: 'Solve in ' + M(IR) + ':',
+            equation: tx('|' + inner + '|=' + r),
+            pool: buildChoices(sol, fakes), solution: sol,
+            expl: M(inner + '=' + r) + ' or ' + M(inner + '=-' + r) + ', so ' + M('x=' + fT(s2)) + ' or ' + M('x=' + fT(s1)) + '.'
+        };
+    };
+
+    // ---- II-c/d : k|p - qx| - m = 0
+    ENG.II_c = () => {
+        const k = rnd(2, 5), m = rnd(3, 12), p = nz(-5, 9), q = rnd(2, 5), neg = Math.random() < 0.5;
+        const inner = lin(p, -q), E = '|' + inner + '|';
+        const r = F(m, k), P = F(p), Q = F(q);
+        const s1 = fdiv(fsub(P, r), Q), s2 = fdiv(fadd(P, r), Q);
+        const fakes = [setF([fdiv(fsub(F(-p), r), Q), fdiv(fadd(F(-p), r), Q)]), setF([F(p - m, q), F(p + m, q)]), setF([s1]), setF([s2]), setF([])];
+        return {
+            cat: 'Solve in R (equation)', type: 'MCQ',
+            prompt: 'Solve in ' + M(IR) + ':',
+            equation: tx(neg ? ('-' + k + E + '+' + m + '=0') : (k + E + '-' + m + '=0')),
+            pool: buildChoices(setF([s1, s2]), fakes), solution: setF([s1, s2]),
+            expl: 'Isolate: ' + M(E + '=' + fT(r)) + ', so ' + M(inner + '=' + fT(r)) + ' or ' + M(inner + '=-' + fT(r)) + '. Hence ' + M('x=' + fT(s1)) + ' or ' + M('x=' + fT(s2)) + '.'
+        };
+    };
+
+    // ---- II-e : |p - q x^2| - r = 0
+    ENG.II_x2 = () => {
+        const twoPairs = Math.random() < 0.65;
+        let p, q, r, roots, expl;
+        if (twoPairs) {
+            let u, v;
+            do {
+                const pr = shuffleArray([1, 4, 9, 16, 25]).slice(0, 2).sort((x, y) => x - y);
+                u = pr[0]; v = pr[1]; q = rnd(1, 3);
+            } while ((q * (u + v)) % 2 !== 0 || (q * (v - u)) % 2 !== 0);
+            p = q * (u + v) / 2; r = q * (v - u) / 2;
+            const su = Math.sqrt(u), sv = Math.sqrt(v);
+            roots = [-sv, -su, su, sv];
+            expl = (M(lin(p, -q, 'x^2') + '=' + r) + ' gives ' + M('x^2=' + ((p - r) / q)) + '; ' +
+                   M(lin(p, -q, 'x^2') + '=-' + r) + ' gives ' + M('x^2=' + ((p + r) / q)) + '. Hence ' + M('x=' + (-sv) + ',\\ ' + (-su) + ',\\ ' + su + ',\\ ' + sv) + '.');
+        } else {
+            const w = pick([4, 9, 16]);
+            q = rnd(1, 3);
+            p = rnd(1, Math.ceil(q * w / 2) - 1);
+            r = q * w - p;
+            const sw = Math.sqrt(w);
+            roots = [-sw, sw];
+            expl = M(lin(p, -q, 'x^2') + '=' + r) + ' gives ' + M('x^2=' + ((p - r) / q)) + ', impossible (a square is never negative); ' +
+                   M(lin(p, -q, 'x^2') + '=-' + r) + ' gives ' + M('x^2=' + w) + '. Hence ' + M('x=' + (-sw) + '\\text{ or }x=' + sw) + '.';
+        }
+        const sol = setI(roots);
+        const pos = roots.filter(x => x > 0), uniqAbs = [...new Set(roots.map(Math.abs))];
+        const fakes = [setI(pos), setI([-uniqAbs[0], uniqAbs[0]]), setI([-uniqAbs[uniqAbs.length - 1], uniqAbs[uniqAbs.length - 1]]),
+                       setI(uniqAbs.map(x => x * x).concat(uniqAbs.map(x => -x * x))), setI([]), setI([0]), setI(roots.concat([0]))];
+        return {
+            cat: 'Solve in R (equation)', type: 'MCQ',
+            prompt: 'Solve in ' + M(IR) + ':',
+            equation: tx('|' + lin(p, -q, 'x^2') + '|-' + r + '=0'),
+            pool: buildChoices(sol, fakes), solution: sol, expl: expl
+        };
+    };
+
+    // ---- II-f : |p - q x^3| - r = 0
+    ENG.II_x3 = () => {
+        let x1, x2, p, q, r, tries = 0;
+        do {
+            x1 = rnd(-3, 3); x2 = rnd(-3, 3); q = rnd(1, 3);
+            const a = x1 * x1 * x1, b = x2 * x2 * x2;
+            p = q * (a + b) / 2; r = q * Math.abs(b - a) / 2;
+        } while ((x1 === x2 || !Number.isInteger(p) || p === 0 || r === 0) && tries++ < 500);
+        const lo = Math.min(x1, x2), hi = Math.max(x1, x2);
+        const cubeLo = lo * lo * lo, cubeHi = hi * hi * hi;
+        const sol = setI([x1, x2]);
+        const fakes = [setI([-x1, -x2]), setI([x1]), setI([x2]), setI([x1, -x2]), setI([-x1, x2]), setI([])];
+        const inner = lin(p, -q, 'x^3');
+        return {
+            cat: 'Solve in R (equation)', type: 'MCQ',
+            prompt: 'Solve in ' + M(IR) + ':',
+            equation: tx('|' + inner + '|-' + r + '=0'),
+            pool: buildChoices(sol, fakes), solution: sol,
+            expl: M(inner + '=' + r) + ' or ' + M(inner + '=-' + r) + ' give ' + M('x^3=' + cubeLo) + ' or ' + M('x^3=' + cubeHi) + '. Hence ' + M('x=' + lo) + ' or ' + M('x=' + hi) + '.'
+        };
+    };
+
+    // ---- II-g/h : |a - bx| = |c - dx|
+    ENG.II_g = () => {
+        let a, b, c, d;
+        do { a = nz(-6, 9); c = nz(-6, 9); b = rnd(1, 6); d = rnd(1, 6); } while (b === d);
+        const x1 = F(a - c, b - d), x2 = F(a + c, b + d);
+        const ia = lin(a, -b), ic = lin(c, -d);
+        const alt = Math.random() < 0.5;
+        const sol = setF([x1, x2]);
+        const fakes = [setF([x1]), setF([x2]), setF([fneg(x1), fneg(x2)]), setF([F(a - c, b + d), F(a + c, b - d)]), setF([F(c - a, b + d), x1]), setF([])];
+        return {
+            cat: 'Solve in R (equation)', type: 'MCQ',
+            prompt: 'Solve in ' + M(IR) + ':',
+            equation: tx(alt ? ('|' + ia + '|-|' + ic + '|=0') : ('|' + ia + '|=|' + ic + '|')),
+            pool: buildChoices(sol, fakes), solution: sol,
+            expl: 'Two absolute values are equal when the insides are equal or opposite: ' + M(ia + '=' + ic) + ' gives ' + M('x=' + fT(x1)) + '; ' + M(ia + '=-(' + ic + ')') + ' gives ' + M('x=' + fT(x2)) + '.'
+        };
+    };
+
+    // ---- III-1 : a - k|p - qx| = a - k r
+    ENG.III_eq = () => {
+        const a = rnd(1, 6), k = rnd(2, 4), r = rnd(1, 6), p = nz(-5, 7), q = rnd(2, 4);
+        const rhs = a - k * r, inner = lin(p, -q);
+        const s1 = F(p - r, q), s2 = F(p + r, q);
+        const fakes = [setF([F(-p - r, q), F(-p + r, q)]), setF([s1]), setF([s2]), setF([F(p - rhs, q), F(p + rhs, q)]), setF([])];
+        return {
+            cat: 'Solve in R (equation)', type: 'MCQ',
+            prompt: 'Solve in ' + M(IR) + ':',
+            equation: tx(a + '-' + k + '|' + inner + '|=' + rhs),
+            pool: buildChoices(setF([s1, s2]), fakes), solution: setF([s1, s2]),
+            expl: M(k + '|' + inner + '|=' + (a - rhs)) + ', so ' + M('|' + inner + '|=' + r) + ', then ' + M('x=' + fT(s1)) + ' or ' + M('x=' + fT(s2)) + '.'
+        };
+    };
+
+    // ---- III-2 : |x - a| op b
+    ENG.III_simple = () => {
+        const a = nz(-5, 8), b = rnd(1, 8), op = pick(['<=', '<', '>=', '>']);
+        const lo = String(a - b), hi = String(a + b);
+        const sol = ineqTex(op, lo, hi);
+        const inner = linV(1, -a);
+        return {
+            cat: 'Solve in R (inequality)', type: 'MCQ',
+            prompt: 'Solve in ' + M(IR) + ':',
+            equation: tx('|' + inner + '|' + OPT[op] + b),
+            pool: buildChoices(sol, fakeIntervals(op, lo, hi, String(-a - b), String(-a + b))), solution: sol,
+            expl: op.charAt(0) === '<'
+                ? M('|' + inner + '|' + OPT[op] + b) + ' means ' + M('-' + b + OPT[op] + inner + OPT[op] + b) + ', so the solution is ' + M(sol) + '.'
+                : M('|' + inner + '|' + OPT[op] + b) + ' means ' + M(inner + OPT[op] + b) + ' or ' + M(inner + (op === '>=' ? '@le' : '<') + '-' + b) + ', so the solution is ' + M(sol) + '.'
+        };
+    };
+
+    // ---- III-3/4 : c +/- |p - qx| op d
+    ENG.III_ineq3 = () => {
+        const c = rnd(1, 6), plus = Math.random() < 0.5, r = rnd(1, 8), op = pick(['<=', '<', '>=', '>']);
+        const p = nz(-5, 8), q = rnd(2, 5);
+        const d = plus ? c + r : c - r;
+        const inner = lin(p, -q);
+        const opE = plus ? op : FLIP[op];
+        const lo = fT(F(p - r, q)), hi = fT(F(p + r, q));
+        const altLo = fT(F(-p - r, q)), altHi = fT(F(-p + r, q));
+        const sol = ineqTex(opE, lo, hi);
+        const fakes = fakeIntervals(opE, lo, hi, altLo, altHi);
+        return {
+            cat: 'Solve in R (inequality)', type: 'MCQ',
+            prompt: 'Solve in ' + M(IR) + ':',
+            equation: tx(c + (plus ? '+' : '-') + '|' + inner + '|' + OPT[op] + d),
+            pool: buildChoices(sol, fakes), solution: sol,
+            expl: 'Isolate the absolute value: ' + M('|' + inner + '|' + OPT[opE] + r) + (plus ? '' : ' (the inequality sign is reversed when multiplying by -1)') +
+                  '. The roots of ' + M('|' + inner + '|=' + r) + ' are ' + M('x=' + lo) + ' and ' + M('x=' + hi) + ', so the solution is ' + M(sol) + '.'
+        };
+    };
+
+    // ---- III-5 : -|p + qx| + a op -sqrt(s)
+    ENG.III_sqrt = () => {
+        const a = rnd(5, 9), p = rnd(1, 4), q = rnd(2, 4), s = pick([2, 3, 5, 7]), op = pick(['<=', '>=']);
+        const sq = '@sqrt{' + s + '}', E = lin(p, q);
+        const opE = FLIP[op];                                  // |E| opE a + sqrt(s)
+        const mk = (num1, sg1, num2, sg2) => [tx('@frac{' + num1 + (sg1 > 0 ? '+' : '-') + sq + '}{' + q + '}'), tx('@frac{' + num2 + (sg2 > 0 ? '+' : '-') + sq + '}{' + q + '}')];
+        const [lo, hi] = mk(-a - p, -1, a - p, +1);
+        const [lo2, hi2] = mk(-a - p, +1, a - p, -1);
+        const [lo3, hi3] = mk(-a + p, -1, a + p, +1);
+        const sol = ineqTex(opE, lo, hi);
+        const fakes = fakeIntervals(opE, lo, hi, lo2, hi2).concat([ineqTex(opE, lo3, hi3), ineqTex(FLIP[opE], lo3, hi3)]);
+        return {
+            cat: 'Solve in R (inequality)', type: 'MCQ',
+            prompt: 'Solve in ' + M(IR) + ':',
+            equation: tx('-|' + E + '|+' + a + OPT[op] + '-' + sq),
+            pool: buildChoices(sol, fakes), solution: sol,
+            expl: M('|' + E + '|' + OPT[opE] + a + '+' + sq) + '. The roots of ' + M('|' + E + '|=' + a + '+' + sq) + ' are ' + M('x=' + lo) + ' and ' + M('x=' + hi) + ', so the solution is ' + M(sol) + '.'
+        };
+    };
+
+    // ---- III-6/7/8 : special cases (|E| compared with 0)
+    ENG.III_special = () => {
+        const v = pick(['a', 'b', 'c']), rel = pick(['<=', '<', '>=', '>']);
+        let eq, root, relE, E;
+        if (v === 'a') {
+            const a = rnd(2, 9), p = rnd(1, 6), q = rnd(2, 5); E = lin(p, q);
+            eq = a + '-|' + E + '|' + OPT[rel] + a; relE = FLIP[rel]; root = F(-p, q);
+        } else if (v === 'b') {
+            const p = rnd(1, 9), q = rnd(2, 5); E = linV(q, -p);
+            eq = '|' + E + '|' + OPT[rel] + '0'; relE = rel; root = F(p, q);
+        } else {
+            const c = rnd(1, 8), p = rnd(1, 8); E = lin(p, -1);
+            eq = c + '+|' + E + '|' + OPT[rel] + c; relE = rel; root = F(p);
+        }
+        const rt = fT(root);
+        const canon = {
+            '<=': tx('@{') + rt + tx('@}'),
+            '<': tx('@emptyset'),
+            '>=': tx('@mathbb{R}'),
+            '>': tx('@mathbb{R}@setminus@{') + rt + tx('@}')
+        };
+        const sol = canon[relE];
+        const fakes = Object.keys(canon).filter(k => k !== relE).map(k => canon[k]).concat([tx('@{') + fT(fneg(root)) + tx('@}')]);
+        return {
+            cat: 'Solve in R (inequality)', type: 'MCQ',
+            prompt: 'Solve in ' + M(IR) + ':',
+            equation: tx(eq),
+            pool: buildChoices(sol, fakes), solution: sol,
+            expl: 'The equation reduces to ' + M('|' + E + '|' + OPT[relE] + '0') + '. An absolute value is always ' + M('@ge 0') + ' and equals 0 only when ' + M(E + '=0') + ', i.e. ' + M('x=' + rt) + '. So the solution is ' + M(sol) + '.'
+        };
+    };
+
+    // ---- IV-a : |ax - x^2| > -k  (true for all x ?)
+    ENG.IV_a = () => {
+        const a = rnd(2, 9), k = rnd(2, 25);
+        const inner = pick([a + 'x-x^2', 'x^2-' + a + 'x']);
+        const cases = [
+            { op: '>', rhs: -k, t: true }, { op: '>=', rhs: -k, t: true }, { op: '<', rhs: -k, t: false },
+            { op: '<=', rhs: -k, t: false }, { op: '>', rhs: k, t: false }, { op: '<', rhs: k, t: false }, { op: '>=', rhs: 0, t: true }
+        ];
+        const cs = pick(cases);
+        let why;
+        if (cs.t) why = 'An absolute value is always ' + M('@ge 0') + ', and ' + M('0>=' + cs.rhs).replace('>=', tx('@ge')) + ' hence ' + M('|' + inner + '|' + OPT[cs.op] + cs.rhs) + ' holds for every real ' + M('x') + '. TRUE.';
+        else if (cs.rhs < 0) why = 'An absolute value is never negative, so it can never be ' + (cs.op === '<' ? 'smaller than' : 'at most') + ' ' + M(String(cs.rhs)) + '. The statement is FALSE.';
+        else if (cs.op === '>') why = 'Counter-example: for ' + M('x=0') + ', ' + M('|' + inner + '|=0') + ', which is not greater than ' + M(String(k)) + '. FALSE.';
+        else why = 'Counter-example: for ' + M('x=-' + (k + 1)) + ' the value is at least ' + M((k + 1) + '^2') + ', which is larger than ' + M(String(k)) + '. FALSE.';
+        return {
+            cat: 'True or false', type: 'TF',
+            prompt: 'True or false? The inequality below is true for every real number ' + M('x') + '.',
+            equation: tx('|' + inner + '|' + OPT[cs.op] + cs.rhs),
+            pool: [], solution: cs.t ? 'TRUE' : 'FALSE', expl: why
+        };
+    };
+
+    // ---- IV-b : |p - x| = x - p  if x < p
+    ENG.IV_b = () => {
+        const p = rnd(1, 12);
+        const innerPos = Math.random() < 0.5;                 // inside written p - x (true) or x - p (false)
+        const rhsPos = Math.random() < 0.5;                   // right side p - x or x - p
+        const below = Math.random() < 0.5;                    // x < p  (then p - x > 0)
+        const cs = below ? 1 : -1, rs = rhsPos ? 1 : -1;
+        const t = (cs === rs);
+        const inner = innerPos ? (p + '-x') : ('x-' + p), rhs = rhsPos ? (p + '-x') : ('x-' + p);
+        const cond = (below ? 'x<' : 'x>') + p;
+        const absVal = below ? (p + '-x') : ('x-' + p);
+        return {
+            cat: 'True or false', type: 'TF',
+            prompt: 'True or false? Justify your answer.',
+            equation: tx('|' + inner + '|=' + rhs + ',@quad @text{if } ' + cond),
+            pool: [], solution: t ? 'TRUE' : 'FALSE',
+            expl: 'If ' + M(cond) + ' then ' + M('|' + inner + '|=' + absVal) + ' (the quantity inside has the sign of ' + M(absVal) + '). ' +
+                  (t ? 'This equals the right side: TRUE.' : 'The right side is ' + M(rhs) + ', the opposite: FALSE.')
+        };
+    };
+
+    // ---- IV-c : radicals and pi
+    ENG.IV_c = () => {
+        if (Math.random() < 0.55) {
+            const a = pick([2, 3, 5, 7]);
+            const bOpts = [{ b: 4 * a, t: true }, { b: 4 * a, t: true }, { b: 9 * a, t: false }, { b: a, t: false }];
+            const o = pick(bOpts);
+            const sa = '@sqrt{' + a + '}';
+            return {
+                cat: 'True or false', type: 'TF',
+                prompt: 'True or false? Justify your answer.',
+                equation: tx('|' + sa + '+@pi|-|' + sa + '-@pi|-|@sqrt{' + o.b + '}|=0'),
+                pool: [], solution: o.t ? 'TRUE' : 'FALSE',
+                expl: 'Since ' + M(sa + '<@pi') + ': ' + M('|' + sa + '+@pi|=' + sa + '+@pi') + ' and ' + M('|' + sa + '-@pi|=@pi-' + sa) + '. The difference is ' + M('2' + sa) + '. ' +
+                      (o.t ? M('@sqrt{' + o.b + '}=2' + sa) + ', so the expression equals 0: TRUE.' : M('@sqrt{' + o.b + '}=' + (o.b === a ? '' : '3') + sa + '@ne 2' + sa) + ', so the expression is not 0: FALSE.')
+            };
+        }
+        const pair = shuffleArray([2, 3, 5, 6, 7, 10]).slice(0, 2);
+        const x = pair[0], y = pair[1], lo = Math.min(x, y), hi = Math.max(x, y);
+        const t = Math.random() < 0.5;
+        const rhs = t ? ('@sqrt{' + hi + '}-@sqrt{' + lo + '}') : ('@sqrt{' + lo + '}-@sqrt{' + hi + '}');
+        return {
+            cat: 'True or false', type: 'TF',
+            prompt: 'True or false? Justify your answer.',
+            equation: tx('|@sqrt{' + x + '}-@sqrt{' + y + '}|=' + rhs),
+            pool: [], solution: t ? 'TRUE' : 'FALSE',
+            expl: M('@sqrt{' + hi + '}>@sqrt{' + lo + '}') + ', so ' + M('|@sqrt{' + x + '}-@sqrt{' + y + '}|=@sqrt{' + hi + '}-@sqrt{' + lo + '}') + '. ' + (t ? 'TRUE.' : 'The given right side is its opposite: FALSE.')
+        };
+    };
+
+    // ---- IV-d : number of solutions
+    ENG.IV_d = () => {
+        const a = nz(-6, 8), b = rnd(2, 9), inner = linV(1, -a);
+        const cs = pick([
+            { eq: '|' + inner + '|=-' + b, claim: 'has no solution in ' + M(IR), t: true, why: 'An absolute value cannot be negative: no solution. TRUE.' },
+            { eq: '|' + inner + '|=' + b, claim: 'has exactly one solution in ' + M(IR), t: false, why: M(inner + '=' + b) + ' and ' + M(inner + '=-' + b) + ' give two different solutions: FALSE.' },
+            { eq: '|' + inner + '|=0', claim: 'has exactly one solution in ' + M(IR), t: true, why: 'Only ' + M(inner + '=0') + ', i.e. ' + M('x=' + a) + ': TRUE.' },
+            { eq: '|' + inner + '|=' + b, claim: 'has no solution in ' + M(IR), t: false, why: 'Since ' + M(b + '>0') + ' there are two solutions, ' + M('x=' + (a + b)) + ' and ' + M('x=' + (a - b)) + ': FALSE.' },
+            { eq: '|' + inner + '|+' + b + '=0', claim: 'has exactly two solutions in ' + M(IR), t: false, why: M('|' + inner + '|=-' + b) + ' is impossible: no solution at all, FALSE.' }
+        ]);
+        return {
+            cat: 'True or false', type: 'TF',
+            prompt: 'True or false? The equation below ' + cs.claim + '.',
+            equation: tx(cs.eq), pool: [], solution: cs.t ? 'TRUE' : 'FALSE', expl: cs.why
+        };
+    };
+
+    // ---------- which engines feed each difficulty tier ----------
+    const TIER_POOLS = {
+        easy:   ['I_basic', 'I_abs_val', 'II_ab', 'II_eqx', 'III_simple', 'IV_b', 'IV_d'],
+        medium: ['I_coef', 'I_sum', 'II_c', 'II_g', 'III_eq', 'III_ineq3', 'IV_a', 'IV_d', 'II_eqx', 'III_simple'],
+        hard:   ['I_diff', 'II_x2', 'II_x3', 'III_sqrt', 'III_special', 'IV_c', 'III_ineq3']
+    };
+
+    function generateEntireQuizSuite() {
+        generatedSuite = [];
+        const used = new Set();
+        ['easy', 'medium', 'hard'].forEach(tier => {
+            const need = APP_LIMITS.tiers[tier];
+            const fresh = shuffleArray(TIER_POOLS[tier].filter(n => !used.has(n)));
+            const stale = shuffleArray(TIER_POOLS[tier].filter(n => used.has(n)));
+            const names = fresh.concat(stale).slice(0, need);
+            names.forEach(n => {
+                used.add(n);
+                const q = ENG[n]();
+                q.tier = tier; q.engine = n;
+                generatedSuite.push(q);
+            });
+        });
+        // shuffle inside each tier so the order of topics differs between students
+        const out = [];
+        ['easy', 'medium', 'hard'].forEach(t => out.push(...shuffleArray(generatedSuite.filter(q => q.tier === t))));
+        generatedSuite = out.map(q => ({
+            equation: q.equation, tier: q.tier, type: q.type, categoryType: q.cat,
+            pool: q.pool, solution: q.solution, prompt: q.prompt, expl: q.expl, engine: q.engine
+        }));
+    }
+
+    // ========================================== 
+    // INTERFACE
+    // ========================================== 
+    function renderMath(el) {
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(el, {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: '$', right: '$', display: false },
+                    { left: BS + '(', right: BS + ')', display: false }
+                ],
+                throwOnError: false
+            });
+        }
+    }
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+        document.getElementById('txt-tier-badge').innerText = activeProblem.tier + " tier";
+
+        const equationBlock = activeProblem.equation ?
+            '<div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 8px; text-align:center; overflow-x:auto;">$$' + esc(activeProblem.equation) + '$$</div>' : "";
+        const box = document.getElementById('math-prompt-container');
+        box.innerHTML = '<div style="font-size:1.1rem; line-height:1.5; color: var(--text-main);">' + activeProblem.prompt + equationBlock + '</div>';
+
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+
+        if (activeProblem.type === 'MCQ') {
+            const mcq = document.getElementById('box-mcq');
+            mcq.innerHTML = "";
+            mcq.classList.remove('hidden');
+            activeProblem.pool.forEach(choice => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn p-3 text-center transition flex justify-center items-center ' + (storedResponses[traversalIndex] === choice ? 'active' : '');
+                b.style.minHeight = "48px";
+                b.style.fontSize = "1.15rem";
+                b.innerHTML = BS + "(" + esc(choice) + BS + ")";
+                b.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    b.classList.add('active');
+                    recordInput(choice);
+                };
+                mcq.appendChild(b);
+            });
+            renderMath(mcq);
+        } else {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        }
+
+        buildShortcutsGridMatrix();
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+        renderMath(box);
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; buildShortcutsGridMatrix(); }
+
+    function buildShortcutsGridMatrix() {
+        const grid = document.getElementById('navigation-shortcut-grid');
+        grid.innerHTML = "";
+        for (let i = 0; i < APP_LIMITS.totalItems; i++) {
+            const b = document.createElement('button');
+            b.innerText = i + 1;
+            let bgStyle = "bg-slate-100 text-slate-600 border border-slate-300";
+            if (traversalIndex === i) bgStyle = "bg-sky-600 text-white font-bold ring-2 ring-sky-300";
+            else if (storedResponses[i]) bgStyle = "bg-emerald-100 text-emerald-700 border border-emerald-400 font-semibold";
+            b.className = 'p-2 text-xs text-center rounded-lg transition cursor-pointer min-w-[32px] ' + bgStyle;
+            b.onclick = () => { traversalIndex = i; synchroniseQuestionIndex(); };
+            grid.appendChild(b);
+        }
+    }
+
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        const progress = document.getElementById('meter-progress');
+        progress.style.backgroundColor = '';
+        function pulse() {
+            const m = Math.floor(timeTrackingRemaining / 60), s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+            const pct = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            progress.style.width = pct + '%';
+            if (pct < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (pct < 50) progress.style.backgroundColor = '#d97706';
+        }
+        pulse();
+        clearInterval(schedulerHandle);
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function sendGradesToTeacher(name, classroom, score, startStamp, quizTitle) {
+        const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+        fetch(url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name,
+                classroom: classroom,
+                score: score,
+                duration: startStamp,
+                quizTitle: quizTitle,
+                date: new Date().toLocaleString()
+            })
+        }).catch(() => console.log("Network trace: Client sync fallback triggered."));
+    }
+
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+        if (isTimeout) alert("Time limit reached. Compiling final performance report now.");
+
+        let tallyCorrect = 0, html = "";
+        const isPlain = s => /^(TRUE|FALSE)$/i.test(s);
+        const showAns = s => isPlain(String(s)) ? String(s) : (BS + "(" + esc(s) + BS + ")");
+
+        generatedSuite.forEach((problem, index) => {
+            const userRaw = storedResponses[index];
+            const ok = (userRaw || "") === problem.solution;
+            if (ok) tallyCorrect++;
+            const color = ok ? 'var(--success)' : 'var(--error)';
+            const badge = ok
+                ? '<span style="float:right; font-weight:700; color:var(--success); background:#f0fdf4; padding:2px 8px; border-radius:6px; border:1px solid var(--success); font-size:0.85rem;">Score: 1 / 1</span>'
+                : '<span style="float:right; font-weight:700; color:var(--error); background:#fef2f2; padding:2px 8px; border-radius:6px; border:1px solid var(--error); font-size:0.85rem;">Score: 0 / 1</span>';
+            html += '<div class="report-item" style="position:relative; overflow:auto; background:#ffffff; padding:16px; margin-bottom:12px; border-radius:12px; border-left:5px solid ' + color + ';">' + badge +
+                '<div style="font-size:0.85rem; text-transform:uppercase; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Question ' + (index + 1) + ' &middot; <span style="color:var(--primary);">' + problem.categoryType + '</span></div>' +
+                '<div style="font-size:0.95rem; line-height:1.5; padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:12px;">' + problem.prompt +
+                (problem.equation ? '<div style="margin:10px 0; text-align:center; font-size:1.3rem; font-weight:bold; overflow-x:auto;">$$' + problem.equation + '$$</div>' : '') + '</div>' +
+                '<div style="display:flex; flex-direction:column; gap:6px; font-size:0.9rem; padding-left:4px;">' +
+                '<p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:' + color + '; font-size:1.05rem;">' + (userRaw ? showAns(userRaw) : 'Unanswered') + '</span></p>' +
+                '<p style="margin:0; color:var(--text-muted);"><strong>Correct Answer:</strong> <span style="font-weight:600; color:var(--text-main); font-size:1.05rem;">' + showAns(problem.solution) + '</span></p>' +
+                '<p style="margin:6px 0 0 0; padding:8px; background:#f8fafc; border-radius:8px; color:var(--text-main);"><strong>Solution:</strong> ' + problem.expl + '</p>' +
+                '</div></div>';
+        });
+
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100) + '%';
+
+        const userTitle = document.getElementById('student-name').value.trim();
+        const sectionTitle = document.getElementById('student-section').value.trim();
+        const header = '<div style="background:#ffffff; border:1px solid #cbd5e1; border-radius:12px; padding:14px; margin-bottom:16px; font-size:0.95rem; line-height:1.4;">' +
+            '<div style="display:flex; justify-content:space-between; border-bottom:1px dashed #cbd5e1; padding-bottom:6px; margin-bottom:6px; flex-wrap:wrap; gap:8px;">' +
+            '<div><strong>Student Name:</strong> <span style="color:var(--primary); font-weight:600;">' + userTitle + '</span></div>' +
+            '<div><strong>Class Section:</strong> <span style="color:var(--primary); font-weight:600;">' + sectionTitle + '</span></div></div>' +
+            '<div style="display:flex; flex-direction:column; gap:4px; font-size:0.9rem;">' +
+            '<div><strong>Quiz Assessment:</strong> <span style="color:#475569; font-weight:700;">Absolute values - Grade 10</span></div>' +
+            '<div><strong>Quiz Start Timestamp:</strong> <span style="font-family:monospace; font-weight:600;">' + formattedQuizStartTimeStamp + '</span></div></div></div>';
+
+        const zone = document.getElementById('report-injection-zone');
+        zone.innerHTML = header + html;
+        renderMath(zone);
+
+        sendGradesToTeacher(userTitle, sectionTitle, tallyCorrect + ' / ' + APP_LIMITS.totalItems, formattedQuizStartTimeStamp, "Absolute values - Grade 10");
+    }
+
+    document.getElementById('action-start').onclick = () => {
+        if (!document.getElementById('student-name').value.trim() || !document.getElementById('student-section').value.trim()) {
+            alert("Please complete credential parameters to unlock.");
+            return;
+        }
+        const now = new Date();
+        formattedQuizStartTimeStamp = now.toLocaleDateString() + " @ " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) { traversalIndex++; synchroniseQuestionIndex(); }
+        else if (confirm("Finalize and compile report sheets?")) compileFinalPerformanceReport();
+    };
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) { traversalIndex--; synchroniseQuestionIndex(); }
+    };
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+    // Print / PDF: use the browser print dialog (the html2pdf bundle clips flex layouts)
+    if (!document.getElementById('print-fix-styles')) {
+        const style = document.createElement('style');
+        style.id = 'print-fix-styles';
+        style.innerHTML = '@media print { html, body { display:block !important; height:auto !important; overflow:visible !important; background:white !important; } ' +
+            '#stage-summary { display:block !important; max-width:100% !important; width:100% !important; padding:0 !important; margin:0 !important; box-shadow:none !important; border:none !important; } ' +
+            'footer, #stage-auth, #stage-engine, button { display:none !important; } }';
+        document.head.appendChild(style);
+    }
+    function triggerDirectPdfDownload() { window.print(); }
+</script>
+</body>
+</html>
