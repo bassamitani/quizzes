@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logarithmic Functions Diagnostic Suite</title>
+    <!-- Tailwind CSS Styling Framework CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX Mathematical Typography Notation Engine Setup CDN -->                  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7; --primary-hover: #0369a1; --bg-main: #f8fafc;
+            --bg-surface: #ffffff; --border-color: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #16a34a; --error: #dc2626;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; }
+        .hidden { display: none !important; }
+        .opt-btn {
+            background-color: var(--bg-surface); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 1.05rem;
+        }
+        .opt-btn:hover { border-color: var(--primary); background-color: #f0f9ff; }
+        .opt-btn.active { border-color: var(--primary); background-color: #e0f2fe; font-weight: 600; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+        .venn-region { cursor: pointer; transition: fill 0.2s ease; }
+        .venn-region:hover { opacity: 0.8; }
+        .report-item { background: var(--bg-surface); border-radius: 10px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #cbd5e1; }
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+            .katex { font-size: 1.12em; }
+        .venn-region:hover { opacity: 0.85; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Credentials Authentication Entry Stage -->
+    <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
+        <h2 class="text-3xl font-extrabold text-slate-800 text-center tracking-tight mb-2">Logarithmic Functions Quiz</h2>
+        <p class="text-sm text-slate-500 text-center mb-8">Grade 12 &middot; ln: derivatives, limits, domains, equations &amp; variations</p>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Student Full Name</label>
+                <input type="text" id="student-name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Assigned Class Section</label>
+                <input type="text" id="student-section" placeholder="Grade 12-A" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <button id="action-start" class="w-full bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm tracking-wider uppercase mt-4">Unlock Examination Matrix</button>
+        </div>
+    </div>
+
+    <!-- FIXED: Active Test Core Engine Integrated Inside One Single Unified Main Box Header Layout -->
+    <div id="stage-engine" class="hidden max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+        <div class="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between min-h-[550px]">
+
+            <!-- HEADER INFO BAR: Time tracking and Question counts grouped inside the single main container block -->
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-5 flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Question Tracker &middot; <span id="idx-current">0</span> / <span id="idx-total">0</span></span>
+                    <span id="txt-tier-badge" class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase bg-slate-100 text-slate-600">Tier</span>
+                </div>
+
+                <!-- TIMER COMPONENT: Grouped tightly inside the primary top header control area -->
+                <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
+                    <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">30:00</span>
+                    <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                        <div id="meter-progress" class="bg-sky-400 h-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Content Presentation Window -->
+            <div class="flex-grow flex flex-col justify-center">
+                <div id="math-prompt-container" class="mb-6"></div>
+
+                <div id="interactive-zone" class="w-full flex flex-col items-center justify-center mb-6">
+                    <div id="box-mcq" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"></div>
+                    <div id="box-tf" class="hidden flex gap-4 w-full justify-center">
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="TRUE">TRUE</button>
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="FALSE">FALSE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Layout Shortcut Matrix Navigation Row -->
+            <div class="border-t border-slate-100 pt-4 mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <!-- Grid Shortcuts inline at the bottom left -->
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden md:block">Overview:</span>
+                    <div id="navigation-shortcut-grid" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="flex gap-3 justify-end w-full sm:w-auto">
+                    <button id="action-back" class="px-5 py-2 border border-slate-300 rounded-xl font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 text-sm transition cursor-pointer">&larr; Back</button>
+                    <button id="action-forward" class="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 text-sm shadow transition cursor-pointer">Next &rarr;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Final Diagnostic Summary Sheet Layout -->
+    <div id="stage-summary" class="hidden max-w-3xl mx-auto w-full px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 p-6 text-white flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">Performance Summary Report</h1>
+                    <p class="text-sky-100 text-xs mt-1">Logarithmic Functions Assessment Key</p>
+                </div>
+                <button onclick="triggerDirectPdfDownload()" class="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition cursor-pointer shadow-sm border border-white/10 text-white">Download as PDF</button>
+            </div>
+
+            <div class="grid grid-cols-3 text-center border-b border-slate-100 bg-slate-50 py-4">
+                <div>
+                    <div id="m-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div id="m-incorrect" class="text-2xl font-extrabold text-rose-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Incorrect</div>
+                </div>
+                <div>
+                    <div id="m-percent" class="text-2xl font-extrabold text-sky-600">0%</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score Rate</div>
+                </div>
+            </div>
+
+                    <!-- Dynamic Question Injections -->
+                        <div id="report-injection-zone" class="p-6 space-y-4 bg-slate-50/50"></div>
+                </div>
+
+                <!-- FIXED: Repositioned standalone PDF action handler bar to the absolute bottom of the page structure -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
+                        <button id="action-pdf-bottom" onclick="triggerDirectPdfDownload()" class="flex-grow bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
+                        <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
+                </div>
+        </div>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
+        &copy; 2026 Logarithmic Functions Assessment Suite &bull; Academic Diagnostic Engine
+    </footer>
+
+<script>
+/* =====================================================================
+   LOGARITHMIC FUNCTIONS (Grade 12) - DYNAMIC QUESTION ENGINE
+   Every generator re-rolls its numbers / letters on each call.
+   Tex is written with @ instead of a backslash (T() converts it).
+   ===================================================================== */
+const BS = String.fromCharCode(92);
+const T = s => s.split('@').join(BS);
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const nz = (a, b) => { let v; do { v = ri(a, b); } while (v === 0); return v; };
+const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; };
+const rat = (n, d = 1) => { if (d < 0) { n = -n; d = -d; } const g = gcd(n, d) || 1; return [n / g, d / g]; };
+const rv = r => r[0] / r[1];
+
+/* ---------- tex helpers ---------- */
+const F = (n, d) => T('@frac{' + n + '}{' + d + '}');
+const fracTex = r => { const [n, d] = r; if (d === 1) return String(n); return (n < 0 ? '-' : '') + F(Math.abs(n), d); };
+const ci = c => c === 0 ? '' : String(c);
+const ct = (c, b) => c === 0 ? '' : (c === 1 ? b : (c === -1 ? '-' + b : c + b));
+const sumTex = a => a.filter(s => s !== '').reduce((acc, t) => acc === '' ? t : acc + (t[0] === '-' ? t : '+' + t), '') || '0';
+const pw = (b, e) => e === 1 ? b : b + '^{' + e + '}';
+function lin(a, b, v = 'x') { return sumTex([ct(a, v), ci(b)]); }
+function quad(a, b, c, v = 'x') { return sumTex([ct(a, v + '^2'), ct(b, v), ci(c)]); }
+const LNX = T('@ln x'), LNY = T('@ln y');
+const lnp = arg => T('@ln(') + arg + ')';
+const lnPlus = q => q === 0 ? LNX : LNX + (q > 0 ? '+' + q : '-' + (-q));
+const lnPow = e => e === 1 ? LNX : T('(@ln x)^') + e;
+const expTex = r => { if (r[0] === 0) return '1'; if (r[0] === 1 && r[1] === 1) return 'e'; return 'e^{' + fracTex(r) + '}'; };
+const expInt = n => expTex(rat(n, 1));
+const lnRat = r => r[1] === 1 ? T('@ln ') + r[0] : T('@ln') + F(r[0], r[1]);
+const SET = items => {
+  if (!items.length) return [T('S=@varnothing'), []];
+  const seenT = new Set(); items = items.filter(i => !seenT.has(i[0]) && seenT.add(i[0]));
+  const s = items.slice().sort((p, q) => (Array.isArray(p[1]) ? p[1][0] : p[1]) - (Array.isArray(q[1]) ? q[1][0] : q[1]));
+  return [T('S=@{') + s.map(i => i[0]).join(',') + T('@}'), s.map(i => i[1])];
+};
+const SETX = (texList) => [T('S=@{') + texList.join(',') + T('@}'), undefined];
+const ratItem = r => [fracTex(r), rv(r)];
+const PAIR = (a, b) => '(' + a + ',' + b + ')';
+
+/* ---------- intervals ---------- */
+const ep = (t, v) => ({ t, v });
+const NINF = ep(T('-@infty'), -Infinity), PINF = ep(T('+@infty'), Infinity);
+const epR = (n, d = 1) => { const r = rat(n, d); return ep(fracTex(r), rv(r)); };
+const IV = (lo, hi, lc = false, hc = false) => ({ lo, hi, lc: lc && isFinite(lo.v), hc: hc && isFinite(hi.v) });
+const ivTex = iv => T('@left') + (iv.lc ? '[' : ']') + iv.lo.t + ',' + iv.hi.t + T('@right') + (iv.hc ? ']' : '[');
+const U = (...ivs) => [ivs.map(ivTex).join(T('@cup')), undefined, ivs];
+const EMPTY = () => [T('@varnothing'), undefined, []];
+const ALLR = () => U(IV(NINF, PINF));
+const EP0 = ep('0', 0);
+
+/* ---------- comparing / building answer choices ---------- */
+function veq(a, b) {
+  if (Array.isArray(a) || Array.isArray(b)) { if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false; return a.every((x, i) => veq(x, b[i])); }
+  if (a === b) return true;
+  if (!isFinite(a) || !isFinite(b)) return false;
+  return Math.abs(a - b) <= 1e-9 * (1 + Math.abs(a));
+}
+function build(correct, fakes, need = 4) {
+  const same = (p, q) => p[0] === q[0] || (p[1] !== undefined && q[1] !== undefined && veq(p[1], q[1]));
+  const out = [correct];
+  for (const f of shuffle(fakes)) { if (out.length >= need) break; if (out.every(o => !same(o, f))) out.push(f); }
+  if (out.length < need) throw new Error('not enough distractors');
+  return { solution: correct[0], pool: shuffle(out.map(o => o[0])) };
+}
+function mc(o) {
+  const b = build(o.correct, o.fakes);
+  return { categoryType: o.cat, type: 'MCQ', prompt: o.prompt, equation: o.eq || '', pool: b.pool, solution: b.solution, _chk: o.chk };
+}
+function tfq(statement, truth, cat) {
+  return { categoryType: cat || 'TRUE/FALSE', type: 'TF', prompt: 'Decide whether the following statement is TRUE or FALSE:' +
+    '<div style="margin-top:12px; padding:14px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; font-size:1.2rem; text-align:center;">' + statement + '</div>',
+    equation: '', pool: [], solution: truth ? 'TRUE' : 'FALSE' };
+}
+const mi = s => BS + '(' + s + BS + ')';          // inline math for html prompts
+
+/* =====================================================================
+   1) DERIVATIVES
+   ===================================================================== */
+const DP = 'Determine the derivative of the following function on its domain of definition:';
+const DV = (tex, fn, pts) => [T(tex), pts.map(fn)];
+const dq = (f, fn, pts, correct, fakes) => mc({ cat: 'DERIVATIVE', prompt: DP, eq: 'f(x)=' + T(f), correct, fakes, chk: { kind: 'deriv', f: fn, pts, ans: correct[1] } });
+
+const DERIV = [
+  { id: 'd_lnax', tiers: ['easy'], gen() { const a = ri(2, 9), p = [1.3, 2.7];
+    return dq(lnp(a + 'x'), x => Math.log(a * x), p, DV('@frac{1}{x}', x => 1 / x, p),
+      [DV('@frac{' + a + '}{x}', x => a / x, p), DV('@frac{1}{' + a + 'x}', x => 1 / (a * x), p), DV('@frac{@ln ' + a + '}{x}', x => Math.log(a) / x, p)]); } },
+  { id: 'd_lnlin', tiers: ['easy'], gen() { const a = ri(2, 7), b = nz(-5, 5), x1 = Math.max(0.5, -b / a) + 1.1, p = [x1, x1 + 2];
+    return dq(lnp(lin(a, b)), x => Math.log(a * x + b), p, DV('@frac{' + a + '}{' + lin(a, b) + '}', x => a / (a * x + b), p),
+      [DV('@frac{1}{' + lin(a, b) + '}', x => 1 / (a * x + b), p), DV('@frac{' + b + '}{' + lin(a, b) + '}', x => b / (a * x + b), p), DV('@frac{' + a + 'x}{' + lin(a, b) + '}', x => a * x / (a * x + b), p), DV('@frac{' + a + '}{x}', x => a / x, p)]); } },
+  { id: 'd_neglnfrac', tiers: ['easy', 'medium'], gen() { const a = ri(2, 9), p = [1.4, 3.1];
+    return dq(lnp(F(a, 'x')), x => Math.log(a / x), p, DV('-@frac{1}{x}', x => -1 / x, p),
+      [DV('@frac{1}{x}', x => 1 / x, p), DV('-@frac{' + a + '}{x}', x => -a / x, p), DV('@frac{' + a + '}{x}', x => a / x, p), DV('-@frac{1}{' + a + 'x}', x => -1 / (a * x), p)]); } },
+  { id: 'd_lnquad', tiers: ['easy', 'medium'], gen() { const a = ri(1, 3), k = ri(1, 9), p = [0.7, 2.4], q = quad(a, 0, k);
+    return dq(lnp(q), x => Math.log(a * x * x + k), p, DV('@frac{' + (2 * a === 2 ? '2x' : (2 * a) + 'x') + '}{' + q + '}', x => 2 * a * x / (a * x * x + k), p),
+      [DV('@frac{1}{' + q + '}', x => 1 / (a * x * x + k), p), DV('@frac{' + (a === 1 ? '' : a) + 'x}{' + q + '}', x => a * x / (a * x * x + k), p), DV('@frac{2}{' + q + '}', x => 2 / (a * x * x + k), p), DV('@frac{' + (2 * a) + 'x}{x}', x => 2 * a, p)]); } },
+  { id: 'd_sumlog', tiers: ['easy'], gen() { const p1 = ri(1, 3), q = nz(-4, 4), r = nz(-5, 5), p = [0.8, 2.2];
+    const qt = (qq) => qq < 0 ? '-' + F(-qq, 'x') : F(qq, 'x');
+    return dq(sumTex([ct(p1, 'x^2'), ct(q, LNX), ci(r)]), x => p1 * x * x + q * Math.log(x) + r, p,
+      DV(sumTex([ct(2 * p1, 'x'), qt(q)]), x => 2 * p1 * x + q / x, p),
+      [DV(sumTex([ct(2 * p1, 'x'), ci(q)]), x => 2 * p1 * x + q, p), DV(sumTex([ct(p1, 'x'), qt(q)]), x => p1 * x + q / x, p), DV(sumTex([ct(2 * p1, 'x'), qt(-q)]), x => 2 * p1 * x - q / x, p), DV(sumTex([ct(2 * p1, 'x'), ct(q, LNX)]), x => 2 * p1 * x + q * Math.log(x), p)]); } },
+  { id: 'd_lnln', tiers: ['medium'], gen() { const p = [2.5, 4.2];
+    return dq(T('@ln(@ln x)'), x => Math.log(Math.log(x)), p, DV('@frac{1}{x@ln x}', x => 1 / (x * Math.log(x)), p),
+      [DV('@frac{1}{@ln x}', x => 1 / Math.log(x), p), DV('@frac{1}{x}', x => 1 / x, p), DV('@frac{@ln x}{x}', x => Math.log(x) / x, p), DV('@frac{x}{@ln x}', x => x / Math.log(x), p)]); } },
+  { id: 'd_xnlnx', tiers: ['medium'], gen() { const n = ri(2, 4), p = [1.5, 2.8];
+    return dq(pw('x', n) + LNX, x => Math.pow(x, n) * Math.log(x), p, DV(pw('x', n - 1) + '(' + n + '@ln x+1)', x => Math.pow(x, n - 1) * (n * Math.log(x) + 1), p),
+      [DV(n + pw('x', n - 1), x => n * Math.pow(x, n - 1), p), DV(pw('x', n - 1) + '(' + n + '@ln x-1)', x => Math.pow(x, n - 1) * (n * Math.log(x) - 1), p), DV(n + pw('x', n - 1) + '@ln x', x => n * Math.pow(x, n - 1) * Math.log(x), p), DV(pw('x', n - 1) + '(@ln x+1)', x => Math.pow(x, n - 1) * (Math.log(x) + 1), p)]); } },
+  { id: 'd_lnpow', tiers: ['medium'], gen() { const n = ri(2, 4), p = [1.7, 3.3];
+    return dq(lnPow(n), x => Math.pow(Math.log(x), n), p, DV('@frac{' + n + lnPow(n - 1) + '}{x}', x => n * Math.pow(Math.log(x), n - 1) / x, p),
+      [DV(n + lnPow(n - 1), x => n * Math.pow(Math.log(x), n - 1), p), DV('@frac{' + lnPow(n - 1) + '}{x}', x => Math.pow(Math.log(x), n - 1) / x, p), DV('@frac{' + n + '}{x}', x => n / x, p), DV('@frac{' + lnPow(n) + '}{x}', x => Math.pow(Math.log(x), n) / x, p)]); } },
+  { id: 'd_xshift', tiers: ['medium'], gen() { const a = ri(1, 5), p = [0.6, 2.9], L = lnp(lin(1, a));
+    return dq('(' + lin(1, a) + ')' + L + '-x', x => (x + a) * Math.log(x + a) - x, p, DV(L, x => Math.log(x + a), p),
+      [DV(L + '+1', x => Math.log(x + a) + 1, p), DV(L + '-1', x => Math.log(x + a) - 1, p), DV('@frac{1}{' + lin(1, a) + '}', x => 1 / (x + a), p), DV('(' + lin(1, a) + ')@cdot@frac{1}{' + lin(1, a) + '}', x => 1, p)]); } },
+  { id: 'd_linlnx', tiers: ['medium'], gen() { const a = ri(2, 7), b = ri(-3, 5), c = a - 1, p = [0.7, 2.5];
+    return dq(sumTex([ct(a, 'x'), T('-x@ln x'), ci(b)]), x => a * x - x * Math.log(x) + b, p, DV(sumTex([String(c), '-' + LNX]), x => c - Math.log(x), p),
+      [DV(sumTex([String(a), '-' + LNX]), x => a - Math.log(x), p), DV(sumTex([String(c), LNX]), x => c + Math.log(x), p), DV(sumTex([String(c), '-' + F(1, 'x')]), x => c - 1 / x, p), DV(sumTex([String(a), '-' + F(1, 'x')]), x => a - 1 / x, p)]); } },
+  { id: 'd_quot_ln', tiers: ['hard'], gen() { let pp, q; do { pp = ri(-3, 3); q = ri(-3, 3); } while (pp === q);
+    const p = [1.37, 5.31], den = '(' + lnPlus(q) + ')^2', top = pp === q ? '' : String(q - pp);
+    return dq(F(lnPlus(pp), lnPlus(q)), x => (Math.log(x) + pp) / (Math.log(x) + q), p, DV('@frac{' + (q - pp) + '}{x' + den + '}', x => (q - pp) / (x * Math.pow(Math.log(x) + q, 2)), p),
+      [DV('@frac{' + (pp - q) + '}{x' + den + '}', x => (pp - q) / (x * Math.pow(Math.log(x) + q, 2)), p), DV('@frac{' + (q - pp) + '}{x(' + lnPlus(q) + ')}', x => (q - pp) / (x * (Math.log(x) + q)), p), DV('@frac{' + (q - pp) + '}{' + den + '}', x => (q - pp) / Math.pow(Math.log(x) + q, 2), p), DV('@frac{1}{x' + den + '}', x => 1 / (x * Math.pow(Math.log(x) + q, 2)), p)]); } },
+  { id: 'd_quot_lnlin', tiers: ['hard'], gen() { const pp = nz(-3, 3), q = ri(1, 4), p = [1.1, 3.7], A = F(lin(1, q), 'x');
+    const num = (sg) => sumTex([A, '-' + LNX, String(sg * -pp)]);
+    return dq(F(lnPlus(pp), lin(1, q)), x => (Math.log(x) + pp) / (x + q), p, DV('@frac{' + num(1) + '}{(' + lin(1, q) + ')^2}', x => ((x + q) / x - Math.log(x) - pp) / Math.pow(x + q, 2), p),
+      [DV('@frac{1}{x(' + lin(1, q) + ')}', x => 1 / (x * (x + q)), p), DV('@frac{' + num(-1) + '}{(' + lin(1, q) + ')^2}', x => ((x + q) / x - Math.log(x) + pp) / Math.pow(x + q, 2), p), DV('@frac{' + sumTex([F(1, 'x'), '-' + LNX, String(-pp)]) + '}{(' + lin(1, q) + ')^2}', x => (1 / x - Math.log(x) - pp) / Math.pow(x + q, 2), p), DV('@frac{1}{x}', x => 1 / x, p)]); } },
+  { id: 'd_sqrtquad', tiers: ['hard'], gen() { let r1, r2; do { r1 = ri(-4, 4); r2 = ri(-4, 4); } while (r1 >= r2);
+    const pp = -(r1 + r2), q = r1 * r2, Q = quad(1, pp, q), p = [r2 + 1.5, r2 + 4.2];
+    return dq(T('@ln@sqrt{') + Q + '}', x => Math.log(Math.sqrt(x * x + pp * x + q)), p, DV('@frac{' + lin(2, pp) + '}{2(' + Q + ')}', x => (2 * x + pp) / (2 * (x * x + pp * x + q)), p),
+      [DV('@frac{' + lin(2, pp) + '}{' + Q + '}', x => (2 * x + pp) / (x * x + pp * x + q), p), DV('@frac{1}{2(' + Q + ')}', x => 1 / (2 * (x * x + pp * x + q)), p), DV('@frac{' + lin(2, pp) + '}{2@sqrt{' + Q + '}}', x => (2 * x + pp) / (2 * Math.sqrt(x * x + pp * x + q)), p), DV('@frac{1}{2@sqrt{' + Q + '}}', x => 1 / (2 * Math.sqrt(x * x + pp * x + q)), p)]); } },
+  { id: 'd_ln1sqrt', tiers: ['hard'], gen() { const a = ri(1, 4), p = [1.6, 4.3], S = '@sqrt{x}';
+    return dq(lnp(a + '+' + T(S)), x => Math.log(a + Math.sqrt(x)), p, DV('@frac{1}{2@sqrt{x}(' + a + '+@sqrt{x})}', x => 1 / (2 * Math.sqrt(x) * (a + Math.sqrt(x))), p),
+      [DV('@frac{1}{' + a + '+@sqrt{x}}', x => 1 / (a + Math.sqrt(x)), p), DV('@frac{1}{2@sqrt{x}}', x => 1 / (2 * Math.sqrt(x)), p), DV('@frac{1}{2(' + a + '+@sqrt{x})}', x => 1 / (2 * (a + Math.sqrt(x))), p), DV('@frac{1}{@sqrt{x}(' + a + '+@sqrt{x})}', x => 1 / (Math.sqrt(x) * (a + Math.sqrt(x))), p)]); } },
+  { id: 'd_sqrtln', tiers: ['medium', 'hard'], gen() { const a = ri(1, 4), p = [1.5, 4.0], I = a + '+@ln x';
+    return dq('@sqrt{' + I + '}', x => Math.sqrt(a + Math.log(x)), p, DV('@frac{1}{2x@sqrt{' + I + '}}', x => 1 / (2 * x * Math.sqrt(a + Math.log(x))), p),
+      [DV('@frac{1}{2@sqrt{' + I + '}}', x => 1 / (2 * Math.sqrt(a + Math.log(x))), p), DV('@frac{1}{x@sqrt{' + I + '}}', x => 1 / (x * Math.sqrt(a + Math.log(x))), p), DV('@frac{1}{2x(' + I + ')}', x => 1 / (2 * x * (a + Math.log(x))), p), DV('@frac{1}{2@sqrt{x}}', x => 1 / (2 * Math.sqrt(x)), p)]); } },
+  { id: 'd_ratio_ln', tiers: ['hard'], gen() { const k = ri(1, 5), m = ri(1, 5), p = [0.9, 2.8], A = quad(1, 0, k), B = lin(1, m);
+    return dq(lnp(F(A, B)), x => Math.log((x * x + k) / (x + m)), p, DV(sumTex([F('2x', A), '-' + F(1, B)]), x => 2 * x / (x * x + k) - 1 / (x + m), p),
+      [DV(sumTex([F('2x', A), F(1, B)]), x => 2 * x / (x * x + k) + 1 / (x + m), p), DV('@frac{2x}{' + B + '}', x => 2 * x / (x + m), p), DV('@frac{2x(' + B + ')-(' + A + ')}{(' + B + ')^2}', x => (2 * x * (x + m) - (x * x + k)) / Math.pow(x + m, 2), p), DV('@frac{' + B + '}{' + A + '}', x => (x + m) / (x * x + k), p)]); } }
+];
+
+/* =====================================================================
+   2) LIMITS
+   ===================================================================== */
+const LP = 'Calculate the following limit:';
+const INF = [T('+@infty'), Infinity], NINFL = [T('-@infty'), -Infinity];
+const num = (n, d = 1) => { const r = rat(n, d); return [fracTex(r), rv(r)]; };
+const lim0 = b => T('@lim_{x@to0^{+}}') + b, limI = b => T('@lim_{x@to+@infty}') + b, limZ = b => T('@lim_{x@to0}') + b;
+const lq = (eq, correct, fakes, chk) => mc({ cat: 'LIMIT', prompt: LP, eq, correct, fakes, chk: Object.assign({ kind: 'lim', exp: correct[1] }, chk) });
+const infFakes = (c) => [num(0), num(1), c === Infinity ? NINFL : INF, num(-1)];
+
+const LIMITS = [
+  { id: 'l_xlnx', tiers: ['easy'], gen() { const n = ri(1, 3), a = ri(1, 5); const arg = a === 1 ? LNX : lnp(a + 'x');
+    return lq(lim0(pw('x', n) + arg), num(0), [INF, NINFL, num(1), a > 1 ? [T('@ln ' + a), Math.log(a)] : num(-1), num(-1)], { f: x => Math.pow(x, n) * Math.log(a * x), at: '0+' }); } },
+  { id: 'l_ln0', tiers: ['easy'], gen() { const n = ri(1, 3), a = ri(1, 5); const arg = a === 1 ? LNX : lnp(a + 'x');
+    return lq(lim0(F(arg, pw('x', n))), NINFL, [INF, num(0), num(1), num(-1)], { f: x => Math.log(a * x) / Math.pow(x, n), at: '0+' }); } },
+  { id: 'l_lninf', tiers: ['easy'], gen() { const n = ri(1, 3), a = ri(1, 5); const arg = a === 1 ? LNX : lnp(a + 'x');
+    return lq(limI(F(arg, pw('x', n))), num(0), [INF, NINFL, num(1), a > 1 ? [T('@ln ' + a), Math.log(a)] : num(-1)], { f: x => Math.log(a * x) / Math.pow(x, n), at: 'inf' }); } },
+  { id: 'l_diffinf', tiers: ['easy', 'medium'], gen() { const a = ri(2, 5), v = ri(0, 3); let body, f, exp;
+    if (v === 0) { body = sumTex([LNX, ct(-a, 'x')]); f = x => Math.log(x) - a * x; exp = -Infinity; }
+    else if (v === 1) { body = sumTex(['x', ct(-a, LNX)]); f = x => x - a * Math.log(x); exp = Infinity; }
+    else if (v === 2) { body = sumTex(['x^3', ct(-a, 'x'), '-' + LNX]); f = x => x * x * x - a * x - Math.log(x); exp = Infinity; }
+    else { body = sumTex([LNX, '-x^2']); f = x => Math.log(x) - x * x; exp = -Infinity; }
+    return lq(limI('(' + body + ')'), exp === Infinity ? INF : NINFL, infFakes(exp), { f, at: 'inf' }); } },
+  { id: 'l_xratio', tiers: ['medium'], gen() { if (Math.random() < 0.4) { const a = ri(2, 6);
+      return lq(limI(F(sumTex(['x', ct(-a, LNX)]), 'x')), num(1), [num(0), INF, NINFL, num(a), num(-1)], { f: x => (x - a * Math.log(x)) / x, at: 'inf' }); }
+    let a = ri(1, 5), b = ri(1, 5); while (a === b) b = ri(1, 5);
+    return lq(limI(F(sumTex([ct(a, 'x'), LNX]), sumTex([ct(b, 'x'), '-' + LNX]))), num(a, b), [num(b, a), num(0), INF, num(1), num(a * b), num(a - b)], { f: x => (a * x + Math.log(x)) / (b * x - Math.log(x)), at: 'inf' }); } },
+  { id: 'l_ratioln', tiers: ['medium'], gen() { const a = ri(1, 5), b = ri(1, 5), p = nz(-4, 4), q = nz(-4, 4), atInf = Math.random() < 0.5;
+    const body = F(sumTex([ct(a, LNX), ci(p)]), sumTex([ct(b, LNX), ci(q)]));
+    return lq(atInf ? limI(body) : lim0(body), num(a, b), [num(b, a), num(0), INF, NINFL, num(p, q), num(a * b)], { fu: u => (a * u + p) / (b * u + q), at: atInf ? 'inf' : '0+' }); } },
+  { id: 'l_lndiff', tiers: ['medium'], gen() { let a = ri(1, 9), c = ri(1, 9); while (a === c) c = ri(1, 9); const b = ri(-3, 5), d = ri(-3, 5), r = rat(a, c);
+    const fk = [lnRat(rat(c, a)) && [lnRat(rat(c, a)), Math.log(c / a)], num(0), INF, [T('@ln(' + (a + c) + ')'), Math.log(a + c)], [T('@ln(' + (a * c) + ')'), Math.log(a * c)]];
+    return lq(limI('(' + lnp(lin(a, b)) + '-' + lnp(lin(c, d)) + ')'), [lnRat(r), Math.log(a / c)], fk, { f: x => Math.log(a * x + b) - Math.log(c * x + d), at: 'inf' }); } },
+  { id: 'l_ln1plus', tiers: ['medium'], gen() { const a = ri(1, 6), b = ri(1, 6);
+    return lq(limZ(F(T('@ln(1+') + (a === 1 ? '' : a) + 'x)', (b === 1 ? '' : b) + 'x')), num(a, b), [num(b, a), num(1), num(a * b), num(0), num(a), INF, NINFL, num(-1), num(2)], { f: x => Math.log(1 + a * x) / (b * x), at: '0' }); } },
+  { id: 'l_ln1x2', tiers: ['medium'], gen() { const a = ri(1, 5), atInf = Math.random() < 0.5; const body = F(T('@ln(1+') + (a === 1 ? '' : a) + 'x^2)', 'x');
+    return lq(atInf ? limI(body) : limZ(body), num(0), [num(1), num(a), INF, NINFL, num(2)], { f: x => Math.log(1 + a * x * x) / x, at: atInf ? 'inf' : '0' }); } },
+  { id: 'l_ln1quad', tiers: ['hard'], gen() { const a = ri(1, 6), b = ri(1, 5);
+    return lq(limZ(F(T('@ln(1+') + (a === 1 ? '' : a) + 'x)', quad(1, b, 0))), num(a, b), [num(b, a), num(a), num(1), num(0), num(a * b), INF, NINFL, num(2)], { f: x => Math.log(1 + a * x) / (x * x + b * x), at: '0' }); } },
+  { id: 'l_xlnrecip', tiers: ['medium', 'hard'], gen() { const a = ri(1, 4), b = ri(1, 4), atInf = Math.random() < 0.6; const inner = T('@left(1+') + F(b, 'x') + T('@right)');
+    const body = ct(a, 'x') + T('@ln') + inner;
+    if (atInf) return lq(limI(body), num(a * b), [num(a), num(b), num(0), INF, num(a + b), num(1), num(2), num(-1)], { f: x => a * x * Math.log(1 + b / x), at: 'inf' });
+    return lq(lim0(body), num(0), [num(a * b), num(1), INF, num(b), num(a), NINFL, num(-1), num(2)], { f: x => a * x * Math.log(1 + b / x), at: '0+' }); } },
+  { id: 'l_derivdef', tiers: ['medium'], gen() { if (Math.random() < 0.3) {
+      return lq(T('@lim_{x@to e}') + F(T('@ln x-1'), 'x-e'), [F(1, 'e'), 1 / Math.E], [['e', Math.E], num(0), num(1), [F(1, 'e^2'), Math.exp(-2)]], { f: x => (Math.log(x) - 1) / (x - Math.E), at: Math.E }); }
+    const a = ri(2, 9);
+    return lq(T('@lim_{x@to ' + a + '}') + F(T('@ln x-@ln ' + a), 'x-' + a), num(1, a), [num(a), num(0), num(1), num(1, a * a)], { f: x => (Math.log(x) - Math.log(a)) / (x - a), at: a }); } },
+  { id: 'l_constover', tiers: ['medium'], gen() { const a = ri(1, 5), b = nz(-5, 5), n = ri(1, 2); const exp = b > 0 ? -Infinity : Infinity;
+    return lq(lim0(F(sumTex([String(a), ct(b, LNX)]), pw('x', n))), exp === Infinity ? INF : NINFL, [exp === Infinity ? NINFL : INF, num(0), num(a), num(1)], { f: x => (a + b * Math.log(x)) / Math.pow(x, n), at: '0+' }); } },
+  { id: 'l_constplus', tiers: ['medium', 'hard'], gen() { const a = ri(1, 5), b = nz(-9, 9); const exp = b > 0 ? -Infinity : Infinity;
+    return lq(lim0('(' + sumTex([String(a), F(ct(b, LNX), 'x^2')]) + ')'), exp === Infinity ? INF : NINFL, [exp === Infinity ? NINFL : INF, num(a), num(0), num(1)], { f: x => a + b * Math.log(x) / (x * x), at: '0+' }); } },
+  { id: 'l_zerosum', tiers: ['medium', 'hard'], gen() { const p = nz(-3, 3), q = nz(-9, 9), r = nz(-3, 3);
+    return lq(lim0('(' + sumTex([ct(p, 'x^2'), ct(q, 'x'), ct(r, T('x@ln x'))]) + ')'), num(0), [INF, NINFL, num(1), num(q), num(-1)], { f: x => p * x * x + q * x + r * x * Math.log(x), at: '0+' }); } },
+  { id: 'l_xminus', tiers: ['medium'], gen() { const a = ri(1, 4), atInf = Math.random() < 0.5, body = F(sumTex([ct(a, 'x'), '-' + LNX]), 'x');
+    if (atInf) return lq(limI(body), num(a), [num(0), INF, num(1), num(a + 1), NINFL], { f: x => (a * x - Math.log(x)) / x, at: 'inf' });
+    return lq(lim0(body), INF, [NINFL, num(0), num(a), num(1)], { f: x => (a * x - Math.log(x)) / x, at: '0+' }); } },
+  { id: 'l_neginf', tiers: ['hard'], gen() { const a = nz(-4, 4); const exp = a > 0 ? -Infinity : Infinity;
+    return lq(T('@lim_{x@to-@infty}') + F(ct(a, T('x@ln|x|')), T('@ln(1-x)')), exp === Infinity ? INF : NINFL, [exp === Infinity ? NINFL : INF, num(0), num(a), num(1)], { f: x => a * x * Math.log(Math.abs(x)) / Math.log(1 - x), at: '-inf' }); } }
+];
+
+/* =====================================================================
+   3) DOMAIN OF DEFINITION
+   ===================================================================== */
+const DOP = 'Find the domain of definition of the following function:';
+const domq = (f, correct, fakes, pred) => mc({ cat: 'DOMAIN', prompt: DOP, eq: 'f(x)=' + f, correct, fakes, chk: { kind: 'set', pred, ivs: correct[2] } });
+const sqEp = (k, sign) => { const s = Math.sqrt(k), sq = Number.isInteger(s), t = sq ? String(s) : T('@sqrt{' + k + '}'); return sign < 0 ? ep('-' + t, -s) : ep(t, s); };
+
+const DOMAIN = [
+  { id: 'dom_lin', tiers: ['easy'], gen() { const a = pick([-4, -3, -2, -1, 1, 2, 3, 4, 5]), b = nz(-6, 6), r = rat(-b, a), re = ep(fracTex(r), rv(r)), rn = ep(fracTex(rat(b, a)), b / a), v = ri(0, 2);
+    const L = lnp(lin(a, b)); let f; const p = nz(-3, 3), q = nz(-3, 3);
+    if (v === 0) f = L; else if (v === 1) f = sumTex([ct(p, 'x'), ct(q, L)]); else f = '(' + lin(p, q) + ')' + L;
+    const correct = a > 0 ? U(IV(re, PINF)) : U(IV(NINF, re));
+    const fakes = a > 0 ? [U(IV(NINF, re)), U(IV(re, PINF, true)), U(IV(rn, PINF)), ALLR()] : [U(IV(re, PINF)), U(IV(NINF, re, false, true)), U(IV(NINF, rn)), ALLR()];
+    return domq(f, correct, fakes, x => a * x + b > 0); } },
+  { id: 'dom_x2', tiers: ['medium'], gen() { const k = pick([2, 3, 4, 5, 6, 7, 9, 10, 12, 16]), P = sqEp(k, 1), M = sqEp(k, -1), outside = Math.random() < 0.5;
+    if (outside) return domq(lnp(quad(1, 0, -k)), U(IV(NINF, M), IV(P, PINF)), [U(IV(M, P)), U(IV(NINF, M, false, true), IV(P, PINF, true)), ALLR(), U(IV(P, PINF))], x => x * x - k > 0);
+    return domq(lnp(sumTex([String(k), '-x^2'])), U(IV(M, P)), [U(IV(NINF, M), IV(P, PINF)), U(IV(M, P, true, true)), ALLR(), U(IV(EP0, P))], x => k - x * x > 0); } },
+  { id: 'dom_quadroots', tiers: ['medium', 'hard'], gen() { for (;;) { const L = nz(1, 3) * (Math.random() < 0.5 ? 1 : -1), m = pick([1, 1, 2, 3]), r1 = ri(-4, 4), n = ri(-6, 6), rb = rat(n, m);
+      if (rb[0] === r1 * rb[1] || rb[0] === 0 && r1 === 0) continue;
+      const A = L * m, B = -L * (n + m * r1), C = L * n * r1, ra = rat(r1, 1), a1 = rv(ra), b1 = rv(rb);
+      const lo = a1 < b1 ? epR(ra[0], ra[1]) : epR(rb[0], rb[1]), hi = a1 < b1 ? epR(rb[0], rb[1]) : epR(ra[0], ra[1]);
+      const f = lnp(quad(A, B, C)), pred = x => A * x * x + B * x + C > 0;
+      if (L > 0) return domq(f, U(IV(NINF, lo), IV(hi, PINF)), [U(IV(lo, hi)), U(IV(NINF, lo, false, true), IV(hi, PINF, true)), ALLR(), U(IV(hi, PINF))], pred);
+      return domq(f, U(IV(lo, hi)), [U(IV(NINF, lo), IV(hi, PINF)), U(IV(lo, hi, true, true)), ALLR(), U(IV(NINF, hi))], pred); } } },
+  { id: 'dom_ratio', tiers: ['medium'], gen() { const a = ri(1, 4), b = nz(-6, 6), rb = rat(b, a), rbv = rv(rb), rbe = epR(rb[0], rb[1]);
+    const lo = rbv < 0 ? rbe : EP0, hi = rbv < 0 ? EP0 : rbe;
+    return domq(lnp(F(lin(a, -b), 'x')), U(IV(NINF, lo), IV(hi, PINF)), [U(IV(lo, hi)), U(IV(NINF, EP0), IV(EP0, PINF)), U(IV(NINF, lo, false, true), IV(hi, PINF, true)), U(IV(hi, PINF))], x => x !== 0 && (a * x - b) / x > 0); } },
+  { id: 'dom_ratio2', tiers: ['hard'], gen() { let c, d; do { c = ri(-4, 5); d = ri(-4, 5); } while (c === d);
+    const lo = epR(Math.min(c, d)), hi = epR(Math.max(c, d)), de = epR(d);
+    return domq(lnp(F(lin(1, -c), lin(1, -d))), U(IV(NINF, lo), IV(hi, PINF)), [U(IV(lo, hi)), U(IV(NINF, de), IV(de, PINF)), U(IV(NINF, lo, false, true), IV(hi, PINF, true)), U(IV(hi, PINF))], x => x !== d && (x - c) / (x - d) > 0); } },
+  { id: 'dom_lnln', tiers: ['medium', 'hard'], gen() { const v = ri(0, 2);
+    if (v === 0) { const a = ri(0, 3), ea = ep(expInt(a), Math.exp(a));
+      return domq(lnp(sumTex([LNX, ci(-a)])), U(IV(ea, PINF)), [U(IV(EP0, ea)), U(IV(EP0, PINF)), U(IV(ea, PINF, true)), ALLR()], x => x > 0 && Math.log(x) - a > 0); }
+    if (v === 1) { const a = ri(1, 3), ea = ep(expInt(a), Math.exp(a));
+      return domq(lnp(sumTex([String(a), '-' + LNX])), U(IV(EP0, ea)), [U(IV(ea, PINF)), U(IV(EP0, PINF)), U(IV(EP0, ea, false, true)), ALLR()], x => x > 0 && a - Math.log(x) > 0); }
+    const a = ri(1, 3), c = ri(2, 6), ea = ep(expInt(a), Math.exp(a));
+    return domq(F(c, sumTex([String(a), '-' + LNX])), U(IV(EP0, ea), IV(ea, PINF)), [U(IV(EP0, PINF)), U(IV(EP0, ea)), U(IV(ea, PINF)), U(IV(NINF, ea), IV(ea, PINF))], x => x > 0 && Math.abs(x - Math.exp(a)) > 1e-9); } },
+  { id: 'dom_logfrac', tiers: ['medium', 'hard'], gen() { const a = ri(-2, 3), b = a + ri(1, 4), ea = epR(a), eb = epR(b);
+    return domq(F(lnp(lin(1, -a)), lin(1, -b)), U(IV(ea, eb), IV(eb, PINF)), [U(IV(ea, PINF)), U(IV(NINF, eb), IV(eb, PINF)), U(IV(ea, eb, true), IV(eb, PINF)), U(IV(eb, PINF))], x => x > a && x !== b); } },
+  { id: 'dom_poslog', tiers: ['easy', 'medium'], gen() { const p = nz(-3, 3), k = ri(1, 4);
+    return domq(F(sumTex([ct(p, 'x'), LNX]), quad(1, 0, k)), U(IV(EP0, PINF)), [ALLR(), U(IV(EP0, PINF, true)), U(IV(NINF, EP0), IV(EP0, PINF)), U(IV(NINF, EP0))], x => x > 0); } }
+];
+
+/* =====================================================================
+   4) WRITE IN THE FORM ln(a)  &  letters (2ab/c ...)
+   ===================================================================== */
+const PR = [2, 3, 5, 7];
+const vecVal = v => { let n = 1, d = 1; v.forEach((e, i) => { if (e > 0) n *= Math.pow(PR[i], e); else d *= Math.pow(PR[i], -e); }); return rat(n, d); };
+const wlnArg = v => { const r = vecVal(v); return r[1] === 1 ? T('@ln ') + r[0] : T('@ln') + F(r[0], r[1]); };
+const WP = 'Write the following expression in the form ' + mi(T('@ln(a)')) + ':';
+
+function wlnGen(nTerms, coefMax) {
+  for (let t = 0; t < 400; t++) {
+    const terms = [];
+    for (let i = 0; i < nTerms; i++) {
+      const v = [0, 0, 0, 0], np = ri(1, 2), idx = shuffle([0, 1, 2, 3]).slice(0, np);
+      idx.forEach(j => v[j] = ri(1, j === 0 ? 3 : 2));
+      if (Math.random() < 0.4) for (let j = 0; j < 4; j++) v[j] = -v[j];
+      const r = vecVal(v);
+      if (r[0] > 400 || r[1] > 400 || (r[0] === 1 && r[1] === 1)) { i--; continue; }
+      terms.push({ v, c: (coefMax > 1 && Math.random() < 0.55) ? ri(2, coefMax) : 1, s: i === 0 ? 1 : (Math.random() < 0.5 ? 1 : -1) });
+    }
+    const tot = [0, 0, 0, 0]; terms.forEach(tm => tm.v.forEach((e, j) => tot[j] += tm.s * tm.c * e));
+    const r = vecVal(tot);
+    if ((r[0] === 1 && r[1] === 1) || r[0] > 2000 || r[1] > 2000) continue;
+    const tex = sumTex(terms.map(tm => (tm.s < 0 ? '-' : '') + (tm.c > 1 ? tm.c : '') + wlnArg(tm.v)));
+    // value used to check the answer numerically
+    const exprVal = terms.reduce((acc, tm) => acc + tm.s * tm.c * Math.log(rv(vecVal(tm.v))), 0);
+    // wrong answers a student could reach
+    const cands = [];
+    const okR = rr => !(rr[0] === 1 && rr[1] === 1) && rr[0] <= 3000 && rr[1] <= 3000;
+    const mk = (tt) => { const rr = vecVal(tt); if (okR(rr)) cands.push([lnRat(rr), Math.log(rv(rr))]); };
+    const comb = (fn) => { const tt = [0, 0, 0, 0]; terms.forEach((tm, i) => tm.v.forEach((e, j) => tt[j] += fn(tm, i) * e)); return tt; };
+    terms.forEach((tm, k) => mk(comb((m, i) => (i === k ? -1 : 1) * m.s * m.c)));
+    mk(comb(m => m.s));
+    mk(tot.map(e => -e));
+    const cm = terms.find(tm => tm.c > 1);
+    if (cm) { const tt = [0, 0, 0, 0]; terms.forEach(tm => tm.v.forEach((e, j) => tt[j] += tm.s * (tm === cm ? 1 : tm.c) * e)); const base = vecVal(tt); mk(tt);
+      const f2 = rat(base[0] * cm.c, base[1]); if (okR(f2)) cands.push([lnRat(f2), Math.log(rv(f2))]); }
+    cands.push([lnRat(rat(r[0] * 2, r[1])), Math.log(2 * rv(r))], [lnRat(rat(r[0], r[1] * 3)), Math.log(rv(r) / 3)], [lnRat(rat(r[0] + r[1], r[1])), Math.log((r[0] + r[1]) / r[1])]);
+    const letter = pick(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']);
+    const q = mc({ cat: 'LOG RULES', prompt: WP, eq: letter + '=' + tex, correct: [lnRat(r), Math.log(rv(r))], fakes: cands, chk: { kind: 'val', expr: exprVal, ans: Math.log(rv(r)) } });
+    return q;
+  }
+  throw new Error('wln failed');
+}
+
+/* ----- letters: vector over [number k, l1, l2, l3] ----- */
+const LETTERSETS = [['a', 'b', 'c'], ['x', 'y', 'z'], ['m', 'n', 'p'], ['u', 'v', 'w'], ['r', 's', 't']];
+function symVec() {
+  const e = [0, nz(-2, 2) , 0, 0];
+  const ex = [ri(0, 2), 0, 0];
+  for (;;) {
+    const v = [Math.random() < 0.55 ? pick([1, -1]) : 0, nz(-2, 3), nz(-2, 3), nz(-2, 3)];
+    if (v[1] < 0 && v[2] < 0 && v[3] < 0) continue;
+    if (!v.slice(1).some(x => x > 0)) continue;
+    return v;
+  }
+}
+function symNames(vec, L, kv) { return [kv, L[0], L[1], L[2]]; }
+function symSingle(vec, names) {
+  const num = [], den = [];
+  vec.forEach((e, i) => { if (e === 0) return; const base = String(names[i]), ee = Math.abs(e), f = ee === 1 ? base : base + '^' + ee; (e > 0 ? num : den).push(f); });
+  const n = num.length ? num.join('') : '1';
+  if (!den.length) return T('@ln(') + n + ')';
+  return T('@ln') + F(n, den.join(''));
+}
+function symSum(vec, names) {
+  return sumTex(vec.map((e, i) => e === 0 ? '' : (e === 1 ? T('@ln ') + names[i] : e === -1 ? '-' + T('@ln ') + names[i] : e + T('@ln ') + names[i])));
+}
+function symFakes(vec, names, asSum) {
+  const out = [], seen = new Set([asSum ? symSum(vec, names) : symSingle(vec, names)]);
+  const add = (v) => { if (v.every(x => x === 0)) return; const t = asSum ? symSum(v, names) : symSingle(v, names); if (!seen.has(t)) { seen.add(t); out.push([t]); } };
+  vec.forEach((e, i) => { if (e !== 0) { const v = vec.slice(); v[i] = -e; add(v); } });
+  vec.forEach((e, i) => { if (e !== 0 && i > 0) { const v = vec.slice(); v[i] = e + (e > 0 ? 1 : -1); add(v); const w = vec.slice(); w[i] = (Math.abs(e) > 1 ? (e > 0 ? 1 : -1) : e * 2); add(w); } });
+  vec.forEach((e, i) => { if (e !== 0 && i > 0 && vec.filter(x => x !== 0).length > 2) { const v = vec.slice(); v[i] = 0; add(v); } });
+  return out;
+}
+
+const WLN = [
+  { id: 'wln_easy', tiers: ['easy'], gen() { return wlnGen(ri(2, 3), 1); } },
+  { id: 'wln_med', tiers: ['medium'], gen() { return wlnGen(3, 2); } },
+  { id: 'wln_hard', tiers: ['hard'], gen() { return wlnGen(4, 3); } },
+  { id: 'sym_combine', tiers: ['easy', 'medium'], gen() { const L = pick(LETTERSETS), kv = pick([2, 3, 5]), vec = symVec(), names = symNames(vec, L, kv);
+    const cond = L.join(',') + '>0';
+    return mc({ cat: 'LOG RULES', prompt: 'Write as a single logarithm ' + mi(T('@ln(...)')) + ' (all letters are positive: ' + mi(cond) + '):',
+      eq: 'A=' + symSum(vec, names), correct: [symSingle(vec, names)], fakes: symFakes(vec, names, false), chk: { kind: 'none' } }); } },
+  { id: 'sym_expand', tiers: ['medium', 'hard'], gen() { const L = pick(LETTERSETS), kv = pick([2, 3, 5]), vec = symVec(), names = symNames(vec, L, kv);
+    const cond = L.join(',') + '>0';
+    return mc({ cat: 'LOG RULES', prompt: 'Express in terms of ' + mi(T('@ln ') + L[0] + ',\\ ' + T('@ln ') + L[1] + ',\\ ' + T('@ln ') + L[2]) + ' and numbers (all letters are positive: ' + mi(cond) + '):',
+      eq: 'A=' + symSingle(vec, names), correct: [symSum(vec, names)], fakes: symFakes(vec, names, true), chk: { kind: 'none' } }); } },
+  { id: 'eval_e', tiers: ['easy'], gen() { const a = ri(2, 6), b = ri(1, 4), m = ri(1, 3), ans = a - m * b;
+    const tex = sumTex([T('@ln e^{' + a + '}'), (m === 1 ? '' : m) + T('@ln') + F(1, 'e^{' + b + '}')]);
+    return mc({ cat: 'LOG RULES', prompt: 'Calculate the exact value of:', eq: 'A=' + tex, correct: [String(ans), ans], fakes: [[String(a + m * b), a + m * b], [String(m * b - a), m * b - a], [String(a - b), a - b], [String(a * m - b), a * m - b], [String(ans + 1), ans + 1], [String(ans - 1), ans - 1], [String(ans + 2), ans + 2], [String(ans - 2), ans - 2]], chk: { kind: 'none' } }); } },
+  { id: 'eval_sqrt', tiers: ['easy'], gen() { const m = ri(2, 7), ans = m;
+    return mc({ cat: 'LOG RULES', prompt: 'Calculate the exact value of:', eq: 'G=' + T('@sqrt{@ln e^{' + (m * m) + '}}'), correct: [String(m), m], fakes: [[String(m * m), m * m], [fracTex(rat(m * m, 2)), m * m / 2], [String(2 * m), 2 * m], [String(m + 1), m + 1], [String(m - 1), m - 1]], chk: { kind: 'none' } }); } },
+  { id: 'eval_dep', tiers: ['medium'], gen() { const L = pick(LETTERSETS), vals = [nz(-3, 4), nz(-3, 4), nz(-3, 4)];
+    let vec; do { vec = [0, nz(-3, 3), nz(-3, 3), nz(-3, 3)]; } while (false);
+    const names = symNames(vec, L, 1), ans = vec[1] * vals[0] + vec[2] * vals[1] + vec[3] * vals[2];
+    const data = L.map((l, i) => T('@ln ') + l + '=' + vals[i]).join(',\\ ');
+    const fk = [];
+    [1, 2, 3].forEach(i => { const t = vals.map((v, j) => vec[j + 1] * v * (j + 1 === i ? -1 : 1)).reduce((a, b) => a + b, 0); fk.push([String(t), t]); });
+    const t1 = vals.reduce((a, b) => a + b, 0); fk.push([String(t1), t1]);
+    const t2 = vec[1] + vec[2] + vec[3]; fk.push([String(t2), t2]);
+    fk.push([String(ans + 1), ans + 1], [String(ans - 1), ans - 1], [String(ans + 2), ans + 2]);
+    return mc({ cat: 'LOG RULES', prompt: 'Given ' + mi(data) + ' (all letters positive), calculate the value of:', eq: 'A=' + symSingle(vec, names), correct: [String(ans), ans], fakes: fk, chk: { kind: 'none' } }); } }
+];
+
+/* =====================================================================
+   5) EQUATIONS
+   ===================================================================== */
+const EP_ = 'Solve the following equation in ' + mi(T('@mathbb{R}')) + ':';
+const eqq = (eq, correct, fakes, chk) => mc({ cat: 'EQUATION', prompt: EP_, eq, correct, fakes, chk });
+const expItem = r => [expTex(r), Math.exp(rv(r))];
+
+const EQUATIONS = [
+  { id: 'eq_lnx_lin', tiers: ['easy'], gen() { const m = nz(-4, 4), n = nz(-6, 6), r = rat(-n, m), neg = rat(n, m), inv = r[0] === 0 ? r : rat(r[1], r[0]);
+    const eq = sumTex([ct(m, LNX), ci(n)]) + '=0', c = SET([expItem(r)]);
+    return eqq(eq, c, [SET([expItem(neg)]), SET([expItem(inv)]), SET([ratItem(r)]), SET([expItem(rat(-inv[0], inv[1]))]), SET([expItem(rat(r[0] + r[1], r[1]))]), SET([expItem(rat(r[0] - r[1], r[1]))]), SET([expItem(rat(2 * r[0], r[1]))])], { kind: 'roots', f: x => m * Math.log(x) + n, sols: [Math.exp(rv(r))], lo: 1e-4, hi: 1000 }); } },
+  { id: 'eq_ln_lin_eq', tiers: ['easy', 'medium'], gen() { const a = ri(1, 4), b = ri(-3, 3), c = ri(-2, 3), sol = (Math.exp(c) - b) / a;
+    const eq = lnp(lin(a, b)) + '=' + c;
+    const num0 = sumTex(['e^{' + c + '}', ci(-b)]);
+    const cexp = c === 0 ? '1' : (c === 1 ? 'e' : 'e^{' + c + '}'), numC = sumTex([cexp, ci(-b)]), numW = sumTex([cexp, ci(b)]);
+    const mk2 = bb => a === 1 ? sumTex([cexp, ci(bb)]) : F(sumTex([cexp, ci(bb)]), a);
+    const tex = a === 1 ? numC : F(numC, a);
+    const correct = [T('S=@{') + tex + T('@}'), [sol]];
+    const w = (t, v) => [T('S=@{') + t + T('@}'), [v]];
+    return eqq(eq, correct, [w(a === 1 ? numW : F(numW, a), (Math.exp(c) + b) / a), w(sumTex([cexp, fracTex(rat(-b, a))]), Math.exp(c) - b / a), w(fracTex(rat(c - b, a)), (c - b) / a), w(a === 1 ? cexp : F(cexp, a), Math.exp(c) / a), w(mk2(-b + 1), (Math.exp(c) - b + 1) / a), w(mk2(-b - 1), (Math.exp(c) - b - 1) / a)],
+      { kind: 'roots', f: x => (a * x + b > 0) ? Math.log(a * x + b) - c : NaN, sols: [sol], lo: -10, hi: 40 }); } },
+  { id: 'eq_ln_prod', tiers: ['easy', 'medium'], gen() { const a = nz(-5, 5), sol = 1 - a, ra = rat(sol, 1);
+    return eqq('(' + lin(1, a) + ')' + lnp(lin(1, a)) + '=0', SET([ratItem(ra)]), [SET([ratItem(rat(-a, 1))]), SET([ratItem(rat(-a, 1)), ratItem(ra)]), SET([ratItem(rat(a - 1, 1))]), SET([])],
+      { kind: 'roots', f: x => (x + a > 0) ? (x + a) * Math.log(x + a) : NaN, sols: [sol], lo: -10, hi: 12 }); } },
+  { id: 'eq_ratio', tiers: ['medium', 'hard'], gen() { for (let t = 0; t < 50; t++) { const a = ri(1, 4), b = ri(-2, 5), c = ri(1, 5), d = ri(2, 4); if (a === d) continue;
+      const xs = rat(d * c - b, a - d), x = rv(xs), valid = a * x + b > 1e-9 && x + c > 1e-9;
+      const eq = sumTex([lnp(lin(a, b)), '-' + lnp(lin(1, c))]) + '=' + T('@ln ') + d;
+      const wrong = SET([ratItem(xs)]), none = SET([]), correct = valid ? wrong : none;
+      const fk = [valid ? none : wrong, SET([ratItem(rat(-xs[0], xs[1]))]), SET([ratItem(rat(xs[0] + xs[1], xs[1]))]), SET([ratItem(rat(d * c + b, a - d))]), SET([ratItem(rat(xs[0] - xs[1], xs[1]))]), SET([ratItem(rat(2 * xs[0], xs[1]))])];
+      return eqq(eq, correct, fk, { kind: 'roots', f: xx => (a * xx + b > 0 && xx + c > 0) ? Math.log(a * xx + b) - Math.log(xx + c) - Math.log(d) : NaN, sols: valid ? [x] : [], lo: -10, hi: 40 }); } throw new Error('eq_ratio'); } },
+  { id: 'eq_log_sum', tiers: ['medium', 'hard'], gen() { let a, b; do { a = ri(-3, 3); b = ri(-3, 3); } while (a === b);
+    const mx = Math.max(a, b), r = mx + ri(1, 6), N = (r - a) * (r - b), s = a + b - r;
+    const eq = lnp(lin(1, -a)) + '+' + lnp(lin(1, -b)) + '=' + T('@ln ') + N;
+    return eqq(eq, SET([ratItem(rat(r, 1))]), [SET([ratItem(rat(r, 1)), ratItem(rat(s, 1))]), SET([ratItem(rat(s, 1))]), SET([]), SET([ratItem(rat(r + 1, 1))]), SET([ratItem(rat(r - 1, 1))])],
+      { kind: 'roots', f: x => (x > a && x > b) ? Math.log(x - a) + Math.log(x - b) - Math.log(N) : NaN, sols: [r], lo: -12, hi: 30 }); } },
+  { id: 'eq_log_quad', tiers: ['medium', 'hard'], gen() { let r1, r2; do { r1 = ri(-5, 5); r2 = ri(-5, 5); } while (r1 === r2); const m = ri(-3, 8);
+    const B = 1 - r1 - r2, C = r1 * r2 + m, valid = [r1, r2].filter(r => r + m > 0).sort((p, q) => p - q);
+    const eq = lnp(quad(1, B, C)) + '=' + lnp(lin(1, m));
+    const S1 = x => SET(x.map(v => ratItem(rat(v, 1))));
+    return eqq(eq, S1(valid), [S1([r1]), S1([r2]), S1([r1, r2].sort((p, q) => p - q)), S1([])],
+      { kind: 'roots', f: x => (x * x + B * x + C > 0 && x + m > 0) ? Math.log(x * x + B * x + C) - Math.log(x + m) : NaN, sols: valid, lo: -15, hi: 15 }); } },
+  { id: 'eq_lnlin_c', tiers: ['medium', 'hard'], gen() { let r1, r2; do { r1 = ri(-4, 4); r2 = ri(-4, 4); } while (r1 === r2); const a = ri(1, 3), b = ri(1, 3), c = ri(2, 4);
+    const B = c * a - r1 - r2, C = r1 * r2 + c * b, valid = [r1, r2].filter(r => a * r + b > 0).sort((p, q) => p - q);
+    const eq = lnp(lin(a, b)) + '+' + T('@ln ') + c + '=' + lnp(quad(1, B, C));
+    const S1 = x => SET(x.map(v => ratItem(rat(v, 1))));
+    return eqq(eq, S1(valid), [S1([r1]), S1([r2]), S1([r1, r2].sort((p, q) => p - q)), S1([])],
+      { kind: 'roots', f: x => (a * x + b > 0 && x * x + B * x + C > 0) ? Math.log(a * x + b) + Math.log(c) - Math.log(x * x + B * x + C) : NaN, sols: valid, lo: -15, hi: 15 }); } },
+  { id: 'eq_ln_quad', tiers: ['medium', 'hard'], gen() { for (let t = 0; t < 50; t++) { const q = ri(1, 3), p = nz(-3, 3), s = ri(-3, 3), t1 = rat(p, q);
+      if (t1[0] === s * t1[1]) continue;
+      const factored = Math.random() < 0.35;
+      const eq = factored ? '(' + sumTex([ct(q, LNX), ci(-p)]) + ')(' + lnPlus(-s) + ')=0' : sumTex([ct(q, T('@ln^2 x')), ct(-(p + q * s), LNX), ci(p * s)]) + '=0';
+      const ts = [t1, rat(s, 1)].sort((u, v) => rv(u) - rv(v));
+      const E = (list) => SET(list.map(expItem));
+      const neg = ts.map(r => rat(-r[0], r[1]));
+      return eqq(eq, E(ts), [E(neg), SET(ts.map(ratItem)), E([ts[0]]), E([ts[1]]), E([ts[0], neg[1]])],
+        { kind: 'roots', f: x => q * Math.log(x) * Math.log(x) - (p + q * s) * Math.log(x) + p * s, sols: ts.map(r => Math.exp(rv(r))), lo: 1e-4, hi: 400, step: 1e-3 }); } throw new Error('eq_ln_quad'); } }
+];
+
+/* =====================================================================
+   6) INEQUALITIES
+   ===================================================================== */
+const IP = 'Solve the following inequality in ' + mi(T('@mathbb{R}')) + ':';
+const ineq = (eq, correct, fakes, pred) => mc({ cat: 'INEQUALITY', prompt: IP, eq, correct, fakes, chk: { kind: 'set', pred, ivs: correct[2] } });
+const OPS = { '<=': T('@le'), '<': '<', '>=': T('@ge'), '>': '>' };
+const cmp = (op, l, r) => op === '<=' ? l <= r : op === '<' ? l < r : op === '>=' ? l >= r : l > r;
+
+const INEQ = [
+  { id: 'ineq_quot', tiers: ['hard'], gen() { let a, b; do { a = ri(-3, 6); b = ri(-3, 6); } while (a === b); const c = ri(2, 4), op = pick(['<=', '<', '>=', '>']), m = Math.max(a, b);
+    const thr = (c * b - a) / (c - 1), tr = rat(c * b - a, c - 1), tE = epR(tr[0], tr[1]), mE = epR(m);
+    const flip = { '<=': '>=', '<': '>', '>=': '<=', '>': '<' }[op], o2 = flip;
+    let ans;
+    if (o2 === '>=') ans = thr > m ? U(IV(tE, PINF, true)) : U(IV(mE, PINF));
+    else if (o2 === '>') ans = thr >= m ? U(IV(tE, PINF)) : U(IV(mE, PINF));
+    else if (o2 === '<=') ans = thr > m ? U(IV(mE, tE, false, true)) : EMPTY();
+    else ans = thr > m ? U(IV(mE, tE)) : EMPTY();
+    const cands = [U(IV(mE, PINF)), U(IV(tE, PINF, true)), U(IV(tE, PINF)), EMPTY(), U(IV(NINF, tE, false, true)), U(IV(NINF, tE))];
+    if (thr > m) cands.push(U(IV(mE, tE)), U(IV(mE, tE, false, true)));
+    const eq = sumTex([lnp(lin(1, -a)), '-' + lnp(lin(1, -b))]) + OPS[op] + T('@ln ') + c;
+    return ineq(eq, ans, cands, x => (x > a && x > b) ? cmp(op, Math.log(x - a) - Math.log(x - b), Math.log(c)) : false); } },
+  { id: 'ineq_lin', tiers: ['medium'], gen() { const a = ri(1, 4), b = nz(-3, 4), c = pick([-1, 0, 1, 2]), op = pick(['<=', '<', '>=', '>']);
+    const r0 = rat(-b, a), r0E = epR(r0[0], r0[1]);
+    const uVal = (Math.exp(c) - b) / a;
+    let uE; if (c === 0) { const r = rat(1 - b, a); uE = epR(r[0], r[1]); } else { const cx = c === 1 ? 'e' : 'e^{' + c + '}', t = sumTex([cx, ci(-b)]); uE = ep(a === 1 ? t : F(t, a), uVal); }
+    let ans;
+    if (op === '<') ans = U(IV(r0E, uE)); else if (op === '<=') ans = U(IV(r0E, uE, false, true)); else if (op === '>') ans = U(IV(uE, PINF)); else ans = U(IV(uE, PINF, true));
+    const cands = [U(IV(r0E, uE)), U(IV(r0E, uE, false, true)), U(IV(uE, PINF)), U(IV(uE, PINF, true)), U(IV(NINF, uE)), U(IV(NINF, uE, false, true)), U(IV(r0E, PINF))];
+    return ineq(lnp(lin(a, b)) + OPS[op] + c, ans, cands, x => (a * x + b > 0) ? cmp(op, Math.log(a * x + b), c) : false); } },
+  { id: 'ineq_lnsq', tiers: ['hard'], gen() { const t1 = ri(-3, 3), t2 = t1 + ri(1, 4), op = pick(['<=', '<', '>=', '>']);
+    const e1 = ep(expInt(t1), Math.exp(t1)), e2 = ep(expInt(t2), Math.exp(t2));
+    const res = { '<': U(IV(e1, e2)), '<=': U(IV(e1, e2, true, true)), '>': U(IV(EP0, e1), IV(e2, PINF)), '>=': U(IV(EP0, e1, false, true), IV(e2, PINF, true)) };
+    const cands = ['<', '<=', '>', '>='].filter(o => o !== op).map(o => res[o]);
+    cands.push(U(IV(epR(t1), epR(t2))), U(IV(NINF, e1), IV(e2, PINF)));
+    const eq = sumTex([T('@ln^2 x'), ct(-(t1 + t2), LNX), ci(t1 * t2)]) + OPS[op] + '0';
+    return ineq(eq, res[op], cands, x => x > 0 ? cmp(op, (Math.log(x) - t1) * (Math.log(x) - t2), 0) : false); } }
+];
+
+/* =====================================================================
+   7) SYSTEMS
+   ===================================================================== */
+const SP = 'Solve the following system:';
+const cases2 = (l1, l2) => T('@begin{cases}') + l1 + T('@@') + l2 + T('@end{cases}');
+const sysq = (eq, correct, fakes) => mc({ cat: 'SYSTEM', prompt: SP, eq, correct, fakes, chk: { kind: 'none' } });
+const SETP = (pairs) => SETX(pairs.map(p => PAIR(p[0], p[1])));
+const SYSTEMS = [
+  { id: 'sys_lin', tiers: ['medium', 'hard'], gen() { for (let t = 0; t < 100; t++) { const a = ri(1, 4), b = nz(-5, 5), c = ri(1, 5), d = nz(-5, 5), X = ri(-3, 4), Y = ri(-3, 4);
+      if (a * d - b * c === 0) continue; const p = a * X + b * Y, q = c * X + d * Y; if (Math.abs(p) > 40 || Math.abs(q) > 40) continue;
+      const E = (u, v) => [PAIR(expInt(u), expInt(v)), [Math.exp(u), Math.exp(v)]];
+      return sysq(cases2(sumTex([ct(a, LNX), ct(b, LNY)]) + '=' + p, sumTex([ct(c, LNX), ct(d, LNY)]) + '=' + q), E(X, Y),
+        [E(Y, X), E(-X, -Y), [PAIR(X, Y), [X, Y]], E(X, -Y), E(-X, Y), E(X + 1, Y), E(X, Y + 1), E(X - 1, Y - 1)]); } throw new Error('sys_lin'); } },
+  { id: 'sys_prod', tiers: ['medium', 'hard'], gen() { let u = ri(1, 8), v = ri(2, 9); if (u === v) v++; if (u > v) [u, v] = [v, u];
+      const N = u * u + v * v, M = u * v, n = x => String(x);
+      return sysq(cases2('x^2+y^2=' + N, LNX + '+' + LNY + '=' + T('@ln ') + M), SETP([[u, v], [v, u]]),
+        [SETP([[u, v]]), SETP([[u, v], [v, u], [-u, -v], [-v, -u]]), SETP([[-u, -v], [-v, -u]]), SETP([[u, -v], [-v, u]]), SETP([[v, u]]), SETP([[u, v], [-v, -u]])]); } },
+  { id: 'sys_sum', tiers: ['medium', 'hard'], gen() { let u = ri(1, 9), v = ri(u + 1, 15); const s = u + v, M = u * v;
+      return sysq(cases2('x+y=' + s, LNX + '+' + LNY + '=' + T('@ln ') + M), SETP([[u, v], [v, u]]),
+        [SETP([[u, v]]), SETP([[u, v], [v, u], [-u, -v], [-v, -u]]), [T('S=@varnothing')], SETP([[u, v], [-v, -u]]), SETP([[u, M], [M, u]])]); } },
+  { id: 'sys_ratio', tiers: ['medium'], gen() { const y0 = ri(1, 8), k = ri(2, 5), d = (k - 1) * y0;
+      return sysq(cases2('x-y=' + d, LNX + '-' + LNY + '=' + T('@ln ') + k), SETP([[k * y0, y0]]),
+        [SETP([[y0, k * y0]]), SETP([[k * y0, y0], [-k * y0, -y0]]), [T('S=@varnothing')], SETP([[k * y0, d]]), SETP([[d, y0]])]); } }
+];
+
+/* =====================================================================
+   8) VARIATIONS
+   ===================================================================== */
+const VAR = [
+  { id: 'var_min', tiers: ['medium'], gen() { const a = ri(2, 7), val = a - a * Math.log(a);
+    return mc({ cat: 'VARIATIONS', prompt: 'Let ' + mi('f(x)=x-' + a + T('@ln x')) + ' be defined on ' + mi(T('@left]0,+@infty@right[')) + '. Find the minimum value of ' + mi('f') + ':',
+      eq: '', correct: [a + '(1-' + T('@ln ') + a + ')', val], fakes: [[a + '(1+' + T('@ln ') + a + ')', a + a * Math.log(a)], [a + '-' + T('@ln ') + a, a - Math.log(a)], [a + '(' + T('@ln ') + a + '-1)', a * Math.log(a) - a], [String(a), a], [String(a - a * a), a - a * a]],
+      chk: { kind: 'min', f: x => x - a * Math.log(x), v: val, lo: 1e-3, hi: 200 } }); } },
+  { id: 'var_interval', tiers: ['medium', 'hard'], gen() { const k = ri(1, 4), p = ri(1, 3), dec = Math.random() < 0.6; const f = sumTex([ct(p, 'x^2'), ct(-2 * p * k * k, LNX)]);
+    const O = U(IV(EP0, epR(k))), I = U(IV(epR(k), PINF));
+    const fk = [dec ? I : O, U(IV(EP0, PINF)), U(IV(EP0, epR(k * k))), U(IV(EP0, epR(2 * k))), U(IV(epR(2 * k), PINF))];
+    return mc({ cat: 'VARIATIONS', prompt: 'Let ' + mi('f(x)=' + f) + ' be defined on ' + mi(T('@left]0,+@infty@right[')) + '. On which interval is ' + mi('f') + ' strictly ' + (dec ? 'decreasing' : 'increasing') + '?',
+      eq: '', correct: dec ? O : I, fakes: fk, chk: { kind: 'sign', df: x => 2 * p * x - 2 * p * k * k / x, k, dec } }); } },
+  { id: 'var_xlnx', tiers: ['hard'], gen() { const a = ri(0, 4), f = sumTex([T('x@ln x'), ct(-a, 'x')]), abs = Math.random() < 0.5;
+    const X = a - 1, ex = Math.exp(X);
+    const fkx = [expInt(a), expInt(1 - a), expInt(-a), expInt(a + 1)];
+    if (abs) return mc({ cat: 'VARIATIONS', prompt: 'Let ' + mi('f(x)=' + f) + ' be defined on ' + mi(T('@left]0,+@infty@right[')) + '. At which value of ' + mi('x') + ' does ' + mi('f') + ' reach its minimum?', eq: '',
+      correct: [expInt(X), ex], fakes: [[expInt(a), Math.exp(a)], [expInt(1 - a), Math.exp(1 - a)], [expInt(-a), Math.exp(-a)], [expInt(a + 1), Math.exp(a + 1)], [expInt(2 * a), Math.exp(2 * a)], [expInt(a - 2), Math.exp(a - 2)], [expInt(X - 1), Math.exp(X - 1)]], chk: { kind: 'min', f: x => x * Math.log(x) - a * x, v: -ex, lo: 1e-4, hi: 400, xv: ex } });
+    const mv = X === 0 ? '-1' : '-' + expInt(X);
+    return mc({ cat: 'VARIATIONS', prompt: 'Let ' + mi('f(x)=' + f) + ' be defined on ' + mi(T('@left]0,+@infty@right[')) + '. Find the minimum value of ' + mi('f') + ':', eq: '',
+      correct: [mv, -ex], fakes: [[expInt(X), ex], ['-' + expInt(a), -Math.exp(a)], [expInt(a), Math.exp(a)], ['-' + expInt(1 - a), -Math.exp(1 - a)], ['-' + expInt(a + 1), -Math.exp(a + 1)], ['-' + expInt(a - 2), -Math.exp(a - 2)], [expInt(X - 1), Math.exp(X - 1)]], chk: { kind: 'min', f: x => x * Math.log(x) - a * x, v: -ex, lo: 1e-4, hi: 400 } }); } }
+];
+
+/* =====================================================================
+   9) TRUE / FALSE
+   ===================================================================== */
+const TF = [
+  { id: 'tf_rules', tiers: ['easy', 'medium'], gen() { const v = ri(0, 4);
+    if (v === 0) { const n = ri(2, 6), pos = Math.random() < 0.6; return tfq('For every real number ' + mi(pos ? 'x>0' : T('x@neq 0')) + ': ' + mi(T('@ln(x^{' + n + '})=' + n + '@ln x')), pos); }
+    if (v === 1) { const ok = Math.random() < 0.5; return tfq('For all ' + mi('a>0') + ' and ' + mi('b>0') + ': ' + mi(ok ? T('@ln(ab)=@ln a+@ln b') : T('@ln(a+b)=@ln a+@ln b')), ok); }
+    if (v === 2) { const k = ri(2, 9), ok = Math.random() < 0.5; return tfq(ok ? mi('e^{' + T('@ln ') + k + '}=' + k) : mi('e^{' + T('@ln(-') + k + ')}=-' + k), ok); }
+    if (v === 3) { const k = ri(2, 9), ok = Math.random() < 0.5; return tfq(ok ? mi(T('@ln') + F(1, k) + '=-' + T('@ln ') + k) : mi(T('@ln') + F(1, k) + '=' + T('@ln ') + k), ok); }
+    const a = ri(2, 6), ok = Math.random() < 0.5; return tfq('For all ' + mi('x>0') + ': ' + mi(ok ? T('@ln(' + a + 'x)=@ln ' + a + '+@ln x') : T('@ln(' + a + 'x)=' + a + '@ln x')), ok); } },
+  { id: 'tf_func', tiers: ['easy', 'medium'], gen() { if (Math.random() < 0.5) { const a = nz(-4, 4), b = nz(-5, 5), inc = a > 0;
+      return tfq('The function ' + mi('f(x)=' + lnp(lin(a, b))) + ' is strictly increasing on its domain of definition.', inc); }
+    const k = nz(-5, 5); return tfq('The domain of definition of ' + mi('f(x)=' + lnp(quad(1, 0, k))) + ' is ' + mi(T('@mathbb{R}')) + '.', k > 0); } },
+  { id: 'tf_lim', tiers: ['easy', 'medium'], gen() { const v = ri(0, 2);
+    if (v === 0) { const n = ri(1, 3), ok = Math.random() < 0.5; return tfq(mi(limI(F(LNX, pw('x', n))) + '=' + (ok ? '0' : T('+@infty'))), ok); }
+    if (v === 1) { const n = ri(1, 3), ok = Math.random() < 0.5; return tfq(mi(lim0(pw('x', n) + LNX) + '=' + (ok ? '0' : T('-@infty'))), ok); }
+    const k = ri(2, 9), mode = ri(0, 2);
+    if (mode === 0) return tfq(mi('x=-' + k) + ' is a solution of the equation ' + mi(LNX + '=' + T('@ln ') + k) + '.', false);
+    if (mode === 1) return tfq(mi('x=-' + k) + ' is a solution of the equation ' + mi(T('@ln(x^2)=@ln ') + (k * k)) + '.', true);
+    return tfq(mi('x=' + k) + ' is a solution of the equation ' + mi(T('@ln(x^2)=@ln ') + (k * k)) + '.', true); } }
+];
+
+/* =====================================================================
+   THE BANK + CONSTRUCTOR
+   ===================================================================== */
+const BANK = [].concat(DERIV, LIMITS, DOMAIN, WLN, EQUATIONS, INEQ, SYSTEMS, VAR, TF);
+const CATEGORY_CAP = { 'DERIVATIVE': 4, 'LIMIT': 4, 'DOMAIN': 3, 'LOG RULES': 4, 'EQUATION': 4, 'INEQUALITY': 2, 'SYSTEM': 2, 'VARIATIONS': 2, 'TRUE/FALSE': 2 };
+
+function constructLogProblem(tier, usedIds, catCounts) {
+  const pool = BANK.filter(b => b.tiers.includes(tier));
+  for (let tries = 0; tries < 60; tries++) {
+    const entry = pick(pool);
+    if ((usedIds[entry.id] || 0) >= 2) continue;
+    try {
+      const p = entry.gen();
+      if ((catCounts[p.categoryType] || 0) >= (CATEGORY_CAP[p.categoryType] || 4)) continue;
+      p.tier = tier; p.genId = entry.id; return p;
+    } catch (e) { /* retry */ }
+  }
+  // safety net: ignore the caps
+  for (let tries = 0; tries < 200; tries++) { try { const e = pick(pool), p = e.gen(); p.tier = tier; p.genId = e.id; return p; } catch (er) { } }
+  throw new Error('could not build a question');
+}
+
+
+
+/* =====================================================================
+   QUIZ SHELL (timer, navigation, report) - same behaviour as the Sets quiz
+   ===================================================================== */
+const APP_LIMITS = {
+    totalItems: 20,
+    allocatedDurationSeconds: 1800,           // 30 minutes
+    tiers: { easy: 6, medium: 8, hard: 6 }
+};
+const QUIZ_TITLE = "Logarithmic Functions";
+
+let generatedSuite = [];
+let traversalIndex = 0;
+let storedResponses = {};
+let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+let schedulerHandle = null;
+let formattedQuizStartTimeStamp = "";
+
+function generateEntireQuizSuite() {
+    generatedSuite = [];
+    const used = {}, cats = {}, seen = new Set();
+    ['easy', 'medium', 'hard'].forEach(tier => {
+        let n = 0, guard = 0;
+        while (n < APP_LIMITS.tiers[tier] && guard++ < 500) {
+            const p = constructLogProblem(tier, used, cats);
+            const fp = (p.prompt + '||' + p.equation + '||' + p.solution).replace(/\s+/g, '');
+            if (seen.has(fp)) continue;
+            seen.add(fp);
+            used[p.genId] = (used[p.genId] || 0) + 1;
+            cats[p.categoryType] = (cats[p.categoryType] || 0) + 1;
+            generatedSuite.push(p); n++;
+        }
+        while (n < APP_LIMITS.tiers[tier]) { generatedSuite.push(constructLogProblem(tier, {}, {})); n++; }
+    });
+}
+
+function synchroniseQuestionIndex() {
+    const activeProblem = generatedSuite[traversalIndex];
+    document.getElementById('idx-current').innerText = traversalIndex + 1;
+    document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+    document.getElementById('txt-tier-badge').innerText = activeProblem.tier + " tier";
+
+    const equationBlock = activeProblem.equation ? `
+        <div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 8px; text-align:center; overflow-x:auto;">
+            $$${activeProblem.equation}$$
+        </div>` : "";
+
+    document.getElementById('math-prompt-container').innerHTML = `
+        <div style="font-size:1.1rem; line-height:1.5; color: var(--text-main);">
+            ${activeProblem.prompt}
+            ${equationBlock}
+        </div>`;
+
+    document.getElementById('box-mcq').classList.add('hidden');
+    document.getElementById('box-tf').classList.add('hidden');
+
+    if (activeProblem.type === 'MCQ') {
+        const mcqContainer = document.getElementById('box-mcq');
+        mcqContainer.innerHTML = "";
+        mcqContainer.classList.remove('hidden');
+        activeProblem.pool.forEach(choice => {
+            const b = document.createElement('button');
+            b.className = `opt-btn p-3 text-center transition flex justify-center items-center ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+            b.style.minHeight = "52px";
+            b.style.fontSize = "1.2rem";
+            b.innerHTML = BS + "(" + choice + BS + ")";
+            b.onclick = () => {
+                document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                b.classList.add('active');
+                recordInput(choice);
+            };
+            mcqContainer.appendChild(b);
+        });
+        if (window.katex && typeof window.renderMathInElement === 'function') window.renderMathInElement(mcqContainer);
+    } else if (activeProblem.type === 'TF') {
+        document.getElementById('box-tf').classList.remove('hidden');
+        document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+            btn.classList.remove('active');
+            if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+            btn.onclick = () => {
+                document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                btn.classList.add('active');
+                recordInput(btn.getAttribute('data-core'));
+            };
+        });
+    }
+
+    buildShortcutsGridMatrix();
+    document.getElementById('action-back').disabled = traversalIndex === 0;
+    document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+    if (window.katex && typeof window.renderMathInElement === 'function') window.renderMathInElement(document.getElementById('math-prompt-container'));
+}
+
+function recordInput(value) { storedResponses[traversalIndex] = value; buildShortcutsGridMatrix(); }
+
+function buildShortcutsGridMatrix() {
+    const grid = document.getElementById('navigation-shortcut-grid');
+    grid.innerHTML = "";
+    for (let i = 0; i < APP_LIMITS.totalItems; i++) {
+        const b = document.createElement('button');
+        b.innerText = i + 1;
+        let bgStyle = "bg-slate-100 text-slate-600 border border-slate-300";
+        if (traversalIndex === i) bgStyle = "bg-sky-600 text-white font-bold ring-2 ring-sky-300";
+        else if (storedResponses[i]) bgStyle = "bg-emerald-100 text-emerald-700 border border-emerald-400 font-semibold";
+        b.className = `p-2 text-xs text-center rounded-lg transition cursor-pointer min-w-[32px] ${bgStyle}`;
+        b.onclick = () => { traversalIndex = i; synchroniseQuestionIndex(); };
+        grid.appendChild(b);
+    }
+}
+
+function beginTimelineScheduler() {
+    document.getElementById('meter-container').classList.remove('hidden');
+    function pulse() {
+        const m = Math.floor(timeTrackingRemaining / 60), s = timeTrackingRemaining % 60;
+        document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        const pct = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+        const progress = document.getElementById('meter-progress');
+        progress.style.width = `${pct}%`;
+        progress.style.backgroundColor = pct < 25 ? 'var(--error)' : (pct < 50 ? '#d97706' : '#38bdf8');
+    }
+    pulse();
+    clearInterval(schedulerHandle);
+    schedulerHandle = setInterval(() => {
+        timeTrackingRemaining--;
+        pulse();
+        if (timeTrackingRemaining <= 0) { clearInterval(schedulerHandle); compileFinalPerformanceReport(true); }
+    }, 1000);
+}
+
+function sendGradesToTeacher(name, classroom, score, startStamp, quizTitle) {
+    const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+    fetch(url, {
+        method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, classroom: classroom, score: score, duration: startStamp, quizTitle: quizTitle, date: new Date().toLocaleString() })
+    }).catch(err => console.log("Network trace: Client sync fallback triggered."));
+}
+
+function compileFinalPerformanceReport(isTimeout = false) {
+    clearInterval(schedulerHandle);
+    document.getElementById('stage-engine').classList.add('hidden');
+    document.getElementById('meter-container').classList.add('hidden');
+    document.getElementById('stage-summary').classList.remove('hidden');
+    if (isTimeout) alert("Time limit reached. Compiling final performance report now.");
+
+    let tallyCorrect = 0, compilationHtml = "";
+    const isPlain = s => /^(TRUE|FALSE|UNANSWERED)$/i.test(s);
+    const showAns = s => isPlain(String(s)) ? String(s) : (BS + "(" + s + BS + ")");
+
+    generatedSuite.forEach((problem, index) => {
+        const userRaw = storedResponses[index];
+        const outcomeState = (userRaw || "").toString().trim() === problem.solution.toString().trim();
+        if (outcomeState) tallyCorrect++;
+        const answerColor = outcomeState ? 'var(--success)' : 'var(--error)';
+        const answerBlock =
+            '<p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:' + answerColor + '; font-size:1.05rem;">' + (userRaw ? showAns(userRaw) : 'Unanswered') + '</span></p>' +
+            '<p style="margin:0; color: var(--text-muted);"><strong>Correct Verification Key:</strong> <span style="font-weight:600; color: var(--text-main); font-size:1.05rem;">' + showAns(problem.solution) + '</span></p>';
+        const badge = outcomeState
+            ? `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>`
+            : `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+        compilationHtml += `
+        <div class="report-item" style="position: relative; overflow: auto; background:#ffffff; padding:16px; margin-bottom:12px; border-radius:12px; border-left: 5px solid ${outcomeState ? 'var(--success)' : 'var(--error)'};">
+            ${badge}
+            <div style="font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+                Question ${index + 1} &middot; Topic: <span style="color: var(--primary);">${problem.categoryType.replace(/_/g, ' ')}</span>
+            </div>
+            <div style="margin: 16px 0; text-align: center; font-size: 1.3rem; font-weight: bold; color: var(--text-main); overflow-x:auto;">
+                ${problem.equation ? '$$' + problem.equation + '$$' : ''}
+            </div>
+            <div style="font-size: 0.95rem; line-height: 1.5; color: var(--text-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+                <strong>Problem Prompt:</strong>
+                <div style="margin-top: 4px; font-family: system-ui, sans-serif;">${problem.prompt}</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; padding-left: 4px;">${answerBlock}</div>
+        </div>`;
+    });
+
+    document.getElementById('m-correct').innerText = tallyCorrect;
+    document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+    document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+    const userTitle = document.getElementById('student-name').value.trim();
+    const sectionTitle = document.getElementById('student-section').value.trim();
+    const headerMetaHtml = `
+        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 0.95rem; line-height:1.4;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                <div><strong>Student Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+                <div><strong>Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem;">
+                <div><strong>Quiz Assessment:</strong> <span style="color: #475569; font-weight: 700;">${QUIZ_TITLE}</span></div>
+                <div><strong>Quiz Start Timestamp:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+            </div>
+        </div>`;
+
+    document.getElementById('report-injection-zone').innerHTML = headerMetaHtml + compilationHtml;
+    if (window.katex && typeof window.renderMathInElement === 'function') window.renderMathInElement(document.getElementById('report-injection-zone'));
+
+    sendGradesToTeacher(userTitle, sectionTitle, `${tallyCorrect} / ${APP_LIMITS.totalItems}`, formattedQuizStartTimeStamp, QUIZ_TITLE);
+}
+
+function triggerDirectPdfDownload() {
+    const targetElement = document.getElementById('stage-summary');
+    html2pdf().set({ margin: 10, filename: 'Log_Quiz_Diagnostic_Report.pdf', image: { type: 'jpeg', quality: 0.99 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(targetElement).save();
+}
+
+document.getElementById('action-start').onclick = () => {
+    if (!document.getElementById('student-name').value.trim() || !document.getElementById('student-section').value.trim()) {
+        alert("Please complete credential parameters to unlock.");
+        return;
+    }
+    const now = new Date();
+    formattedQuizStartTimeStamp = now.toLocaleDateString() + " @ " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    document.getElementById('stage-auth').classList.add('hidden');
+    document.getElementById('stage-engine').classList.remove('hidden');
+    generateEntireQuizSuite();
+    beginTimelineScheduler();
+    synchroniseQuestionIndex();
+};
+
+document.getElementById('action-forward').onclick = () => {
+    if (traversalIndex < APP_LIMITS.totalItems - 1) { traversalIndex++; synchroniseQuestionIndex(); }
+    else if (confirm("Finalize and compile report sheets?")) compileFinalPerformanceReport();
+};
+document.getElementById('action-back').onclick = () => { if (traversalIndex > 0) { traversalIndex--; synchroniseQuestionIndex(); } };
+document.getElementById('action-retry').onclick = () => {
+    storedResponses = {}; traversalIndex = 0;
+    timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    document.getElementById('stage-summary').classList.add('hidden');
+    document.getElementById('stage-auth').classList.remove('hidden');
+};
+
+/* print-friendly PDF export (same fix as the original file) */
+if (!document.getElementById('print-fix-styles')) {
+    const style = document.createElement('style');
+    style.id = 'print-fix-styles';
+    style.innerHTML = `
+        @media print {
+            html, body { display: block !important; height: auto !important; overflow: visible !important; background: white !important; }
+            #stage-summary { display: block !important; max-width: 100% !important; width: 100% !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; }
+            footer, #stage-auth, #stage-engine, button, .bg-gradient-to-r button { display: none !important; }
+        }`;
+    document.head.appendChild(style);
+}
+document.querySelectorAll('button').forEach(button => {
+    if (button.textContent.includes('Save as PDF') || button.textContent.includes('Download as PDF')) {
+        button.removeAttribute('onclick');
+        button.addEventListener('click', e => { e.preventDefault(); window.print(); });
+    }
+});
+</script>
+</body>
+</html>
