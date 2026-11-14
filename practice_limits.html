@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limits - Grade 11</title>
+    <!-- Tailwind CSS Styling Framework CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX Mathematical Typography Notation Engine Setup CDN -->                  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7; --primary-hover: #0369a1; --bg-main: #f8fafc;
+            --bg-surface: #ffffff; --border-color: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #16a34a; --error: #dc2626;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; }
+        .hidden { display: none !important; }
+        .opt-btn {
+            background-color: var(--bg-surface); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 1.05rem;
+        }
+        .opt-btn:hover { border-color: var(--primary); background-color: #f0f9ff; }
+        .opt-btn.active { border-color: var(--primary); background-color: #e0f2fe; font-weight: 600; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+        .report-item { background: var(--bg-surface); border-radius: 10px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #cbd5e1; }
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+            .katex { font-size: 1.12em; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Credentials Authentication Entry Stage -->
+    <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
+        <h2 class="text-3xl font-extrabold text-slate-800 text-center tracking-tight mb-2">Limits</h2>
+        <p class="text-sm text-slate-500 text-center mb-8">Grade 11 &middot; 20 questions &middot; 30 minutes</p>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Student Full Name</label>
+                <input type="text" id="student-name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Assigned Class Section</label>
+                <input type="text" id="student-section" placeholder="Grade 11-A" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <button id="action-start" class="w-full bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm tracking-wider uppercase mt-4">Start Quiz</button>
+        </div>
+    </div>
+
+    <!-- FIXED: Active Test Core Engine Integrated Inside One Single Unified Main Box Header Layout -->
+    <div id="stage-engine" class="hidden max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+        <div class="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between min-h-[550px]">
+
+            <!-- HEADER INFO BAR: Time tracking and Question counts grouped inside the single main container block -->
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-5 flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Question Tracker &middot; <span id="idx-current">0</span> / <span id="idx-total">0</span></span>
+                    <span id="txt-tier-badge" class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase bg-slate-100 text-slate-600">Tier</span>
+                </div>
+
+                <!-- TIMER COMPONENT: Grouped tightly inside the primary top header control area -->
+                <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
+                    <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">30:00</span>
+                    <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                        <div id="meter-progress" class="bg-sky-400 h-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Content Presentation Window -->
+            <div class="flex-grow flex flex-col justify-center">
+                <div id="math-prompt-container" class="mb-6"></div>
+
+                <div id="interactive-zone" class="w-full flex flex-col items-center justify-center mb-6">
+                    <div id="venn-diagram-canvas" class="mb-5 w-full"></div>
+                    <div id="box-mcq" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"></div>
+                    <div id="box-tf" class="hidden flex gap-4 w-full justify-center">
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="TRUE">TRUE</button>
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="FALSE">FALSE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Layout Shortcut Matrix Navigation Row -->
+            <div class="border-t border-slate-100 pt-4 mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <!-- Grid Shortcuts inline at the bottom left -->
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden md:block">Overview:</span>
+                    <div id="navigation-shortcut-grid" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="flex gap-3 justify-end w-full sm:w-auto">
+                    <button id="action-back" class="px-5 py-2 border border-slate-300 rounded-xl font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 text-sm transition cursor-pointer">&larr; Back</button>
+                    <button id="action-forward" class="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 text-sm shadow transition cursor-pointer">Next &rarr;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Final Diagnostic Summary Sheet Layout -->
+    <div id="stage-summary" class="hidden max-w-3xl mx-auto w-full px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 p-6 text-white flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">Performance Summary Report</h1>
+                    <p class="text-sky-100 text-xs mt-1">Limits &middot; Grade 11</p>
+                </div>
+                <button onclick="triggerDirectPdfDownload()" class="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition cursor-pointer shadow-sm border border-white/10 text-white">Download as PDF</button>
+            </div>
+
+            <div class="grid grid-cols-3 text-center border-b border-slate-100 bg-slate-50 py-4">
+                <div>
+                    <div id="m-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div id="m-incorrect" class="text-2xl font-extrabold text-rose-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Incorrect</div>
+                </div>
+                <div>
+                    <div id="m-percent" class="text-2xl font-extrabold text-sky-600">0%</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score Rate</div>
+                </div>
+            </div>
+
+                    <!-- Dynamic Question Injections -->
+                        <div id="report-injection-zone" class="p-6 space-y-4 bg-slate-50/50"></div>
+                </div>
+
+                <!-- FIXED: Repositioned standalone PDF action handler bar to the absolute bottom of the page structure -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
+                        <button id="action-pdf-bottom" onclick="triggerDirectPdfDownload()" class="flex-grow bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
+                        <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
+                </div>
+        </div>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
+        &copy; 2026 Limits Assessment Suite &bull; Academic Diagnostic Engine
+    </footer>
+
+<script>
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 1800, // 30 minutes
+        tiers: { easy: 7, medium: 7, hard: 6 }
+    };
+
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+    let formattedQuizStartTimeStamp = "";
+
+    // ---------- helpers (write LaTeX with @ instead of a backslash) ----------
+    const BS = String.fromCharCode(92);
+    function tx(s) { return s.split('@').join(BS); }
+    function shuffleArray(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+        return a;
+    }
+    const ri = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+    const pick = arr => arr[ri(0, arr.length - 1)];
+    const sg = () => Math.random() < 0.5 ? 1 : -1;
+    const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+    const PI = tx('+@infty'), MI = tx('-@infty');
+
+    // reduced fraction / integer as LaTeX
+    function frac(n, d) {
+        const g = gcd(n, d) || 1; n /= g; d /= g;
+        if (d < 0) { n = -n; d = -d; }
+        return d === 1 ? String(n) : (n < 0 ? '-' : '') + tx('@frac{' + Math.abs(n) + '}{' + d + '}');
+    }
+    // terms: [[coef, body], ...] -> "3x^2 - x + 5"
+    function T(ts) {
+        let s = '';
+        ts.forEach(([a, b]) => {
+            if (!a) return;
+            const m = Math.abs(a), c = (m === 1 && b) ? '' : m;
+            s += (s === '' ? (a < 0 ? '-' : '') : (a < 0 ? ' - ' : ' + ')) + c + b;
+        });
+        return s || '0';
+    }
+    // polynomial in x, coefficients from the highest degree down
+    function P(c) { const n = c.length - 1; return T(c.map((a, i) => { const d = n - i; return [a, d > 1 ? 'x^' + d : d === 1 ? 'x' : '']; })); }
+    const join = (a, tail) => a + (tail[0] === '-' ? ' - ' + tail.slice(1) : ' + ' + tail);
+    const F = (n, d) => tx('@frac{' + n + '}{' + d + '}');
+    const LIM = (to, body) => {
+        const single = (body.startsWith(BS + 'frac') && body.endsWith('}')) || body.startsWith(BS + 'left(');
+        return tx('@displaystyle @lim_{x @to ' + to + '} ') + (single ? body : tx('@left(') + body + tx('@right)'));
+    };
+
+    // answer + wrong options
+    const numFakes = (n, d) => [frac(-n, d), frac(2 * n, d), frac(n, 2 * d), frac(n + 1, d), frac(n - 1, d), n ? frac(d, n) : '0', '0', PI, MI];
+    const R = (n, d = 1) => ({ ans: frac(n, d), fakes: numFakes(n, d) });
+    const INFR = (s, extra) => ({ ans: s > 0 ? PI : MI, fakes: [s > 0 ? MI : PI, '0', ...extra] });
+
+    function buildChoices(correct, fakes) {
+        const o = [correct];
+        shuffleArray(fakes).forEach(f => { if (o.length < 4 && f != null && !o.includes(f)) o.push(f); });
+        let g = 0;
+        while (o.length < 4 && g++ < 80) { const t = String(ri(-12, 12)); if (!o.includes(t)) o.push(t); }
+        return shuffleArray(o);
+    }
+
+    // ========================================== -->
+    // PART 3A: LIMIT QUESTION GENERATORS         -->
+    // Every generator draws new numbers each time and computes the exact answer.
+    // ========================================== -->
+    const GENERATORS = [
+        // ---------------- EASY ----------------
+        { t: 'easy', c: 'RATIONAL AT INFINITY (SAME DEGREE)', m: () => {
+            const n = ri(2, 3), a = ri(2, 9), d = ri(2, 9), co = l => [l, ...Array.from({ length: n }, () => ri(-6, 6))];
+            return { eq: LIM('+@infty'.split('@').join(BS), F(P(co(a)), P(co(d)))), res: R(a, d) };
+        } },
+        { t: 'easy', c: 'FACTORING (0/0 FORM)', m: () => {
+            const r = ri(2, 5); let p = ri(1, 5); if (p === r) p = r + 1;
+            return { eq: LIM(r, F(P([1, p - r, -p * r]), P([1, 0, -r * r]))), res: R(r + p, 2 * r) };
+        } },
+        { t: 'easy', c: 'DEGREE COMPARISON AT INFINITY', m: () => {
+            let m = ri(1, 3), n = ri(1, 3); if (m === n) n = m % 3 + 1;
+            const a = sg() * ri(1, 9), d = sg() * ri(1, 9), co = (l, k) => [l, ...Array.from({ length: k }, () => ri(-6, 6))];
+            const res = m < n ? { ans: '0', fakes: [PI, MI, frac(a, d)] } : INFR(Math.sign(a * d), [frac(a, d)]);
+            return { eq: LIM(PI, F(P(co(a, m)), P(co(d, n)))), res };
+        } },
+        { t: 'easy', c: 'DIRECT SUBSTITUTION', m: () => {
+            const s = ri(1, 4), t = ri(1, 4), p = ri(1, 4), q = ri(-5, 5), r = ri(-5, 5);
+            return { eq: LIM(s, F(P([p, q, r]), P([1, t]))), res: R(p * s * s + q * s + r, s + t) };
+        } },
+        { t: 'easy', c: 'ONE-SIDED LIMIT (VERTICAL ASYMPTOTE)', m: () => {
+            const c = sg() * ri(1, 4), N = sg() * ri(1, 6), n = ri(1, 2), dir = sg();
+            const den = n === 1 ? P([1, -c]) : tx('@left(') + P([1, -c]) + tx('@right)^2');
+            const s = n === 2 ? Math.sign(N) : dir * Math.sign(N);
+            return { eq: LIM(c + '^{' + (dir > 0 ? '+' : '-') + '}', F(N, den)), res: INFR(s, [String(N)]) };
+        } },
+        { t: 'easy', c: 'PRODUCT OF LIMITS AT INFINITY', m: () => {
+            const a = ri(2, 9), b = ri(1, 9), c = ri(1, 6);
+            return { eq: LIM(PI, tx('@left(') + F(c, 'x') + '+1' + tx('@right)@left(') + F(P([a, 0, -b]), 'x^2') + tx('@right)')), res: R(a) };
+        } },
+        { t: 'easy', c: 'TRUE / FALSE', m: () => {
+            const a = ri(2, 7); let d = ri(2, 7); if (d === a) d = a + 1;
+            const good = Math.random() < 0.5, claim = good ? frac(a, d) : pick([frac(d, a), frac(a + 1, d), frac(a, d + 1)]);
+            const body = F(P([a, ri(-5, 5), ri(-5, 5)]), P([d, ri(-5, 5), ri(-5, 5)]));
+            return { eq: LIM(pick([PI, MI]), body) + ' = ' + claim, tf: true, truth: good ? 'TRUE' : 'FALSE' };
+        } },
+        // ---------------- MEDIUM ----------------
+        { t: 'medium', c: 'CONJUGATE (SQUARE ROOT, 0/0)', m: () => {
+            const a = ri(2, 5), s = sg(), A = a * a, den = tx('@sqrt{x}') + ' - ' + a;
+            return { eq: LIM(A, F(s > 0 ? 'x - ' + A : A + ' - x', den)), res: R(s * 2 * a) };
+        } },
+        { t: 'medium', c: 'FACTORING AT A FRACTION', m: () => {
+            const p = ri(1, 6);
+            return { eq: LIM(F(1, 2), F(P([2, 2 * p - 1, -p]), '4x^2 - 1')), res: R(1 + 2 * p, 4) };
+        } },
+        { t: 'medium', c: 'CONJUGATE (SQUARE ROOT IN DENOMINATOR)', m: () => {
+            const c = ri(2, 5), a = ri(1, 6), b = c * c - a, s = sg(), rt = tx('@sqrt{') + P([1, b]) + '}';
+            return { eq: LIM(a, F(P([1, -a]), s > 0 ? rt + ' - ' + c : c + ' - ' + rt)), res: R(s * 2 * c) };
+        } },
+        { t: 'medium', c: 'DIFFERENCE OF SQUARES', m: () => {
+            const p = ri(1, 5), m = ri(2, 5);
+            return { eq: LIM(frac(-p, 2), F(tx('@left(') + 'x + ' + p + tx('@right)^2') + ' - x^2', P([2 * m, m * p]))), res: R(p, m) };
+        } },
+        { t: 'medium', c: 'EXPANDING SQUARES (0/0 FORM)', m: () => {
+            const q = ri(2, 5);
+            return { eq: LIM(1, F(tx('@left(') + 'x - ' + (1 + q) + tx('@right)^2') + ' - ' + q * q + 'x^2', 'x - 1')), res: R(-2 * q * (q + 1)) };
+        } },
+        { t: 'medium', c: 'ABSOLUTE VALUE (ONE-SIDED)', m: () => {
+            const r = ri(1, 4), s = ri(1, 5), dir = sg();
+            return { eq: LIM(r + '^{' + (dir > 0 ? '+' : '-') + '}', F(P([1, s - r, -r * s]), tx('@left|') + P([1, -r]) + tx('@right|'))), res: R(dir * (r + s)) };
+        } },
+        { t: 'medium', c: 'SQUARE ROOT AT INFINITY', m: () => {
+            const a = sg() * ri(1, 7), d = ri(1, 3), b = ri(2, 9), c = ri(-5, 5), e = sg() * ri(1, 5);
+            return { eq: LIM(PI, F(T([[a, 'x'], [b, tx('@sqrt{x}')], [c, '']]), T([[d, 'x'], [e, '']]))), res: R(a, d) };
+        } },
+        // ---------------- HARD ----------------
+        { t: 'hard', c: 'RADICAL MINUS x AT INFINITY', m: () => {
+            const b = ri(1, 9), c = ri(1, 5), dir = sg();
+            return { eq: LIM(dir > 0 ? PI : MI, tx('@sqrt{') + P([1, b, c]) + '} - x'), res: dir > 0 ? R(b, 2) : INFR(1, [frac(b, 2)]) };
+        } },
+        { t: 'hard', c: 'DIFFERENCE OF TWO RADICALS', m: () => {
+            const a = ri(-5, 6); let b = ri(-5, 6); if (b === a) b = a + 1;
+            return { eq: LIM(PI, tx('@sqrt{') + P([1, a, ri(1, 6)]) + tx('} - @sqrt{') + P([1, b, ri(1, 6)]) + '}'), res: R(a - b, 2) };
+        } },
+        { t: 'hard', c: 'RADICAL AT MINUS INFINITY', m: () => {
+            const m = pick([-1, 1, 2, 3]), c = ri(1, 6), k = sg() * ri(1, 8);
+            return { eq: LIM(MI, join(tx('@sqrt{') + P([1, 0, c]) + '}', T([[m, 'x'], [k, '']]))), res: m === 1 ? R(k) : INFR(m > 1 ? -1 : 1, [String(k)]) };
+        } },
+        { t: 'hard', c: 'INDETERMINATE FORM  -INF + INF', m: () => {
+            const a = pick([2, 3]), b = pick([-6, -4, -2, 2, 4, 6]), c = ri(-3, 5), k = ri(1, 8);
+            return { eq: LIM(MI, T([[-a, 'x'], [k, '']]) + ' - ' + tx('@sqrt{') + P([a * a, b, c]) + '}'), res: R(2 * a * k + b, 2 * a) };
+        } },
+        { t: 'hard', c: 'x|x| AT MINUS INFINITY', m: () => {
+            const a = ri(1, 5), d = ri(1, 4);
+            return { eq: LIM(MI, F(T([[a, tx('x@left|x@right|')], [ri(-5, 5), 'x'], [ri(-5, 5), '']]), P([d, ri(-5, 5), ri(-5, 5)]))), res: R(-a, d) };
+        } },
+        { t: 'hard', c: 'RADICAL NUMERATOR, QUADRATIC DENOMINATOR', m: () => {
+            const a = ri(2, 5), m = pick([2, 3, 5, 6, 7]), b = m - a, D = 4 * a * m;
+            const ans = tx('@frac{@sqrt{' + m + '}}{' + D + '}');
+            return { eq: LIM(a, F(tx('@sqrt{') + P([1, b]) + tx('} - @sqrt{') + m + '}', P([1, 0, -a * a]))),
+                     res: { ans, fakes: [tx('@frac{@sqrt{' + m + '}}{' + D / 2 + '}'), tx('@frac{@sqrt{' + m + '}}{' + D * 2 + '}'), tx('@frac{1}{' + 4 * a + '}'), tx('@frac{@sqrt{' + m + '}}{' + 2 * m + '}')] } };
+        } },
+        { t: 'hard', c: 'RATIONAL MINUS LINEAR AT INFINITY', m: () => {
+            let p = pick([1, 2, 3, 5]), k = pick([1, 2, 3]), s = sg();
+            if (Math.random() < 0.3) { p = 1; k = 1; s = -1; }
+            const res = s > 0 ? INFR(1, [frac(1, p)]) : (p === 1 && k === 1 ? { ans: '0', fakes: [PI, MI, '1'] } : INFR(-1, [frac(1, p)]));
+            return { eq: LIM(PI, join(F('x^3 + ' + ri(1, 9), P([p, 0, ri(1, 6)])), T([[s * k, 'x']]))), res };
+        } }
+    ];
+
+    function buildProblem(g) {
+        const o = g.m(), v = pick(['x', 'x', 'x', 't', 'u', 'y']);
+        return {
+            equation: o.eq.replace(/x/g, v), tier: g.t, type: o.tf ? 'TF' : 'MCQ', categoryType: g.c,
+            pool: o.tf ? [] : buildChoices(o.res.ans, o.res.fakes), solution: o.tf ? o.truth : o.res.ans,
+            prompt: o.tf ? 'Decide whether the following statement is true or false:' : 'Calculate the following limit:', venn: null
+        };
+    }
+
+    function generateEntireQuizSuite() {
+        generatedSuite = [];
+        ['easy', 'medium', 'hard'].forEach(tier => {
+            const gens = shuffleArray(GENERATORS.filter(g => g.t === tier)).slice(0, APP_LIMITS.tiers[tier]);
+            gens.forEach(g => generatedSuite.push(buildProblem(g)));
+        });
+    }
+
+    // ========================================== -->
+    // PART 4B: INTERFACE VIEW SYNCHRONIZER       -->
+    // ========================================== -->
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+        document.getElementById('txt-tier-badge').innerText = activeProblem.tier + " tier";
+
+        let equationBlock = activeProblem.equation ? `
+            <div style="font-size:1.35rem; font-weight:bold; color: var(--primary); margin-top: 8px; text-align:center;">
+                $$${activeProblem.equation}$$
+            </div>
+        ` : "";
+
+        document.getElementById('math-prompt-container').innerHTML = `
+            <div style="font-size:1.1rem; line-height:1.5; color: var(--text-main);">
+                ${activeProblem.prompt}
+                ${equationBlock}
+            </div>
+        `;
+
+        document.getElementById('venn-diagram-canvas').innerHTML = "";
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+
+        if (activeProblem.venn) buildVennDiagramGraphic(activeProblem);
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+
+            activeProblem.pool.forEach(choice => {
+                const buttonElement = document.createElement('button');
+                buttonElement.className = `opt-btn p-3 text-center transition flex justify-center items-center ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+                buttonElement.style.minHeight = "48px";
+                buttonElement.style.fontSize = "1.2rem";
+                buttonElement.innerHTML = BS + "(" + choice + BS + ")";      // choices are stored as LaTeX
+                buttonElement.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    buttonElement.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(buttonElement);
+            });
+            if (window.katex && typeof window.renderMathInElement === 'function') {
+                window.renderMathInElement(mcqContainer);
+            }
+        } else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        }
+
+        buildShortcutsGridMatrix();
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(document.getElementById('math-prompt-container'));
+        }
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; buildShortcutsGridMatrix(); }
+
+    function buildShortcutsGridMatrix() {
+        const grid = document.getElementById('navigation-shortcut-grid');
+        grid.innerHTML = "";
+        for (let i = 0; i < APP_LIMITS.totalItems; i++) {
+            const b = document.createElement('button');
+            b.innerText = i + 1;
+            let bgStyle = "bg-slate-100 text-slate-600 border border-slate-300";
+            if (traversalIndex === i) bgStyle = "bg-sky-600 text-white font-bold ring-2 ring-sky-300";
+            else if (storedResponses[i]) bgStyle = "bg-emerald-100 text-emerald-700 border border-emerald-400 font-semibold";
+
+            b.className = `p-2 text-xs text-center rounded-lg transition cursor-pointer min-w-[32px] ${bgStyle}`;
+            b.onclick = () => { traversalIndex = i; synchroniseQuestionIndex(); };
+            grid.appendChild(b);
+        }
+    }
+    // ========================================== -->
+    // PART 5: TIMERS, PDF EXPORT & EVENT LISTENERS-->
+    // ========================================== -->
+
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            let m = Math.floor(timeTrackingRemaining / 60);
+            let s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            let dynamicPercentage = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${dynamicPercentage}%`;
+
+            if (dynamicPercentage < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (dynamicPercentage < 50) progress.style.backgroundColor = '#d97706';
+        }
+        pulse();
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limit reached. Compiling final performance report now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+ generatedSuite.forEach((problem, index) => {
+ const userRaw = storedResponses[index];
+ const userAns = (userRaw || "").toString().trim().toUpperCase();
+ const correctAns = problem.solution.toString().trim().toUpperCase();
+ const outcomeState = userAns === correctAns;
+ if (outcomeState) tallyCorrect++;
+
+ // answers that are maths (sets, expressions, numbers) are rendered by KaTeX, words are shown as text
+ const isPlain = s => /^(TRUE|FALSE|UNANSWERED)$/i.test(s) || /Shading/.test(s);
+ const showAns = s => isPlain(String(s)) ? String(s) : (BS + "(" + s + BS + ")");
+
+ let vennBlock = "";
+ let answerBlock = "";
+ const answerColor = outcomeState ? 'var(--success)' : 'var(--error)';
+ if (problem.venn && problem.venn.type === 'shade') {
+     const v = problem.venn;
+     const cap = (t) => '<div style="text-align:center; font-size:0.75rem; font-weight:700; color:var(--text-muted); letter-spacing:0.05em; margin-bottom:4px;">' + t + '</div>';
+     vennBlock = '<div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:12px 0;">' +
+         '<div style="width:260px; max-width:100%;">' + cap('YOUR SHADING') + vennMarkup(v, { selected: v.selected, color: '#bae6fd', maxWidth: 260 }) + '</div>' +
+         '<div style="width:260px; max-width:100%;">' + cap('CORRECT SHADING') + vennMarkup(v, { selected: v.target, color: '#bbf7d0', maxWidth: 260 }) + '</div></div>';
+     answerBlock = '<p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:' + answerColor + ';">' +
+         (outcomeState ? 'Shading is correct' : (userRaw ? 'Shading is incorrect' : 'Unanswered')) + '</span></p>';
+ } else {
+     if (problem.venn) {
+         const v = problem.venn;
+         vennBlock = '<div style="margin:12px 0;">' + vennMarkup(v, {
+             regions: v.type === 'reading' ? v.regions : null,
+             selected: v.type === 'highlight' ? v.target : [],
+             color: v.type === 'highlight' ? v.color.fill : '#bae6fd',
+             maxWidth: 320 }) + '</div>';
+     }
+     answerBlock =
+         '<p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:' + answerColor + '; font-size:1.05rem;">' + (userRaw ? showAns(userRaw) : 'Unanswered') + '</span></p>' +
+         '<p style="margin:0; color: var(--text-muted);"><strong>Correct Verification Key:</strong> <span style="font-weight:600; color: var(--text-main); font-size:1.05rem;">' + showAns(problem.solution) + '</span></p>';
+ }
+
+ let itemScoreBadge = outcomeState ?
+ `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>` :
+ `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+
+ compilationHtml += `
+ <div class="report-item" style="position: relative; overflow: auto; background:#ffffff; padding:16px; margin-bottom:12px; border-radius:12px; border-left: 5px solid ${outcomeState ? 'var(--success)' : 'var(--error)'};">
+ ${itemScoreBadge}
+ <div style="font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+ Question ${index + 1} &middot; Type: <span style="color: var(--primary);">${problem.categoryType.replace(/_/g,' ')}</span>
+ </div>
+ <div style="margin: 16px 0; text-align: center; font-size: 1.4rem; font-weight: bold; color: var(--text-main);">
+ ${problem.equation ? '$$' + problem.equation + '$$' : ''}
+ </div>
+ <div style="font-size: 0.95rem; line-height: 1.5; color: var(--text-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+ <strong>Problem Prompt:</strong>
+ <div style="margin-top: 4px; font-family: system-ui, sans-serif;">${problem.prompt}</div>
+ </div>
+ ${vennBlock}
+ <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; padding-left: 4px;">
+ ${answerBlock}
+ </div>
+ </div>
+ `;
+ });
+
+
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = document.getElementById('student-name').value.trim();
+        const sectionTitle = document.getElementById('student-section').value.trim();
+
+ let headerMetaHtml = `
+ <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 0.95rem; line-height:1.4;">
+ <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+ <div><strong>Student Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+ <div><strong>Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+ </div>
+ <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem;">
+ <div><strong>Quiz Assessment:</strong> <span style="color: #475569; font-weight: 700;">Limits (Grade 11)</span></div>
+ <div><strong>Quiz Start Timestamp:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+ </div>
+ </div>
+ `;
+
+
+        document.getElementById('report-injection-zone').innerHTML = headerMetaHtml + compilationHtml;
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            window.renderMathInElement(document.getElementById('report-injection-zone'));
+        }
+
+ const executionDurationMinutes = Math.floor((APP_LIMITS.allocatedDurationSeconds - timeTrackingRemaining) / 60);
+
+// Automatically extract the text written inside your main h1 title banner
+const quizMainTitleText = document.querySelector("#stage-auth h1")?.textContent.trim() || "Limits";
+
+sendGradesToTeacher(
+    userTitle,
+    sectionTitle,
+    `${tallyCorrect} / ${APP_LIMITS.totalItems}`,
+    formattedQuizStartTimeStamp, // Fixed: Removed the trailing 'm' character
+    quizMainTitleText
+);
+
+function sendGradesToTeacher(name, classroom, score, duration, quizTitle) {
+   // PASTE YOUR GOOGLE WEB APP LINK FROM STEP 3 DIRECTLY INSIDE THE QUOTES BELOW
+    const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+     fetch(url, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                        name: name,
+                        classroom: classroom,
+                        score: score,
+                        duration: duration, // Receives the start time string and logs it into your sheet's Column E
+                        quizTitle: "Limits",
+                        date: new Date().toLocaleString()
+                })
+    }).catch(err => console.log("Network trace: Client sync fallback triggered."));
+}
+
+    }
+
+    function triggerDirectPdfDownload() {
+        const targetElement = document.getElementById('stage-summary');
+        const config = {
+            margin:       10,
+            filename:     'Limits_Quiz_Report.pdf',
+            image:        { type: 'jpeg', quality: 0.99 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(config).from(targetElement).save();
+    }
+
+    document.getElementById('action-start').onclick = () => {
+        if (!document.getElementById('student-name').value.trim() || !document.getElementById('student-section').value.trim()) {
+            alert("Please complete credential parameters to unlock.");
+            return;
+        }
+        const now = new Date();
+        formattedQuizStartTimeStamp = now.toLocaleDateString() + " @ " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Finalize and compile report sheets?")) compileFinalPerformanceReport();
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) {
+            traversalIndex--;
+            synchroniseQuestionIndex();
+        }
+    };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+     // 1. Inject print-optimized styles to fix the Flexbox page-clipping bug
+    if (!document.getElementById('print-fix-styles')) {
+        const style = document.createElement('style');
+        style.id = 'print-fix-styles';
+        style.innerHTML = `
+            @media print {
+                html, body {
+                    display: block !important;
+                    height: auto !important;
+                    overflow: visible !important;
+                    background: white !important;
+                }
+                #stage-summary {
+                    display: block !important;
+                    max-width: 100% !important;
+                    width: 100% !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                }
+                footer, #stage-auth, #stage-engine, button, .bg-gradient-to-r button {
+                    display: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // 2. Find the buttons using the text on your screen
+    document.querySelectorAll('button').forEach(button => {
+        if (button.textContent.includes('Save as PDF') || button.textContent.includes('Download as PDF')) {
+
+            // FIX: Remove the broken built-in html2pdf download trigger
+            button.removeAttribute('onclick');
+
+            // 3. Add the clean click action to trigger the working save/print dialog
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.print();
+            });
+        }
+    });
+</script>
+</body>
+</html>
