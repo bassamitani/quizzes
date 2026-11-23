@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function asymptotes - Grade 11</title>
+    <!-- Tailwind CSS Styling Framework CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX Mathematical Typography Notation Engine Setup CDN -->                  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7; --primary-hover: #0369a1; --bg-main: #f8fafc;
+            --bg-surface: #ffffff; --border-color: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #16a34a; --error: #dc2626;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; }
+        .hidden { display: none !important; }
+        .opt-btn {
+            background-color: var(--bg-surface); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 1.05rem;
+        }
+        .opt-btn:hover { border-color: var(--primary); background-color: #f0f9ff; }
+        .opt-btn.active { border-color: var(--primary); background-color: #e0f2fe; font-weight: 600; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+        .report-item { background: var(--bg-surface); border-radius: 10px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #cbd5e1; }
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+            .katex { font-size: 1.12em; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Credentials Authentication Entry Stage -->
+    <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
+        <h2 class="text-2xl font-extrabold text-slate-800 text-center tracking-tight mb-2">Function asymptotes</h2>
+        <p class="text-sm text-slate-500 text-center mb-8">Grade 11 &middot; 20 questions &middot; 25 minutes</p>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Student Full Name</label>
+                <input type="text" id="student-name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Assigned Class Section</label>
+                <input type="text" id="student-section" placeholder="Grade 11-A" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <button id="action-start" class="w-full bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm tracking-wider uppercase mt-4">Start Quiz</button>
+        </div>
+    </div>
+
+    <!-- FIXED: Active Test Core Engine Integrated Inside One Single Unified Main Box Header Layout -->
+    <div id="stage-engine" class="hidden max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+        <div class="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between min-h-[550px]">
+
+            <!-- HEADER INFO BAR: Time tracking and Question counts grouped inside the single main container block -->
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-5 flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Question Tracker &middot; <span id="idx-current">0</span> / <span id="idx-total">0</span></span>
+                    <span id="txt-tier-badge" class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase bg-slate-100 text-slate-600">Tier</span>
+                </div>
+
+                <!-- TIMER COMPONENT: Grouped tightly inside the primary top header control area -->
+                <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
+                    <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">25:00</span>
+                    <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                        <div id="meter-progress" class="bg-sky-400 h-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Content Presentation Window -->
+            <div class="flex-grow flex flex-col justify-center">
+                <div id="math-prompt-container" class="mb-6"></div>
+
+                <div id="interactive-zone" class="w-full flex flex-col items-center justify-center mb-6">
+                    <div id="box-mcq" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"></div>
+                    <div id="box-num" class="hidden w-full flex flex-col items-center gap-2">
+                        <input id="num-input" type="text" inputmode="decimal" autocomplete="off" placeholder="Your answer" class="w-48 text-center text-xl font-bold px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white">
+                        <p class="text-xs text-slate-400">Write a number (integer, decimal or fraction such as 1/2)</p>
+                    </div>
+                    <div id="box-tf" class="hidden flex gap-4 w-full justify-center">
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="TRUE">TRUE</button>
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="FALSE">FALSE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Layout Shortcut Matrix Navigation Row -->
+            <div class="border-t border-slate-100 pt-4 mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <!-- Grid Shortcuts inline at the bottom left -->
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden md:block">Overview:</span>
+                    <div id="navigation-shortcut-grid" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="flex gap-3 justify-end w-full sm:w-auto">
+                    <button id="action-back" class="px-5 py-2 border border-slate-300 rounded-xl font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 text-sm transition cursor-pointer">&larr; Back</button>
+                    <button id="action-forward" class="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 text-sm shadow transition cursor-pointer">Next &rarr;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Final Diagnostic Summary Sheet Layout -->
+    <div id="stage-summary" class="hidden max-w-3xl mx-auto w-full px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 p-6 text-white flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">Performance Summary Report</h1>
+                    <p class="text-sky-100 text-xs mt-1">Function asymptotes &middot; Grade 11</p>
+                </div>
+                <button onclick="triggerDirectPdfDownload()" class="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition cursor-pointer shadow-sm border border-white/10 text-white">Download as PDF</button>
+            </div>
+
+            <div class="grid grid-cols-3 text-center border-b border-slate-100 bg-slate-50 py-4">
+                <div>
+                    <div id="m-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div id="m-incorrect" class="text-2xl font-extrabold text-rose-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Incorrect</div>
+                </div>
+                <div>
+                    <div id="m-percent" class="text-2xl font-extrabold text-sky-600">0%</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score Rate</div>
+                </div>
+            </div>
+
+                    <!-- Dynamic Question Injections -->
+                        <div id="report-injection-zone" class="p-6 space-y-4 bg-slate-50/50"></div>
+                </div>
+
+                <!-- FIXED: Repositioned standalone PDF action handler bar to the absolute bottom of the page structure -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
+                        <button id="action-pdf-bottom" onclick="triggerDirectPdfDownload()" class="flex-grow bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
+                        <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
+                </div>
+        </div>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
+        &copy; 2026 Function Asymptotes Assessment Suite &bull; Academic Diagnostic Engine
+    </footer>
+
+<script>
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 1500, // 25 minutes
+        tiers: { easy: 7, medium: 7, hard: 6 }
+    };
+
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+    let formattedQuizStartTimeStamp = "";
+
+    // ---------- helpers (write LaTeX with @ instead of a backslash) ----------
+    const BS = String.fromCharCode(92);
+    function tx(s) { return s.split('@').join(BS); }
+    function shuffleArray(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+        return a;
+    }
+    const ri = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+    const pick = arr => arr[ri(0, arr.length - 1)];
+    const sg = () => Math.random() < 0.5 ? 1 : -1;
+    const nz = (a, b) => { let v = 0; while (!v) v = ri(a, b); return v; };
+    const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+    const PI = tx('+@infty'), MI = tx('-@infty');
+    const LE = tx('@le'), GE = tx('@ge'), NE = tx('@ne'), IN = tx('@in'), LT = tx('@lt'), GT = tx('@gt');
+    const CUP = tx(' @cup ');
+    const ALLR = ']' + MI + ';' + PI + '[';
+
+    // reduced fraction / integer as LaTeX
+    function frac(n, d) {
+        const g = gcd(n, d) || 1; n /= g; d /= g;
+        if (d < 0) { n = -n; d = -d; }
+        return d === 1 ? String(n) : (n < 0 ? '-' : '') + tx('@frac{' + Math.abs(n) + '}{' + d + '}');
+    }
+    // terms: [[coef, body], ...] -> "3x^2 - x + 5"
+    function T(ts) {
+        let s = '';
+        ts.forEach(([a, b]) => {
+            if (!a) return;
+            const m = Math.abs(a), c = (m === 1 && b) ? '' : m;
+            s += (s === '' ? (a < 0 ? '-' : '') : (a < 0 ? ' - ' : ' + ')) + c + b;
+        });
+        return s || '0';
+    }
+    // polynomial in x, coefficients from the highest degree down
+    function P(c) { const n = c.length - 1; return T(c.map((a, i) => { const d = n - i; return [a, d > 1 ? 'x^' + d : d === 1 ? 'x' : '']; })); }
+    const F = (n, d) => tx('@frac{' + n + '}{' + d + '}');
+    const SQ = body => tx('@sqrt{') + body + '}';
+    // set "R minus {a ; b}" and interval helpers
+    const setR = v => tx('@mathbb{R} @setminus @{') + [...new Set(v)].sort((a, b) => a - b).join(' ; ') + tx('@}');
+    // piecewise function  f(x) = { ... }   rows = [[expression, condition], ...]
+    const CASE = rows => tx('f(x)=@begin{cases} ') +
+        rows.map(r => tx('@displaystyle ') + r[0] + tx(' & @text{if } ') + r[1]).join(tx(' @@[6pt] ')) + tx(' @end{cases}');
+    const DEF = 'Let $f$ be the function defined by:';
+    const TFQ = s => 'True or False: ' + tx(s);
+    const Q = s => tx(s);
+
+    // numeric answer + plausible wrong options
+    const NUM = (n, d = 1) => ({ ans: frac(n, d),
+        fakes: [frac(-n, d), frac(2 * n, d), frac(n, 2 * d), frac(n + 1, d), frac(n - 1, d), n ? frac(d, n) : '1', '0', '1', frac(n + 2, d)] });
+
+    function buildChoices(correct, fakes) {
+        const o = [correct];
+        shuffleArray(fakes).forEach(f => { if (o.length < 4 && f != null && !o.includes(f)) o.push(f); });
+        let g = 0;
+        while (o.length < 4 && g++ < 80) { const t = String(ri(-12, 12)); if (!o.includes(t)) o.push(t); }
+        return shuffleArray(o);
+    }
+
+
+    // ==========================================================
+    // ASYMPTOTE ENGINE: functions are built from pieces with exact formulas;
+    // vertical / horizontal asymptotes are computed exactly (no guessing).
+    // ==========================================================
+    const INF = Infinity, EPS = 1e-9;
+    const TXT = s => tx('@text{') + s + '}';
+    const uniqSort = arr => { const a = arr.slice().sort((x, y) => x - y), r = []; a.forEach(x => { if (!r.length || Math.abs(x - r[r.length - 1]) > 1e-7) r.push(x); }); return r; };
+    const FR = (n, d = 1) => { const g = gcd(n, d) || 1; n /= g; d /= g; if (d < 0) { n = -n; d = -d; } return { n: n === 0 ? 0 : n, d }; };
+    const frEq = (a, b) => a.n === b.n && a.d === b.d;
+    const itemTex = i => i.t + '=' + frac(i.n, i.d);
+    const setTex = items => !items.length ? TXT('No asymptote') :
+        items.slice().sort((a, b) => (a.t === b.t ? 0 : a.t === 'x' ? -1 : 1) || a.n / a.d - b.n / b.d).map(itemTex).join(tx(',@ '));
+    const pmul = (a, b) => { const r = Array(a.length + b.length - 1).fill(0); a.forEach((x, i) => b.forEach((y, j) => { r[i + j] += x * y; })); return r; };
+    const peval = (p, x) => p.reduce((s, c) => s * x + c, 0);
+    const pmult = (p, r) => { let q = p.slice(), m = 0; while (q.length > 1) { const out = []; let carry = 0; for (let i = 0; i < q.length; i++) { carry = q[i] + carry * r; out.push(carry); } const rem = out.pop(); if (Math.abs(rem) > 1e-9) break; m++; q = out; } return m; };
+    const randPoly = (deg, lead) => { const p = [lead === undefined ? nz(-3, 3) : lead]; for (let i = 0; i < deg; i++) p.push(ri(-5, 5)); return p; };
+
+    function ratPiece(o) {
+        const lo = o.lo === undefined ? -INF : o.lo, hi = o.hi === undefined ? INF : o.hi, excl = o.excl || [], roots = o.roots || [];
+        let D = o.D;
+        if (!D) { D = [o.lc || 1]; roots.forEach(([r, m]) => { for (let i = 0; i < m; i++) D = pmul(D, [1, -r]); }); if (o.quad) D = pmul(D, [1, 0, o.quad]); }
+        const N = o.N, dN = N.length - 1, dD = D.length - 1, va = [], rem = [];
+        roots.forEach(([r, m]) => { const mN = pmult(N, r); if (r >= lo - EPS && r <= hi + EPS) { if (m > mN) va.push(r); else rem.push(r); } });
+        const lim = dN < dD ? FR(0) : dN === dD ? FR(N[0], D[0]) : null;
+        return { kind: 'rat', N, D, lo, hi, va, rem, cond: o.cond, tex: F(P(N), o.Dtex || P(D)),
+            ha: { neg: lo === -INF ? lim : null, pos: hi === INF ? lim : null },
+            f: x => peval(N, x) / peval(D, x),
+            defined: x => x > lo && x < hi && !excl.some(e => Math.abs(e - x) < EPS) && Math.abs(peval(D, x)) > 1e-12 };
+    }
+    function radPiece(o) {   // al*x + h + be*sqrt(x^2+ux+v)
+        const lo = o.lo === undefined ? -INF : o.lo, hi = o.hi === undefined ? INF : o.hi, { al, be, h, u, v } = o, rad = x => x * x + u * x + v;
+        return { kind: 'rad', lo, hi, va: [], rem: [], cond: o.cond, tex: T([[al, 'x'], [h, '']]) + (be > 0 ? ' + ' : ' - ') + SQ(P([1, u, v])),
+            ha: { neg: lo === -INF && al === be ? FR(2 * h - be * u, 2) : null, pos: hi === INF && al + be === 0 ? FR(2 * h + be * u, 2) : null },
+            f: x => al * x + h + be * Math.sqrt(Math.max(rad(x), 0)), defined: x => x >= lo && x <= hi && rad(x) >= -1e-12 };
+    }
+    function radQuot(o) {    // sqrt(k^2 x^2 + Bx + C)/(x - r)
+        const { k, B, C, r } = o;
+        return { kind: 'radq', lo: -INF, hi: INF, va: [r], rem: [], tex: F(SQ(T([[k * k, 'x^2'], [B, 'x'], [C, '']])), P([1, -r])), decoy: [k * k, 0],
+            ha: { neg: FR(-k), pos: FR(k) }, f: x => Math.sqrt(k * k * x * x + B * x + C) / (x - r), defined: x => Math.abs(x - r) > 1e-12 };
+    }
+    function quotRad(o) {    // (px+q)/sqrt(x^2-k^2)
+        const { p, q, k } = o;
+        return { kind: 'quotr', lo: -INF, hi: INF, va: [-k, k], rem: [], tex: F(T([[p, 'x'], [q, '']]), SQ(P([1, 0, -k * k]))), decoy: [p * p, 0],
+            ha: { neg: FR(-p), pos: FR(p) }, f: x => (p * x + q) / Math.sqrt(x * x - k * k), defined: x => Math.abs(x) > k + 1e-12 };
+    }
+    function polyPiece(o) {
+        const lo = o.lo === undefined ? -INF : o.lo, hi = o.hi === undefined ? INF : o.hi, c = o.coef, cst = c.length === 1 ? FR(c[0]) : null;
+        return { kind: 'poly', lo, hi, va: [], rem: [], cond: o.cond, tex: o.tex || P(c), ha: { neg: lo === -INF ? cst : null, pos: hi === INF ? cst : null },
+            f: x => peval(c, x) * (o.scale || 1), defined: x => x >= lo && x <= hi };
+    }
+    function mkModel(pieces, eq) {
+        const va = uniqSort(pieces.flatMap(p => p.va));
+        const pn = pieces.find(p => p.lo === -INF), pp = pieces.find(p => p.hi === INF);
+        const hn = pn ? pn.ha.neg : null, hp = pp ? pp.ha.pos : null, has = [];
+        [hn, hp].forEach(h => { if (h && !has.some(x => frEq(x, h))) has.push(h); });
+        has.sort((a, b) => a.n / a.d - b.n / b.d);
+        const items = va.map(v => ({ t: 'x', n: v, d: 1 })).concat(has.map(h => ({ t: 'y', n: h.n, d: h.d })));
+        const dec = [], addX = v => dec.push({ t: 'x', n: v, d: 1 }), addY = (n, d = 1) => { const f = FR(n, d); dec.push({ t: 'y', n: f.n, d: f.d }); };
+        pieces.forEach(p => { p.rem.forEach(addX); if (p.kind === 'rat') { addY(p.N[0]); addY(1, p.D[0]); addY(p.D[0]); } (p.decoy || []).forEach(d => addY(d)); });
+        va.forEach(v => { if (v) addX(-v); addX(v + 1); });
+        has.forEach(h => { addY(-h.n, h.d); addY(h.n + h.d, h.d); });
+        addY(0); addY(1); addY(2);
+        return { pieces, eq, va, hn, hp, has, items, dec: dec.filter(d => !items.some(i => i.t === d.t && i.n === d.n && i.d === d.d)),
+            f: x => { for (const p of pieces) if (p.defined(x)) return p.f(x); return NaN; } };
+    }
+    const single = p => mkModel([p], tx('f(x)=') + p.tex);
+    const piecewise = (ps) => mkModel(ps, CASE(ps.map(p => [p.tex, p.cond])));
+
+    // answer sets and wrong variants
+    function asymFakes(M) {
+        const S = M.items, out = [], add = a => out.push(setTex(a));
+        S.forEach((_, i) => add(S.filter((__, j) => j !== i)));
+        M.dec.forEach(d => add(S.concat([d])));
+        M.dec.forEach(d => S.forEach((s, i) => { if (s.t === d.t) add(S.map((x, j) => j === i ? d : x)); }));
+        return out;
+    }
+    const ASYQ = 'The equations of the asymptotes (horizontal or vertical only) of $f$ are:';
+    const mcqAsym = M => ({ pre: 'Let $f$ be the function defined by:', eq: M.eq, post: Q(ASYQ), res: { ans: setTex(M.items), fakes: asymFakes(M) } });
+    const countAsym = M => M.items.length;
+    const notVA = (M, v) => !M.va.includes(v);
+    function claimVA(M, good) {
+        if (good) return M.va.length ? pick(M.va) : null;
+        const pool = M.dec.filter(d => d.t === 'x').map(d => d.n); for (let i = -5; i <= 5; i++) pool.push(i);
+        return pick(pool.filter(v => notVA(M, v)));
+    }
+    const yTex = h => 'y=' + frac(h.n, h.d);
+    function claimHA(M, good, side) {   // side: 'pos' | 'neg' | null (either)
+        const have = side ? (side === 'pos' ? M.hp : M.hn) : null;
+        if (good) { const c = side ? have : pick(M.has); return c || null; }
+        const pool = M.dec.filter(d => d.t === 'y').map(d => FR(d.n, d.d));
+        const bad = pool.filter(h => (side ? !(have && frEq(h, have)) : !M.has.some(x => frEq(x, h))));
+        return bad.length ? pick(bad) : null;
+    }
+
+    // ---------- rational templates ----------
+    function tHomog() {
+        const r = ri(-5, 5), d = pick([1, 1, 2]), p = nz(-4, 4); let q; do { q = ri(-6, 6); } while (p * r + q === 0);
+        return single(ratPiece({ N: [p, q], lc: d, roots: [[r, 1]], Dtex: T([[d, 'x'], [-d * r, '']]) }));
+    }
+    function tDouble() {
+        const r = nz(-4, 4), a = pick([1, 2, 3, -1, -2]); let b, c; do { b = ri(-4, 4); c = ri(-5, 6); } while (a * r * r + b * r + c === 0);
+        return single(ratPiece({ N: [a, b, c], roots: [[r, 2]], Dtex: Math.random() < 0.5 ? '(' + P([1, -r]) + ')^2' : P([1, -2 * r, r * r]) }));
+    }
+    function tTwoPoles(deg) {
+        const r = ri(-4, 2), s = r + ri(1, 4), dN = deg === undefined ? pick([1, 2]) : deg; let N;
+        do { N = randPoly(dN); } while (peval(N, r) === 0 || peval(N, s) === 0);
+        return single(ratPiece({ N, roots: [[r, 1], [s, 1]], Dtex: Math.random() < 0.5 ? P([1, -(r + s), r * s]) : '(' + P([1, -r]) + ')(' + P([1, -s]) + ')' }));
+    }
+    function tCancel() {
+        const r = ri(-4, 3); let s; do { s = ri(-4, 4); } while (s === r); const a = pick([1, 2, 3, -1, -2]); let b; do { b = ri(-4, 4); } while (a * s + b === 0);
+        return single(ratPiece({ N: pmul([1, -r], [a, b]), roots: [[r, 1], [s, 1]], Dtex: P([1, -(r + s), r * s]) }));
+    }
+    function tSquareDiff() {
+        const k = ri(1, 5), p = nz(-4, 4); let q; do { q = ri(-6, 6); } while (Math.abs(q) === Math.abs(p * k));
+        return single(ratPiece({ N: [p, q], roots: [[k, 1], [-k, 1]], Dtex: P([1, 0, -k * k]) }));
+    }
+    function tObliqueLike() {
+        const r = ri(-4, 4); let N; do { N = randPoly(2, pick([1, 2, -1])); } while (peval(N, r) === 0);
+        return single(ratPiece({ N, roots: [[r, 1]], Dtex: P([1, -r]) }));
+    }
+    function tNoRealDen(dN) {
+        const d = pick([1, 2, 3]), e = ri(-3, 3), g = Math.floor(e * e / (4 * d)) + ri(1, 4), a = nz(-4, 4);
+        return single(ratPiece({ N: randPoly(dN === undefined ? 2 : dN, a), D: [d, e, g] }));
+    }
+    const RATIONALS = [tHomog, tDouble, tTwoPoles, tCancel, tSquareDiff, tObliqueLike];
+
+    // ---------- piecewise templates (like the PDF) ----------
+    const OPEN = (a, b) => ']' + a + ';' + b + '[';
+    function pwRationalRadical() {       // rational on the left, x + h - sqrt(...) on the right
+        const r1 = ri(-3, 0), r2 = r1 + ri(1, 2), c = r2 + ri(1, 2), cancel = Math.random() < 0.25, dN = pick([2, 3, 3]);
+        let N; do { N = cancel ? pmul([1, -r1], randPoly(dN - 1)) : randPoly(dN); } while (peval(N, r2) === 0 || (!cancel && peval(N, r1) === 0));
+        const u = nz(-5, 5), v = Math.floor(u * u / 4) + ri(1, 4), h = ri(-3, 3);
+        const left = ratPiece({ N, roots: [[r1, 1], [r2, 1]], hi: c, excl: [r1, r2], Dtex: P([1, -(r1 + r2), r1 * r2]), cond: 'x ' + IN + ' ]' + MI + ';' + c + '[' + tx(' @setminus @{') + r1 + ';' + r2 + tx('@}') });
+        const right = radPiece({ al: 1, be: -1, h, u, v, lo: c, cond: 'x ' + IN + ' [' + c + ';' + PI + '[' });
+        return piecewise([left, right]);
+    }
+    function pwRadicalRational() {       // radical on x<=0, rational on ]0;+inf[ minus the pole
+        const u = -ri(2, 5), al = pick([1, -1]), be = pick([1, -1]), h = ri(-5, 5), r = ri(1, 3), dN = pick([1, 2]);
+        let N; do { N = randPoly(dN); } while (peval(N, r) === 0);
+        const left = radPiece({ al, be, h, u, v: 0, hi: 0, cond: 'x ' + IN + ' ]' + MI + ';0]' });
+        const right = ratPiece({ N, roots: [[r, 1]], lo: 0, excl: [r], Dtex: P([1, -r]), cond: 'x ' + IN + ' ]0;' + r + '[' + CUP + ']' + r + ';' + PI + '[' });
+        return piecewise([left, right]);
+    }
+    function pwRadicalCancel() {         // radical on x<=c, rational with possible cancellation on x>c
+        const c = ri(-2, 2), c2 = c + ri(1, 3), al = pick([1, 1, -1]), be = Math.random() < 0.8 ? al : -al, h = ri(-2, 2), cancel = Math.random() < 0.5, k = ri(1, 3);
+        const Q = randPoly(pick([1, 2])); let N;
+        if (cancel) N = pmul([1, -c], Q); else do { N = randPoly(pick([2, 3])); } while (peval(N, c) === 0);
+        const left = radPiece({ al, be, h, u: -(c + c2), v: c * c2, hi: c, cond: 'x ' + LE + ' ' + c });
+        const right = ratPiece({ N, roots: [[c, 1]], quad: k, lo: c, Dtex: P(pmul([1, -c], [1, 0, k])), cond: 'x ' + GT + ' ' + c });
+        return piecewise([left, right]);
+    }
+    function pwRationalPoly() {          // rational on ]-inf;c[ minus the pole, polynomial / constant on [c;+inf[
+        const r = ri(-3, 2), c = r + ri(1, 3), dN = pick([1, 2, 2]); let N; do { N = randPoly(dN); } while (peval(N, r) === 0);
+        const left = ratPiece({ N, roots: [[r, 1]], hi: c, excl: [r], Dtex: P([1, -r]), cond: 'x ' + IN + ' ]' + MI + ';' + r + '[' + CUP + ']' + r + ';' + c + '[' });
+        const kind = pick(['quad', 'frac', 'frac', 'const']);
+        let right;
+        if (kind === 'const') { const k = ri(-3, 4); right = polyPiece({ coef: [k], lo: c, tex: String(k), cond: 'x ' + IN + ' [' + c + ';' + PI + '[' }); }
+        else if (kind === 'frac') { const k = ri(1, 4); right = polyPiece({ coef: [-1, 2 * k, 0], scale: 0.5, lo: c, tex: T([[-1, F(1, 2) + 'x^2'], [k, 'x']]), cond: 'x ' + IN + ' [' + c + ';' + PI + '[' }); }
+        else { const co = [nz(-2, 2), ri(-4, 4), ri(-4, 4)]; right = polyPiece({ coef: co, lo: c, cond: 'x ' + IN + ' [' + c + ';' + PI + '[' }); }
+        return piecewise([left, right]);
+    }
+    const PIECEWISES = [pwRationalRadical, pwRadicalRational, pwRadicalCancel, pwRationalPoly];
+
+    // ==========================================================
+    // QUESTION GENERATORS  (22 engines: 8 easy, 8 medium, 6 hard)
+    // ==========================================================
+    const GENERATORS = [
+        // ===================== EASY =====================
+        { t: 'easy', c: 'ASYMPTOTES OF A HOMOGRAPHIC FUNCTION', m: () => mcqAsym(tHomog()) },
+        { t: 'easy', c: 'ASYMPTOTES (DOUBLE POLE)', m: () => mcqAsym(tDouble()) },
+        { t: 'easy', c: 'VERTICAL ASYMPTOTE (TRUE / FALSE)', m: () => {
+            const M = tTwoPoles(), good = Math.random() < 0.5, v = claimVA(M, good);
+            return { tf: true, truth: good ? 'TRUE' : 'FALSE', pre: 'Let $f$ be the function defined by:', eq: M.eq, post: TFQ('$x=' + v + '$ is a vertical asymptote to the curve of $f$.') };
+        } },
+        { t: 'easy', c: 'HORIZONTAL ASYMPTOTE (TRUE / FALSE)', m: () => {
+            const M = tNoRealDen(2), good = Math.random() < 0.5, h = claimHA(M, good, null);
+            return { tf: true, truth: good ? 'TRUE' : 'FALSE', pre: 'Let $f$ be the function defined by:', eq: M.eq, post: TFQ('$' + yTex(h) + '$ is a horizontal asymptote to the curve of $f$.') };
+        } },
+        { t: 'easy', c: 'ASYMPTOTES (DEGREE OF NUMERATOR < DEGREE OF DENOMINATOR)', m: () => mcqAsym(tSquareDiff()) },
+        { t: 'easy', c: 'FINDING a FROM A HORIZONTAL ASYMPTOTE', m: () => {
+            const d = pick([1, 2, 3]), e = ri(-3, 3), g = Math.floor(e * e / (4 * d)) + ri(1, 4), h = nz(-4, 4), b = nz(-4, 4), c = ri(-4, 4), a = h * d;
+            return { pre: 'Let $f$ be the function defined by:', eq: tx('f(x)=') + F(T([[1, 'ax^2'], [b, 'x'], [c, '']]), T([[d, 'x^2'], [e, 'x'], [g, '']])),
+                post: Q('If the curve of $f$ admits a horizontal asymptote of equation $y=' + h + '$, then:'),
+                res: { ans: 'a=' + a, fakes: ['a=' + h, 'a=' + d, 'a=' + (h + d), 'a=' + (-a), 'a=' + (a + 1), 'a=' + (a - d)] } };
+        } },
+        { t: 'easy', c: 'FINDING a FROM A VERTICAL ASYMPTOTE', m: () => {
+            const r = nz(-5, 5), p = pick([1, 2, 3]); let q, s; do { q = ri(-4, 4); s = ri(-5, 6); } while (p * r * r + q * r + s === 0);
+            return { pre: 'Let $f$ be the function defined by:', eq: tx('f(x)=') + F(T([[p, 'x^2'], [q, 'x'], [s, '']]), T([[1, 'x'], [1, 'a']])),
+                post: Q('If the curve of $f$ admits a vertical asymptote of equation $x=' + r + '$, then $a=$'),
+                res: { ans: String(-r), fakes: [String(r), String(r + 1), String(-r + 1), String(-r - 1), '0', String(2 * r)] } };
+        } },
+        { t: 'easy', c: 'HORIZONTAL ASYMPTOTE AND DEGREES (TRUE / FALSE)', m: () => {
+            const kind = pick(['A', 'B', 'C', 'D']), r = ri(-3, 3), s = r + ri(1, 3), D = P([1, -(r + s), r * s]);
+            let N, claim, truth;
+            const mkN = deg => { let n; do { n = randPoly(deg); } while (peval(n, r) === 0 || peval(n, s) === 0); return n; };
+            let roots = [[r, 1], [s, 1]];
+            if (kind === 'A') { N = mkN(3); claim = '$(C)$ has no horizontal asymptote.'; truth = true; }
+            else if (kind === 'B') { N = mkN(2); claim = '$(C)$ has no horizontal asymptote.'; truth = false; }
+            else if (kind === 'C') { N = mkN(1); claim = 'The $x$-axis is a horizontal asymptote to $(C)$.'; truth = true; }
+            else { N = mkN(2); claim = 'The $x$-axis is a horizontal asymptote to $(C)$.'; truth = false; }
+            const M = single(ratPiece({ N, roots, Dtex: D }));
+            return { tf: true, truth: truth ? 'TRUE' : 'FALSE', pre: 'Let $(C)$ be the curve of the function $f$ defined by:', eq: M.eq, post: TFQ(claim) };
+        } },
+
+        // ===================== MEDIUM =====================
+        { t: 'medium', c: 'ASYMPTOTES (A COMMON FACTOR CANCELS)', m: () => mcqAsym(tCancel()) },
+        { t: 'medium', c: 'ASYMPTOTES (TWO VERTICAL ASYMPTOTES)', m: () => mcqAsym(tTwoPoles(2)) },
+        { t: 'medium', c: 'VERTICAL ASYMPTOTE OR HOLE (TRUE / FALSE)', m: () => {
+            const M = tCancel(), rem = M.pieces[0].rem[0], mode = pick(['hole', 'va', 'va', 'other']);
+            const v = mode === 'hole' ? rem : mode === 'va' ? M.va[0] : claimVA(M, false);
+            return { tf: true, truth: M.va.includes(v) ? 'TRUE' : 'FALSE', pre: 'Let $f$ be the function defined by:', eq: M.eq, post: TFQ('$x=' + v + '$ is a vertical asymptote to the curve of $f$.') };
+        } },
+        { t: 'medium', c: 'NUMBER OF ASYMPTOTES (TRUE / FALSE)', m: () => {
+            const M = pick(RATIONALS)(), n = countAsym(M), good = Math.random() < 0.5, k = good ? n : pick([n + 1, n + 2, Math.max(0, n - 1)].filter(x => x !== n));
+            return { tf: true, truth: good ? 'TRUE' : 'FALSE', pre: 'Let $f$ be the function defined by:', eq: M.eq,
+                post: TFQ('The curve of $f$ has exactly ' + k + ' asymptote' + (k === 1 ? '' : 's') + ' (horizontal or vertical).') };
+        } },
+        { t: 'medium', c: 'FINDING a OR c FROM A HORIZONTAL ASYMPTOTE', m: () => {
+            if (Math.random() < 0.5) {
+                const c = pick([1, 2, 3]), d = nz(-5, 5), b = ri(-5, 5), h = nz(-4, 4);
+                return { pre: 'Let $f$ be the function defined by:', eq: tx('f(x)=') + F(T([[1, 'ax'], [b, '']]), T([[c, 'x'], [d, '']])),
+                    post: Q('If the curve of $f$ admits a horizontal asymptote of equation $y=' + h + '$, then $a=$'),
+                    res: { ans: String(h * c), fakes: [String(h), String(c), String(h + c), String(-h * c), String(h * c + 1)] } };
+            }
+            const c0 = pick([1, 2, 3, -1, -2]), h = nz(-3, 3), A = h * c0, d = nz(-5, 5), b = ri(-5, 5);
+            return { pre: 'Let $f$ be the function defined by:', eq: tx('f(x)=') + F(T([[A, 'x'], [b, '']]), T([[1, 'cx'], [d, '']])),
+                post: Q('If the curve of $f$ admits a horizontal asymptote of equation $y=' + h + '$, then $c=$'),
+                res: { ans: String(c0), fakes: [String(-c0), String(h), String(A), String(c0 + 1), String(A * h)] } };
+        } },
+        { t: 'medium', c: 'FINDING a FROM A VERTICAL ASYMPTOTE (QUADRATIC DENOMINATOR)', m: () => {
+            let r, m, p, q; do { r = nz(-4, 4); m = nz(-4, 4); p = nz(-3, 3); q = ri(-5, 5); } while (r === -m || p * r + q === 0);
+            const a = m - r, s = -r * m;
+            return { pre: 'Let $f$ be the function defined by:', eq: tx('f(x)=') + F(T([[p, 'x'], [q, '']]), T([[1, 'x^2'], [1, 'ax'], [s, '']])),
+                post: Q('If the curve of $f$ admits a vertical asymptote of equation $x=' + r + '$, then $a=$'),
+                res: { ans: String(a), fakes: [String(-a), String(r - m), String(m + r), String(a + 1), String(a - 1), String(m)] } };
+        } },
+        { t: 'medium', c: 'ASYMPTOTES (RADICAL OVER LINEAR)', m: () => {
+            const r = ri(-4, 4), k = ri(1, 3), B = ri(-4, 4), C = Math.floor(B * B / (4 * k * k)) + ri(1, 4);
+            return mcqAsym(single(radQuot({ k, B, C, r })));
+        } },
+        { t: 'medium', c: 'ASYMPTOTES (LINEAR OVER RADICAL)', m: () => {
+            const k = ri(1, 3), p = pick([1, 2, 3, -1, -2]); let q; do { q = ri(-5, 5); } while (Math.abs(q) === Math.abs(p * k));
+            return mcqAsym(single(quotRad({ p, q, k })));
+        } },
+
+        // ===================== HARD =====================
+        { t: 'hard', c: 'ASYMPTOTES (RATIONAL / RADICAL PIECEWISE)', m: () => mcqAsym(pwRationalRadical()) },
+        { t: 'hard', c: 'ASYMPTOTES (RADICAL / RATIONAL PIECEWISE)', m: () => mcqAsym(pwRadicalRational()) },
+        { t: 'hard', c: 'ASYMPTOTES (RADICAL / RATIONAL WITH CANCELLATION)', m: () => mcqAsym(pwRadicalCancel()) },
+        { t: 'hard', c: 'ASYMPTOTES (RATIONAL / POLYNOMIAL PIECEWISE)', m: () => mcqAsym(pwRationalPoly()) },
+        { t: 'hard', c: 'ASYMPTOTES OF A PIECEWISE FUNCTION (TRUE / FALSE)', m: () => {
+            const M = pick(PIECEWISES)(), good = Math.random() < 0.5, kind = pick(['va', 'ha', 'none', 'count']);
+            let stmt, truth;
+            if (kind === 'va' && (good ? M.va.length : true)) { const v = claimVA(M, good); stmt = '$x=' + v + '$ is a vertical asymptote to the curve of $f$.'; truth = M.va.includes(v); }
+            else if (kind === 'ha') {
+                const side = pick(['pos', 'neg']), h = claimHA(M, good, side), sd = side === 'pos' ? PI : MI;
+                if (h) { stmt = 'The line $' + yTex(h) + '$ is a horizontal asymptote to the curve of $f$ at $' + sd + '$.'; const have = side === 'pos' ? M.hp : M.hn; truth = !!(have && frEq(have, h)); }
+            }
+            if (!stmt && kind === 'none') { const side = pick(['pos', 'neg']), have = side === 'pos' ? M.hp : M.hn; stmt = 'The curve of $f$ has no horizontal asymptote at $' + (side === 'pos' ? PI : MI) + '$.'; truth = !have; }
+            if (!stmt) { const n = countAsym(M), k = good ? n : pick([n + 1, Math.max(0, n - 1), n + 2].filter(x => x !== n)); stmt = 'The curve of $f$ has exactly ' + k + ' asymptote' + (k === 1 ? '' : 's') + ' (horizontal or vertical).'; truth = (k === n); }
+            return { tf: true, truth: truth ? 'TRUE' : 'FALSE', pre: 'Let $f$ be the function defined by:', eq: M.eq, post: TFQ(stmt) };
+        } },
+        { t: 'hard', c: 'FINDING a (NO VERTICAL ASYMPTOTE / RADICAL)', m: () => {
+            if (Math.random() < 0.5) {
+                const r = nz(-4, 4), b = ri(-4, 4), a = -r * r - b * r;
+                return { pre: 'Let $f$ be the function defined by:', eq: tx('f(x)=') + F(T([[1, 'x^2'], [b, 'x'], [1, 'a']]), P([1, -r])),
+                    post: Q('If the curve of $f$ has no vertical asymptote, then $a=$'),
+                    res: { ans: String(a), fakes: [String(r * r), String(-a), String(b * r), String(-r * r), String(a + 1), String(r)] } };
+            }
+            const h = pick([2, 3, 4]), r = ri(-4, 4), B = ri(-3, 3), a = h * h, C = Math.floor(B * B / (4 * a)) + ri(1, 4);
+            return { pre: 'Let $f$ be the function defined by:', eq: tx('f(x)=') + F(SQ(T([[1, 'ax^2'], [B, 'x'], [C, '']])), P([1, -r])),
+                post: Q('If the curve of $f$ admits a horizontal asymptote of equation $y=' + h + '$ at $' + PI + '$, then $a=$'),
+                res: { ans: String(a), fakes: [String(h), String(2 * h), String(a + 1), String(-a), String(h + 1)] } };
+        } }
+    ];
+
+    function buildProblem(g) {
+        const o = g.m();
+        return {
+            tier: g.t, categoryType: g.c, type: o.tf ? 'TF' : 'MCQ',
+            prompt: o.pre || '', svg: '', equation: o.eq || '', post: o.post || '',
+            pool: o.tf ? [] : buildChoices(o.res.ans, o.res.fakes),
+            val: null, solution: o.tf ? o.truth : o.res.ans
+        };
+    }
+
+    function generateEntireQuizSuite() {
+        generatedSuite = [];
+        ['easy', 'medium', 'hard'].forEach(tier => {
+            const gens = shuffleArray(GENERATORS.filter(g => g.t === tier)).slice(0, APP_LIMITS.tiers[tier]);
+            gens.forEach(g => generatedSuite.push(buildProblem(g)));
+        });
+    }
+
+    // ========================================== -->
+    // INTERFACE VIEW SYNCHRONIZER                -->
+    // ========================================== -->
+
+
+    function parseNumber(s) {
+        s = String(s).trim().replace(/\u2212/g, '-').replace(',', '.');
+        const m = s.match(/^(-?\d+(?:\.\d+)?)\s*\/\s*(-?\d+(?:\.\d+)?)$/);
+        if (m) return parseFloat(m[1]) / parseFloat(m[2]);
+        return /^-?(\d+\.?\d*|\.\d+)$/.test(s) ? parseFloat(s) : NaN;
+    }
+    function isAnswerCorrect(problem, raw) {
+        if (raw === undefined || raw === null || raw === '') return false;
+        if (problem.type === 'NUM') return Math.abs(parseNumber(raw) - problem.val) < 1e-6;
+        return String(raw).trim().toUpperCase() === String(problem.solution).trim().toUpperCase();
+    }
+    const escapeHtml = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+    // KaTeX re-render with every delimiter (inline $...$ included)
+    const KATEX_OPTS = {
+        delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false },
+            { left: '\\[', right: '\\]', display: true }
+        ],
+        throwOnError: false
+    };
+    function renderMath(el) { window.renderMathInElement(el, KATEX_OPTS); }
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+        document.getElementById('txt-tier-badge').innerText = activeProblem.tier + " tier";
+
+        const postBlock = activeProblem.post ? `<div style="font-size:1.1rem; font-weight:600; margin-top:6px;">${activeProblem.post}</div>` : "";
+        document.getElementById('math-prompt-container').innerHTML = `
+            <div style="font-size:1.05rem; line-height:1.5; color: var(--text-main);">
+                ${activeProblem.prompt}
+                ${activeProblem.equation ? '<div style="font-size:1.2rem; color: var(--primary); margin: 10px 0; text-align:center; overflow-x:auto;">$$' + activeProblem.equation + '$$</div>' : ''}
+                ${postBlock}
+            </div>
+        `;
+
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+        document.getElementById('box-num').classList.add('hidden');
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+
+            activeProblem.pool.forEach(choice => {
+                const buttonElement = document.createElement('button');
+                buttonElement.className = `opt-btn p-3 text-center transition flex justify-center items-center ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+                buttonElement.style.minHeight = "48px";
+                buttonElement.style.fontSize = "1.2rem";
+                buttonElement.innerHTML = BS + "(" + choice + BS + ")";      // choices are stored as LaTeX
+                buttonElement.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    buttonElement.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(buttonElement);
+            });
+            if (window.katex && typeof window.renderMathInElement === 'function') {
+                renderMath(mcqContainer);
+            }
+        } else if (activeProblem.type === 'NUM') {
+            document.getElementById('box-num').classList.remove('hidden');
+            const numInput = document.getElementById('num-input');
+            numInput.value = storedResponses[traversalIndex] || '';
+            numInput.oninput = () => {
+                const v = numInput.value.trim();
+                if (v) storedResponses[traversalIndex] = v; else delete storedResponses[traversalIndex];
+                buildShortcutsGridMatrix();
+            };
+        } else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        }
+
+        buildShortcutsGridMatrix();
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            renderMath(document.getElementById('math-prompt-container'));
+        }
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; buildShortcutsGridMatrix(); }
+
+    function buildShortcutsGridMatrix() {
+        const grid = document.getElementById('navigation-shortcut-grid');
+        grid.innerHTML = "";
+        for (let i = 0; i < APP_LIMITS.totalItems; i++) {
+            const b = document.createElement('button');
+            b.innerText = i + 1;
+            let bgStyle = "bg-slate-100 text-slate-600 border border-slate-300";
+            if (traversalIndex === i) bgStyle = "bg-sky-600 text-white font-bold ring-2 ring-sky-300";
+            else if (storedResponses[i]) bgStyle = "bg-emerald-100 text-emerald-700 border border-emerald-400 font-semibold";
+
+            b.className = `p-2 text-xs text-center rounded-lg transition cursor-pointer min-w-[32px] ${bgStyle}`;
+            b.onclick = () => { traversalIndex = i; synchroniseQuestionIndex(); };
+            grid.appendChild(b);
+        }
+    }
+
+    // ========================================== -->
+    // TIMERS, REPORT, PDF EXPORT & EVENT LISTENERS-->
+    // ========================================== -->
+
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            let m = Math.floor(timeTrackingRemaining / 60);
+            let s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            let dynamicPercentage = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${dynamicPercentage}%`;
+
+            if (dynamicPercentage < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (dynamicPercentage < 50) progress.style.backgroundColor = '#d97706';
+            else progress.style.backgroundColor = '';
+        }
+        pulse();
+        clearInterval(schedulerHandle);
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function sendGradesToTeacher(name, classroom, score, duration, quizTitle) {
+        const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+        fetch(url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name,
+                classroom: classroom,
+                score: score,
+                duration: duration, // start time string, logged into Column E of the sheet
+                quizTitle: quizTitle,
+                date: new Date().toLocaleString()
+            })
+        }).catch(err => console.log("Network trace: Client sync fallback triggered."));
+    }
+
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limit reached. Compiling final performance report now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+        // plain words are shown as text, everything else is LaTeX rendered by KaTeX
+        const isPlain = s => /^(TRUE|FALSE|UNANSWERED)$/i.test(s);
+        const showAns = s => isPlain(String(s)) ? String(s) : (BS + "(" + s + BS + ")");
+        const showUser = (p, s) => p.type === 'NUM' ? escapeHtml(s) : showAns(s);
+        const showKey = p => p.type === 'NUM' ? (BS + "(" + frac(Math.round(p.val * 4), 4) + BS + ")") : showAns(p.solution);
+
+        generatedSuite.forEach((problem, index) => {
+            const userRaw = storedResponses[index];
+            const outcomeState = isAnswerCorrect(problem, userRaw);
+            if (outcomeState) tallyCorrect++;
+
+            const answerColor = outcomeState ? 'var(--success)' : 'var(--error)';
+            const answerBlock =
+                '<p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:' + answerColor + '; font-size:1.05rem;">' + (userRaw ? showUser(problem, userRaw) : 'Unanswered') + '</span></p>' +
+                '<p style="margin:0; color: var(--text-muted);"><strong>Correct Verification Key:</strong> <span style="font-weight:600; color: var(--text-main); font-size:1.05rem;">' + showKey(problem) + '</span></p>';
+
+            const itemScoreBadge = outcomeState ?
+                `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>` :
+                `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+
+            compilationHtml += `
+            <div class="report-item" style="position: relative; overflow: auto; background:#ffffff; padding:16px; margin-bottom:12px; border-radius:12px; border-left: 5px solid ${outcomeState ? 'var(--success)' : 'var(--error)'};">
+                ${itemScoreBadge}
+                <div style="font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+                    Question ${index + 1} &middot; Type: <span style="color: var(--primary);">${problem.categoryType.replace(/_/g, ' ')}</span>
+                </div>
+                <div style="font-size: 0.95rem; line-height: 1.5; color: var(--text-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+                    ${problem.prompt}
+                    ${problem.equation ? '<div style="text-align:center; font-size:1.1rem; margin:8px 0; overflow-x:auto;">$$' + problem.equation + '$$</div>' : ''}
+                    ${problem.post ? '<div style="font-weight:600;">' + problem.post + '</div>' : ''}
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; padding-left: 4px;">
+                    ${answerBlock}
+                </div>
+            </div>
+            `;
+        });
+
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = document.getElementById('student-name').value.trim();
+        const sectionTitle = document.getElementById('student-section').value.trim();
+
+        const headerMetaHtml = `
+        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 0.95rem; line-height:1.4;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                <div><strong>Student Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+                <div><strong>Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem;">
+                <div><strong>Quiz Assessment:</strong> <span style="color: #475569; font-weight: 700;">Function asymptotes (Grade 11)</span></div>
+                <div><strong>Quiz Start Timestamp:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+            </div>
+        </div>
+        `;
+
+        document.getElementById('report-injection-zone').innerHTML = headerMetaHtml + compilationHtml;
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            renderMath(document.getElementById('report-injection-zone'));
+        }
+
+        sendGradesToTeacher(
+            userTitle,
+            sectionTitle,
+            `${tallyCorrect} / ${APP_LIMITS.totalItems}`,
+            formattedQuizStartTimeStamp,
+            "Function asymptotes"
+        );
+    }
+
+    document.getElementById('action-start').onclick = () => {
+        if (!document.getElementById('student-name').value.trim() || !document.getElementById('student-section').value.trim()) {
+            alert("Please complete credential parameters to unlock.");
+            return;
+        }
+        const now = new Date();
+        formattedQuizStartTimeStamp = now.toLocaleDateString() + " @ " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Finalize and compile report sheets?")) compileFinalPerformanceReport();
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) {
+            traversalIndex--;
+            synchroniseQuestionIndex();
+        }
+    };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+    // Print-optimised styles (fixes the flexbox page-clipping bug when saving the report as PDF)
+    if (!document.getElementById('print-fix-styles')) {
+        const style = document.createElement('style');
+        style.id = 'print-fix-styles';
+        style.innerHTML = `
+            @media print {
+                html, body { display: block !important; height: auto !important; overflow: visible !important; background: white !important; }
+                #stage-summary { display: block !important; max-width: 100% !important; width: 100% !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; }
+                footer, #stage-auth, #stage-engine, button, .bg-gradient-to-r button { display: none !important; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // PDF buttons open the print dialog (Save as PDF)
+    document.querySelectorAll('button').forEach(button => {
+        if (button.textContent.includes('Save as PDF') || button.textContent.includes('Download as PDF')) {
+            button.removeAttribute('onclick');
+            button.addEventListener('click', (e) => { e.preventDefault(); window.print(); });
+        }
+    });
+</script>
+</body>
+</html>

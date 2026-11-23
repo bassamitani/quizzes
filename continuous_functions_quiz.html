@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continuous functions - Grade 11</title>
+    <!-- Tailwind CSS Styling Framework CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX Mathematical Typography Notation Engine Setup CDN -->                  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7; --primary-hover: #0369a1; --bg-main: #f8fafc;
+            --bg-surface: #ffffff; --border-color: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #16a34a; --error: #dc2626;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; }
+        .hidden { display: none !important; }
+        .opt-btn {
+            background-color: var(--bg-surface); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 1.05rem;
+        }
+        .opt-btn:hover { border-color: var(--primary); background-color: #f0f9ff; }
+        .opt-btn.active { border-color: var(--primary); background-color: #e0f2fe; font-weight: 600; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+        .report-item { background: var(--bg-surface); border-radius: 10px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #cbd5e1; }
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+            .katex { font-size: 1.12em; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Credentials Authentication Entry Stage -->
+    <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
+        <h2 class="text-2xl font-extrabold text-slate-800 text-center tracking-tight mb-2">Continuous functions</h2>
+        <p class="text-sm text-slate-500 text-center mb-8">Grade 11 &middot; 20 questions &middot; 25 minutes</p>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Student Full Name</label>
+                <input type="text" id="student-name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Assigned Class Section</label>
+                <input type="text" id="student-section" placeholder="Grade 11-A" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <button id="action-start" class="w-full bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm tracking-wider uppercase mt-4">Start Quiz</button>
+        </div>
+    </div>
+
+    <!-- FIXED: Active Test Core Engine Integrated Inside One Single Unified Main Box Header Layout -->
+    <div id="stage-engine" class="hidden max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+        <div class="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between min-h-[550px]">
+
+            <!-- HEADER INFO BAR: Time tracking and Question counts grouped inside the single main container block -->
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-5 flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Question Tracker &middot; <span id="idx-current">0</span> / <span id="idx-total">0</span></span>
+                    <span id="txt-tier-badge" class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase bg-slate-100 text-slate-600">Tier</span>
+                </div>
+
+                <!-- TIMER COMPONENT: Grouped tightly inside the primary top header control area -->
+                <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
+                    <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">25:00</span>
+                    <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                        <div id="meter-progress" class="bg-sky-400 h-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Content Presentation Window -->
+            <div class="flex-grow flex flex-col justify-center">
+                <div id="math-prompt-container" class="mb-6"></div>
+
+                <div id="interactive-zone" class="w-full flex flex-col items-center justify-center mb-6">
+                    <div id="box-mcq" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"></div>
+                    <div id="box-tf" class="hidden flex gap-4 w-full justify-center">
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="TRUE">TRUE</button>
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="FALSE">FALSE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Layout Shortcut Matrix Navigation Row -->
+            <div class="border-t border-slate-100 pt-4 mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <!-- Grid Shortcuts inline at the bottom left -->
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden md:block">Overview:</span>
+                    <div id="navigation-shortcut-grid" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="flex gap-3 justify-end w-full sm:w-auto">
+                    <button id="action-back" class="px-5 py-2 border border-slate-300 rounded-xl font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 text-sm transition cursor-pointer">&larr; Back</button>
+                    <button id="action-forward" class="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 text-sm shadow transition cursor-pointer">Next &rarr;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Final Diagnostic Summary Sheet Layout -->
+    <div id="stage-summary" class="hidden max-w-3xl mx-auto w-full px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 p-6 text-white flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">Performance Summary Report</h1>
+                    <p class="text-sky-100 text-xs mt-1">Continuous functions &middot; Grade 11</p>
+                </div>
+                <button onclick="triggerDirectPdfDownload()" class="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition cursor-pointer shadow-sm border border-white/10 text-white">Download as PDF</button>
+            </div>
+
+            <div class="grid grid-cols-3 text-center border-b border-slate-100 bg-slate-50 py-4">
+                <div>
+                    <div id="m-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div id="m-incorrect" class="text-2xl font-extrabold text-rose-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Incorrect</div>
+                </div>
+                <div>
+                    <div id="m-percent" class="text-2xl font-extrabold text-sky-600">0%</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score Rate</div>
+                </div>
+            </div>
+
+                    <!-- Dynamic Question Injections -->
+                        <div id="report-injection-zone" class="p-6 space-y-4 bg-slate-50/50"></div>
+                </div>
+
+                <!-- FIXED: Repositioned standalone PDF action handler bar to the absolute bottom of the page structure -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
+                        <button id="action-pdf-bottom" onclick="triggerDirectPdfDownload()" class="flex-grow bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
+                        <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
+                </div>
+        </div>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
+        &copy; 2026 Continuous Functions Assessment Suite &bull; Academic Diagnostic Engine
+    </footer>
+
+<script>
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 1500, // 25 minutes
+        tiers: { easy: 7, medium: 7, hard: 6 }
+    };
+
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+    let formattedQuizStartTimeStamp = "";
+
+    // ---------- helpers (write LaTeX with @ instead of a backslash) ----------
+    const BS = String.fromCharCode(92);
+    function tx(s) { return s.split('@').join(BS); }
+    function shuffleArray(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+        return a;
+    }
+    const ri = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+    const pick = arr => arr[ri(0, arr.length - 1)];
+    const sg = () => Math.random() < 0.5 ? 1 : -1;
+    const nz = (a, b) => { let v = 0; while (!v) v = ri(a, b); return v; };
+    const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+    const PI = tx('+@infty'), MI = tx('-@infty');
+    const LE = tx('@le'), GE = tx('@ge'), NE = tx('@ne'), IN = tx('@in'), LT = tx('@lt'), GT = tx('@gt');
+    const CUP = tx(' @cup ');
+    const ALLR = ']' + MI + ';' + PI + '[';
+
+    // reduced fraction / integer as LaTeX
+    function frac(n, d) {
+        const g = gcd(n, d) || 1; n /= g; d /= g;
+        if (d < 0) { n = -n; d = -d; }
+        return d === 1 ? String(n) : (n < 0 ? '-' : '') + tx('@frac{' + Math.abs(n) + '}{' + d + '}');
+    }
+    // terms: [[coef, body], ...] -> "3x^2 - x + 5"
+    function T(ts) {
+        let s = '';
+        ts.forEach(([a, b]) => {
+            if (!a) return;
+            const m = Math.abs(a), c = (m === 1 && b) ? '' : m;
+            s += (s === '' ? (a < 0 ? '-' : '') : (a < 0 ? ' - ' : ' + ')) + c + b;
+        });
+        return s || '0';
+    }
+    // polynomial in x, coefficients from the highest degree down
+    function P(c) { const n = c.length - 1; return T(c.map((a, i) => { const d = n - i; return [a, d > 1 ? 'x^' + d : d === 1 ? 'x' : '']; })); }
+    const F = (n, d) => tx('@frac{' + n + '}{' + d + '}');
+    const SQ = body => tx('@sqrt{') + body + '}';
+    // set "R minus {a ; b}" and interval helpers
+    const setR = v => tx('@mathbb{R} @setminus @{') + [...new Set(v)].sort((a, b) => a - b).join(' ; ') + tx('@}');
+    // piecewise function  f(x) = { ... }   rows = [[expression, condition], ...]
+    const CASE = rows => tx('f(x)=@begin{cases} ') +
+        rows.map(r => tx('@displaystyle ') + r[0] + tx(' & @text{if } ') + r[1]).join(tx(' @@[6pt] ')) + tx(' @end{cases}');
+    const DEF = 'Let $f$ be the function defined by:';
+    const TFQ = s => 'True or False: ' + tx(s);
+    const Q = s => tx(s);
+
+    // numeric answer + plausible wrong options
+    const NUM = (n, d = 1) => ({ ans: frac(n, d),
+        fakes: [frac(-n, d), frac(2 * n, d), frac(n, 2 * d), frac(n + 1, d), frac(n - 1, d), n ? frac(d, n) : '1', '0', '1', frac(n + 2, d)] });
+
+    function buildChoices(correct, fakes) {
+        const o = [correct];
+        shuffleArray(fakes).forEach(f => { if (o.length < 4 && f != null && !o.includes(f)) o.push(f); });
+        let g = 0;
+        while (o.length < 4 && g++ < 80) { const t = String(ri(-12, 12)); if (!o.includes(t)) o.push(t); }
+        return shuffleArray(o);
+    }
+
+    // ==========================================================
+    // QUESTION GENERATORS  (22 engines: 8 easy, 8 medium, 6 hard)
+    // Every engine draws NEW numbers each time and computes the exact answer.
+    // ==========================================================
+    const GENERATORS = [
+        // ===================== EASY =====================
+        // PDF q1 : two pieces, continuous over R ?
+        { t: 'easy', c: 'CONTINUITY OVER R (TWO PIECES)', m: () => {
+            const k = ri(1, 3), c = ri(1, 5), good = Math.random() < 0.5;
+            let m = k * k - c + k;                       // right piece  m - x  meets  x^2 - c  at x = k
+            if (!good) m += pick([-3, -2, -1, 1, 2, 3]);
+            return { tf: true, truth: good ? 'TRUE' : 'FALSE', pre: DEF,
+                eq: CASE([[P([1, 0, -c]), 'x ' + LE + ' ' + k], [T([[m, ''], [-1, 'x']]), 'x ' + GT + ' ' + k]]),
+                post: TFQ('$f$ is continuous over $@mathbb{R}$.') };
+        } },
+        // PDF q2 : three linear pieces
+        { t: 'easy', c: 'CONTINUITY OVER R (THREE PIECES)', m: () => {
+            const k = ri(1, 2), al = -ri(1, 3), ga = -ri(1, 4), good = Math.random() < 0.4;
+            let be = -k + al * k, de = k - ga * k;       // both junctions continuous
+            if (!good) { const e = pick([-2, -1, 1, 2]); if (Math.random() < 0.5) be += e; else de += e; }
+            return { tf: true, truth: good ? 'TRUE' : 'FALSE', pre: DEF,
+                eq: CASE([[T([[al, 'x'], [be, '']]), 'x ' + LE + ' ' + (-k)],
+                          ['x', (-k) + ' ' + LT + ' x ' + LE + ' ' + k],
+                          [T([[ga, 'x'], [de, '']]), 'x ' + GT + ' ' + k]]),
+                post: TFQ('$f$ is continuous over $@mathbb{R}$.') };
+        } },
+        // PDF q8 : find m
+        { t: 'easy', c: 'FINDING A PARAMETER (m)', m: () => {
+            const c = pick([0, 0, 1, 2]), b = ri(-4, 4), q = pick([1, 2, 4]), p = ri(1, 9);
+            const n = c + p, d = c + q;                   // right limit (c+p)/(c+q)
+            return { pre: DEF,
+                eq: CASE([[T([[1, 'x^2'], [b, 'x'], [1, 'm']]), 'x ' + LE + ' ' + c], [F('x + ' + p, 'x + ' + q), 'x ' + GT + ' ' + c]]),
+                post: Q('If $f$ is continuous at $x=' + c + '$, then $m=$'),
+                res: NUM(n - (c * c + b * c) * d, d) };
+        } },
+        // PDF q9 : removable discontinuity, find a
+        { t: 'easy', c: 'FINDING A PARAMETER (FACTORING)', m: () => {
+            const c = pick([-3, -2, -1, 1, 2, 3, 4]), s = ri(2, 8);
+            return { pre: 'Let $f$ be the function defined as:',
+                eq: CASE([[F(P([1, s - c, -c * s]), P([1, -c])), 'x ' + NE + ' ' + c], ['a', 'x = ' + c]]),
+                post: Q('If $f$ is continuous at $x=' + c + '$, then $a=$'), res: NUM(c + s) };
+        } },
+        // PDF q11 : domain of a rational function
+        { t: 'easy', c: 'DOMAIN OF A RATIONAL FUNCTION', m: () => {
+            const n = ri(1, 4), num = P([1, 0, -n * n]);
+            const base = { pre: 'Let $f$ be the function defined by:', post: Q('The domain of definition of $f$ is:') };
+            if (Math.random() < 0.5) {                    // denominator never zero
+                const b = ri(-3, 3), c = Math.ceil(b * b / 4) + ri(1, 3);
+                return { ...base, eq: tx('f(x)=') + F(num, P([1, -b, c])),
+                    res: { ans: ALLR, fakes: [']-' + n + ';' + n + '[', ']' + MI + ';-' + n + '[' + CUP + ']' + n + ';' + PI + '[', setR([-n, n])] } };
+            }
+            let r1, r2;
+            do { r1 = ri(-4, 3); r2 = r1 + ri(1, 4); } while (r1 + r2 === 0 || Math.abs(r1) === n || Math.abs(r2) === n);
+            return { ...base, eq: tx('f(x)=') + F(num, P([1, -(r1 + r2), r1 * r2])),
+                res: { ans: setR([r1, r2]), fakes: [ALLR, ']' + MI + ';' + r1 + '[' + CUP + ']' + r2 + ';' + PI + '[', ']' + r1 + ';' + r2 + '[', setR([-r1, -r2]), setR([r1])] } };
+        } },
+        // PDF q6 : (dis)continuity at 0 with a rational piece
+        { t: 'easy', c: 'CONTINUITY AT A POINT (TWO RATIONAL PIECES)', m: () => {
+            const k = pick([2, 3]), a = nz(-12, 12), g = gcd(Math.abs(a), k * k);
+            const n = a / g, d = k * k / g, t = ri(1, 3), p = ri(1, 5), r = ri(1, 4);
+            let q = n * t; const s = d * t;               // right limit q/s equals left value a/k^2 when q = n*t
+            if (Math.random() < 0.5) q += pick([-3, -2, -1, 1, 2, 3]);
+            const cont = (q * d === n * s), word = pick(['continuous', 'discontinuous']);
+            const truth = word === 'continuous' ? cont : !cont;
+            return { tf: true, truth: truth ? 'TRUE' : 'FALSE', pre: DEF,
+                eq: CASE([[F(P([1, -a]), P([1, 0, -k * k])), 'x ' + IN + ' [' + (-(k + 2)) + ';' + (-k) + '[' + CUP + ']' + (-k) + ';0]'],
+                          [F(P([p, 0, q]), P([r, 0, s])), 'x ' + IN + ' ]0;' + PI + '[']]),
+                post: TFQ('$f$ is ' + word + ' at $x=0$.') };
+        } },
+        // new : linear piece / quadratic piece, find a
+        { t: 'easy', c: 'FINDING A PARAMETER (a)', m: () => {
+            const c = pick([-2, -1, 1, 2, 3]), a = nz(-6, 6), b = ri(-6, 6), p = pick([-2, -1, 1, 2, 3]);
+            const q = a * c + b - p * c * c;
+            return { pre: DEF,
+                eq: CASE([[T([[1, 'ax'], [b, '']]), 'x ' + LE + ' ' + c], [T([[p, 'x^2'], [q, '']]), 'x ' + GT + ' ' + c]]),
+                post: Q('If $f$ is continuous at $x=' + c + '$, then $a=$'), res: NUM(a) };
+        } },
+        // new : value given at the point, TRUE / FALSE
+        { t: 'easy', c: 'CONTINUITY AT A POINT (VALUE GIVEN)', m: () => {
+            const c = pick([-2, -1, 1, 2, 3]), cube = Math.random() < 0.5;
+            const lim = cube ? 3 * c * c : 2 * c, good = Math.random() < 0.5;
+            const k = good ? lim : lim + nz(-4, 4);
+            return { tf: true, truth: good ? 'TRUE' : 'FALSE', pre: DEF,
+                eq: CASE([[F(cube ? P([1, 0, 0, -c * c * c]) : P([1, 0, -c * c]), P([1, -c])), 'x ' + NE + ' ' + c], [String(k), 'x = ' + c]]),
+                post: TFQ('$f$ is continuous at $x=' + c + '$.') };
+        } },
+
+        // ===================== MEDIUM =====================
+        // PDF q3 : rational piece whose denominator may vanish
+        { t: 'medium', c: 'CONTINUITY OVER R (RATIONAL PIECE)', m: () => {
+            const k = ri(2, 3), mode = pick(['good', 'good', 'bad', 'trap']), A = -ri(1, 3), V = k * k + k;
+            let d, B;
+            if (mode === 'trap') { const mm = k + ri(1, 2); d = mm * mm; B = ri(-4, 6); }      // denominator vanishes inside x <= -k
+            else { const e = ri(1, 2); d = k * k - e; B = V * e + A * k; if (mode === 'bad') B += nz(-2, 2); }
+            return { tf: true, truth: mode === 'good' ? 'TRUE' : 'FALSE', pre: DEF,
+                eq: CASE([[F(T([[A, 'x'], [B, '']]), P([1, 0, -d])), 'x ' + LE + ' ' + (-k)], [P([1, -1, 0]), 'x ' + GT + ' ' + (-k)]]),
+                post: TFQ('$f$ is continuous over $@mathbb{R}$.') };
+        } },
+        // PDF q4 : continuity at a point, radical on the right
+        { t: 'medium', c: 'CONTINUITY AT A POINT (RADICAL ON THE RIGHT)', m: () => {
+            const t = pick([2, 2, 3]), s = ri(1, 3), b = ri(-5, -1), w = ri(1, 4), u = ri(2, 6), v = w * w - t * t - u * t;
+            const al = ri(1, 4), Rv = ri(-6, 3), be = Rv - al * t + w, good = Math.random() < 0.5;
+            let c = Rv * (t + s) - t * t - b * t;
+            if (!good) c += nz(-4, 4);
+            return { tf: true, truth: good ? 'TRUE' : 'FALSE', pre: DEF,
+                eq: CASE([[F(P([1, b, c]), P([1, s])), 'x ' + LE + ' ' + t + tx(',@; x ') + NE + ' ' + (-s)],
+                          [T([[al, 'x'], [be, '']]) + ' - ' + SQ(P([1, u, v])), 'x ' + GT + ' ' + t]]),
+                post: TFQ('$f$ is continuous at $x=' + t + '$.') };
+        } },
+        // PDF q5 : rational on the left, radical on the right
+        { t: 'medium', c: 'CONTINUITY AT A POINT (RATIONAL / RADICAL)', m: () => {
+            const t = pick([2, 2, 3]), w = ri(1, 4), a = ri(-3, 3), p = ri(-4, 4), Rv = t + a - w, good = Math.random() < 0.5;
+            let q = Rv * (t * t - t) - t * t * t - p * t;
+            if (!good) q += nz(-4, 4);
+            const r = w * w - t * t + 2 * t;
+            return { tf: true, truth: good ? 'TRUE' : 'FALSE', pre: DEF,
+                eq: CASE([[F(P([1, 0, p, q]), P([1, -1, 0])), 'x ' + IN + ' ]' + MI + ';' + t + '[' + tx(' @setminus @{0;1@}')],
+                          [T([[1, 'x'], [a, '']]) + ' - ' + SQ(P([1, -2, r])), 'x ' + IN + ' [' + t + ';' + PI + '[']]),
+                post: TFQ('$f$ is continuous at $x=' + t + '$.') };
+        } },
+        // PDF q7 : (dis)continuity at the junction, quadratic on the right
+        { t: 'medium', c: 'CONTINUITY AT A POINT (RATIONAL / QUADRATIC)', m: () => {
+            const t = pick([4, 6]), s = t - pick([1, 2]), a = ri(2, 5), b = -ri(10, 30), k = ri(1, 4);
+            const Rv = t * (k - t / 2), good = Math.random() < 0.5;
+            let c = Rv * (t - s) - a * t * t - b * t;
+            if (!good) c += nz(-3, 3);
+            const cont = (a * t * t + b * t + c === Rv * (t - s)), word = pick(['continuous', 'discontinuous']);
+            const truth = word === 'continuous' ? cont : !cont;
+            return { tf: true, truth: truth ? 'TRUE' : 'FALSE', pre: DEF,
+                eq: CASE([[F(P([a, b, c]), P([1, -s])), 'x ' + IN + ' ]' + MI + ';' + s + '[' + CUP + ']' + s + ';' + t + '['],
+                          [T([[-1, F(1, 2) + 'x^2'], [k, 'x']]), 'x ' + IN + ' [' + t + ';' + PI + '[']]),
+                post: TFQ('$f$ is ' + word + ' at $x=' + t + '$.') };
+        } },
+        // PDF q12 : find a so that f is continuous at a point
+        { t: 'medium', c: 'FINDING A PARAMETER (RATIONAL / QUADRATIC)', m: () => {
+            const t = pick([2, 3]), q = ri(1, 4), p = pick([1, 2, 3, 4].filter(v => v !== t));
+            let r = ri(1, 12); if (r === t * t) r++;
+            return { pre: 'Determine the real number $a$ so that the function $f$ is continuous at $x=' + t + '$:',
+                eq: CASE([[F(P([1, -p]), P([1, q])), 'x ' + LE + ' ' + t + tx(',@; x ') + NE + ' ' + (-q)], ['a' + tx('@left(') + P([1, 0, -r]) + tx('@right)'), 'x ' + GT + ' ' + t]]),
+                post: '', res: NUM(t - p, (t + q) * (t * t - r)) };
+        } },
+        // PDF q10 : parameter so that the domain is R
+        { t: 'medium', c: 'DOMAIN IS R (OPEN INTERVAL FOR a)', m: () => {
+            if (Math.random() < 0.5) {
+                const k = ri(1, 4);
+                return { pre: 'Let $f$ be the function defined as:', eq: tx('f(x)=') + F(1, T([[1, 'x^2'], [-1, 'ax'], [k * k, '']])),
+                    post: Q('If the domain of definition of $f$ is $@mathbb{R}$, then the set of values of $a$ is:'),
+                    res: { ans: ']-' + 2 * k + ';' + 2 * k + '[', fakes: [']-' + k + ';' + k + '[', '[-' + 2 * k + ';' + 2 * k + ']', ']' + MI + ';-' + 2 * k + '[' + CUP + ']' + 2 * k + ';' + PI + '[', ']-' + 4 * k + ';' + 4 * k + '['] } };
+            }
+            const be = nz(-4, 4), h = be * be;
+            return { pre: 'Let $f$ be the function defined as:', eq: tx('f(x)=') + F(1, T([[1, 'x^2'], [2 * be, 'x'], [1, 'a']])),
+                post: Q('If the domain of definition of $f$ is $@mathbb{R}$, then the set of values of $a$ is:'),
+                res: { ans: ']' + h + ';' + PI + '[', fakes: ['[' + h + ';' + PI + '[', ']' + MI + ';' + h + '[', ']' + (-h) + ';' + PI + '[', ']' + Math.abs(be) + ';' + PI + '['] } };
+        } },
+        // new : radical over linear, domain
+        { t: 'medium', c: 'DOMAIN OF A RADICAL QUOTIENT', m: () => {
+            if (Math.random() < 0.5) {
+                const p = ri(-3, 2), q = p + ri(1, 4);
+                return { pre: 'Let $f$ be the function defined as:', eq: tx('f(x)=') + F(SQ(P([1, -p])), P([1, -q])),
+                    post: Q('The domain of definition of $f$ (where $f$ is continuous) is:'),
+                    res: { ans: '[' + p + ';' + PI + '[' + tx(' @setminus @{') + q + tx('@}'),
+                           fakes: [']' + p + ';' + PI + '[' + tx(' @setminus @{') + q + tx('@}'), '[' + p + ';' + PI + '[', setR([q]), ']' + MI + ';' + p + ']' + tx(' @setminus @{') + q + tx('@}')] } };
+            }
+            const p = ri(0, 4), q = p - ri(1, 4);
+            return { pre: 'Let $f$ be the function defined as:', eq: tx('f(x)=') + F(SQ(P([-1, p])), P([1, -q])),
+                post: Q('The domain of definition of $f$ (where $f$ is continuous) is:'),
+                res: { ans: ']' + MI + ';' + p + ']' + tx(' @setminus @{') + q + tx('@}'),
+                       fakes: [']' + MI + ';' + p + '[' + tx(' @setminus @{') + q + tx('@}'), ']' + MI + ';' + p + ']', setR([q]), '[' + p + ';' + PI + '[' + tx(' @setminus @{') + q + tx('@}')] } };
+        } },
+        // new : linear piece / radical piece, find a
+        { t: 'medium', c: 'FINDING A PARAMETER (RADICAL PIECE)', m: () => {
+            let t, a, q, w;
+            do { t = ri(1, 4); a = nz(-3, 3); q = ri(-4, 6); w = a * t + q; } while (w < 1 || w > 12);
+            return { pre: DEF,
+                eq: CASE([[T([[1, 'ax'], [q, '']]), 'x ' + LE + ' ' + t], [SQ(P([1, 0, w * w - t * t])), 'x ' + GT + ' ' + t]]),
+                post: Q('If $f$ is continuous at $x=' + t + '$, then $a=$'), res: NUM(a) };
+        } },
+
+        // ===================== HARD =====================
+        // PDF q13 : domain of 1 / f
+        { t: 'hard', c: 'DOMAIN OF 1 / f', m: () => {
+            const t = pick([4, 6]), s = t - pick([1, 2]), k = t / 2 + pick([0, 0, 1]), root = Math.random() < 0.4;
+            let a, b, c, r1 = null;
+            if (!root) { a = ri(1, 4); b = ri(-12, 12); c = Math.floor(b * b / (4 * a)) + ri(1, 4); }
+            else { do { r1 = ri(-3, t - 1); } while (r1 === s); const r2 = t + ri(1, 3); a = ri(1, 2); b = -a * (r1 + r2); c = a * r1 * r2; }
+            const excl = root ? [s, r1, 2 * k] : [s, 2 * k];
+            const fakes = [setR([s]), setR([2 * k]), setR([s, 0, 2 * k]), setR([s, t]), setR([s, t, 2 * k]), setR(root ? [s, 2 * k] : [s, 0])];
+            if (root) fakes.push(setR([r1, s]));
+            return { pre: DEF,
+                eq: CASE([[F(P([a, b, c]), P([1, -s])), 'x ' + IN + ' ]' + MI + ';' + s + '[' + CUP + ']' + s + ';' + t + '['],
+                          [T([[-1, F(1, 2) + 'x^2'], [k, 'x']]), 'x ' + IN + ' [' + t + ';' + PI + '[']]),
+                post: Q('Find the domain of definition of the function $g$ defined by $g(x)=@dfrac{1}{f(x)}$.'),
+                res: { ans: setR(excl), fakes } };
+        } },
+        // new : two parameters, three pieces
+        { t: 'hard', c: 'TWO PARAMETERS (CONTINUOUS OVER R)', m: () => {
+            const k = ri(1, 2), p = ri(-3, 3), r = nz(-3, 3), a = nz(-4, 4), b = ri(-5, 5);
+            const A = -a * k + b, B = a * k + b, q = A - k * k + p * k, s = B - r * k;
+            const ans = tx('a=' + a + ',@quad b=' + b), mk = (x, y) => tx('a=' + x + ',@quad b=' + y);
+            return { pre: DEF,
+                eq: CASE([[P([1, p, q]), 'x ' + LE + ' ' + (-k)], ['ax + b', (-k) + ' ' + LT + ' x ' + LT + ' ' + k], [T([[r, 'x'], [s, '']]), 'x ' + GE + ' ' + k]]),
+                post: Q('Find the values of $a$ and $b$ so that $f$ is continuous over $@mathbb{R}$.'),
+                res: { ans, fakes: [mk(b, a), mk(-a, b), mk(a, -b), mk(a + 1, b), mk(a, b + 1), mk(-a, -b), mk(a - 1, b - 1)] } };
+        } },
+        // new : conjugate expression, find a
+        { t: 'hard', c: 'FINDING A PARAMETER (CONJUGATE)', m: () => {
+            const q = ri(2, 5), r = ri(1, 4), p = q * q - r, sgn = sg();
+            const num = sgn > 0 ? SQ(P([1, p])) + ' - ' + q : q + ' - ' + SQ(P([1, p]));
+            return { pre: 'Let $f$ be the function defined as:',
+                eq: CASE([[F(num, P([1, -r])), 'x ' + NE + ' ' + r], ['a', 'x = ' + r]]),
+                post: Q('If $f$ is continuous at $x=' + r + '$, then $a=$'), res: NUM(sgn, 2 * q) };
+        } },
+        // new : factoring on the right, find m
+        { t: 'hard', c: 'FINDING A PARAMETER (FACTORING ON THE RIGHT)', m: () => {
+            const c = pick([1, 2, 3]), mm = nz(-3, 3), r = mm * c * c + 1 - c;
+            return { pre: DEF,
+                eq: CASE([[T([[1, 'mx^2'], [1, '']]), 'x ' + LE + ' ' + c], [F(P([1, r - c, -c * r]), P([1, -c])), 'x ' + GT + ' ' + c]]),
+                post: Q('If $f$ is continuous at $x=' + c + '$, then $m=$'), res: NUM(mm) };
+        } },
+        // new : conjugate expression, TRUE / FALSE
+        { t: 'hard', c: 'CONTINUITY AT A POINT (CONJUGATE, TRUE / FALSE)', m: () => {
+            const q = ri(2, 5), r = ri(1, 4), p = q * q - r, sgn = sg(), good = Math.random() < 0.5;
+            const num = sgn > 0 ? SQ(P([1, p])) + ' - ' + q : q + ' - ' + SQ(P([1, p]));
+            const val = frac(sgn, 2 * q);
+            const k = good ? val : pick([frac(sgn, q), frac(-sgn, 2 * q), frac(2 * sgn, q), frac(sgn, 2 * q + 1)]);
+            return { tf: true, truth: good ? 'TRUE' : 'FALSE', pre: DEF,
+                eq: CASE([[F(num, P([1, -r])), 'x ' + NE + ' ' + r], [k, 'x = ' + r]]),
+                post: TFQ('$f$ is continuous at $x=' + r + '$.') };
+        } },
+        // new : square root defined on all of R (closed interval for a)
+        { t: 'hard', c: 'DOMAIN IS R (RADICAL, CLOSED INTERVAL)', m: () => {
+            if (Math.random() < 0.5) {
+                const k = ri(1, 4);
+                return { pre: 'Let $f$ be the function defined as:', eq: tx('f(x)=') + SQ(T([[1, 'x^2'], [1, 'ax'], [k * k, '']])),
+                    post: Q('If $f$ is defined (and continuous) over $@mathbb{R}$, then the set of values of $a$ is:'),
+                    res: { ans: '[-' + 2 * k + ';' + 2 * k + ']', fakes: [']-' + 2 * k + ';' + 2 * k + '[', ']' + MI + ';-' + 2 * k + ']' + CUP + '[' + 2 * k + ';' + PI + '[', '[-' + k + ';' + k + ']', '[-' + 4 * k + ';' + 4 * k + ']'] } };
+            }
+            const be = nz(-4, 4), h = be * be;
+            return { pre: 'Let $f$ be the function defined as:', eq: tx('f(x)=') + SQ(T([[1, 'x^2'], [2 * be, 'x'], [1, 'a']])),
+                post: Q('If $f$ is defined (and continuous) over $@mathbb{R}$, then the set of values of $a$ is:'),
+                res: { ans: '[' + h + ';' + PI + '[', fakes: [']' + h + ';' + PI + '[', ']' + MI + ';' + h + ']', '[' + Math.abs(be) + ';' + PI + '[', '[' + (-h) + ';' + PI + '['] } };
+        } }
+    ];
+
+    function buildProblem(g) {
+        const o = g.m();
+        return {
+            tier: g.t, categoryType: g.c, type: o.tf ? 'TF' : 'MCQ',
+            prompt: o.pre || '', equation: o.eq || '', post: o.post || '',
+            pool: o.tf ? [] : buildChoices(o.res.ans, o.res.fakes),
+            solution: o.tf ? o.truth : o.res.ans
+        };
+    }
+
+    function generateEntireQuizSuite() {
+        generatedSuite = [];
+        ['easy', 'medium', 'hard'].forEach(tier => {
+            const gens = shuffleArray(GENERATORS.filter(g => g.t === tier)).slice(0, APP_LIMITS.tiers[tier]);
+            gens.forEach(g => generatedSuite.push(buildProblem(g)));
+        });
+    }
+
+    // ========================================== -->
+    // INTERFACE VIEW SYNCHRONIZER                -->
+    // ========================================== -->
+
+
+    // KaTeX re-render with every delimiter (inline $...$ included)
+    const KATEX_OPTS = {
+        delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false },
+            { left: '\\[', right: '\\]', display: true }
+        ],
+        throwOnError: false
+    };
+    function renderMath(el) { window.renderMathInElement(el, KATEX_OPTS); }
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+        document.getElementById('txt-tier-badge').innerText = activeProblem.tier + " tier";
+
+        const equationBlock = activeProblem.equation ? `
+            <div style="font-size:1.25rem; color: var(--primary); margin: 10px 0; text-align:center; overflow-x:auto;">
+                $$${activeProblem.equation}$$
+            </div>` : "";
+        const postBlock = activeProblem.post ? `<div style="font-size:1.1rem; font-weight:600; margin-top:6px;">${activeProblem.post}</div>` : "";
+
+        document.getElementById('math-prompt-container').innerHTML = `
+            <div style="font-size:1.1rem; line-height:1.5; color: var(--text-main);">
+                ${activeProblem.prompt}
+                ${equationBlock}
+                ${postBlock}
+            </div>
+        `;
+
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+
+            activeProblem.pool.forEach(choice => {
+                const buttonElement = document.createElement('button');
+                buttonElement.className = `opt-btn p-3 text-center transition flex justify-center items-center ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+                buttonElement.style.minHeight = "48px";
+                buttonElement.style.fontSize = "1.2rem";
+                buttonElement.innerHTML = BS + "(" + choice + BS + ")";      // choices are stored as LaTeX
+                buttonElement.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    buttonElement.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(buttonElement);
+            });
+            if (window.katex && typeof window.renderMathInElement === 'function') {
+                renderMath(mcqContainer);
+            }
+        } else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        }
+
+        buildShortcutsGridMatrix();
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            renderMath(document.getElementById('math-prompt-container'));
+        }
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; buildShortcutsGridMatrix(); }
+
+    function buildShortcutsGridMatrix() {
+        const grid = document.getElementById('navigation-shortcut-grid');
+        grid.innerHTML = "";
+        for (let i = 0; i < APP_LIMITS.totalItems; i++) {
+            const b = document.createElement('button');
+            b.innerText = i + 1;
+            let bgStyle = "bg-slate-100 text-slate-600 border border-slate-300";
+            if (traversalIndex === i) bgStyle = "bg-sky-600 text-white font-bold ring-2 ring-sky-300";
+            else if (storedResponses[i]) bgStyle = "bg-emerald-100 text-emerald-700 border border-emerald-400 font-semibold";
+
+            b.className = `p-2 text-xs text-center rounded-lg transition cursor-pointer min-w-[32px] ${bgStyle}`;
+            b.onclick = () => { traversalIndex = i; synchroniseQuestionIndex(); };
+            grid.appendChild(b);
+        }
+    }
+
+    // ========================================== -->
+    // TIMERS, REPORT, PDF EXPORT & EVENT LISTENERS-->
+    // ========================================== -->
+
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            let m = Math.floor(timeTrackingRemaining / 60);
+            let s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            let dynamicPercentage = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${dynamicPercentage}%`;
+
+            if (dynamicPercentage < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (dynamicPercentage < 50) progress.style.backgroundColor = '#d97706';
+            else progress.style.backgroundColor = '';
+        }
+        pulse();
+        clearInterval(schedulerHandle);
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function sendGradesToTeacher(name, classroom, score, duration, quizTitle) {
+        const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+        fetch(url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name,
+                classroom: classroom,
+                score: score,
+                duration: duration, // start time string, logged into Column E of the sheet
+                quizTitle: quizTitle,
+                date: new Date().toLocaleString()
+            })
+        }).catch(err => console.log("Network trace: Client sync fallback triggered."));
+    }
+
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limit reached. Compiling final performance report now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+        // plain words are shown as text, everything else is LaTeX rendered by KaTeX
+        const isPlain = s => /^(TRUE|FALSE|UNANSWERED)$/i.test(s);
+        const showAns = s => isPlain(String(s)) ? String(s) : (BS + "(" + s + BS + ")");
+
+        generatedSuite.forEach((problem, index) => {
+            const userRaw = storedResponses[index];
+            const userAns = (userRaw || "").toString().trim().toUpperCase();
+            const correctAns = problem.solution.toString().trim().toUpperCase();
+            const outcomeState = userAns === correctAns;
+            if (outcomeState) tallyCorrect++;
+
+            const answerColor = outcomeState ? 'var(--success)' : 'var(--error)';
+            const answerBlock =
+                '<p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:' + answerColor + '; font-size:1.05rem;">' + (userRaw ? showAns(userRaw) : 'Unanswered') + '</span></p>' +
+                '<p style="margin:0; color: var(--text-muted);"><strong>Correct Verification Key:</strong> <span style="font-weight:600; color: var(--text-main); font-size:1.05rem;">' + showAns(problem.solution) + '</span></p>';
+
+            const itemScoreBadge = outcomeState ?
+                `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>` :
+                `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+
+            compilationHtml += `
+            <div class="report-item" style="position: relative; overflow: auto; background:#ffffff; padding:16px; margin-bottom:12px; border-radius:12px; border-left: 5px solid ${outcomeState ? 'var(--success)' : 'var(--error)'};">
+                ${itemScoreBadge}
+                <div style="font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+                    Question ${index + 1} &middot; Type: <span style="color: var(--primary);">${problem.categoryType.replace(/_/g, ' ')}</span>
+                </div>
+                <div style="font-size: 0.95rem; line-height: 1.5; color: var(--text-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+                    ${problem.prompt}
+                    ${problem.equation ? '<div style="text-align:center; font-size:1.15rem; margin:8px 0; overflow-x:auto;">$$' + problem.equation + '$$</div>' : ''}
+                    ${problem.post ? '<div style="font-weight:600;">' + problem.post + '</div>' : ''}
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; padding-left: 4px;">
+                    ${answerBlock}
+                </div>
+            </div>
+            `;
+        });
+
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = document.getElementById('student-name').value.trim();
+        const sectionTitle = document.getElementById('student-section').value.trim();
+
+        const headerMetaHtml = `
+        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 0.95rem; line-height:1.4;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                <div><strong>Student Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+                <div><strong>Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem;">
+                <div><strong>Quiz Assessment:</strong> <span style="color: #475569; font-weight: 700;">Continuous functions (Grade 11)</span></div>
+                <div><strong>Quiz Start Timestamp:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+            </div>
+        </div>
+        `;
+
+        document.getElementById('report-injection-zone').innerHTML = headerMetaHtml + compilationHtml;
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            renderMath(document.getElementById('report-injection-zone'));
+        }
+
+        sendGradesToTeacher(
+            userTitle,
+            sectionTitle,
+            `${tallyCorrect} / ${APP_LIMITS.totalItems}`,
+            formattedQuizStartTimeStamp,
+            "Continuous functions"
+        );
+    }
+
+    document.getElementById('action-start').onclick = () => {
+        if (!document.getElementById('student-name').value.trim() || !document.getElementById('student-section').value.trim()) {
+            alert("Please complete credential parameters to unlock.");
+            return;
+        }
+        const now = new Date();
+        formattedQuizStartTimeStamp = now.toLocaleDateString() + " @ " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Finalize and compile report sheets?")) compileFinalPerformanceReport();
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) {
+            traversalIndex--;
+            synchroniseQuestionIndex();
+        }
+    };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+    // Print-optimised styles (fixes the flexbox page-clipping bug when saving the report as PDF)
+    if (!document.getElementById('print-fix-styles')) {
+        const style = document.createElement('style');
+        style.id = 'print-fix-styles';
+        style.innerHTML = `
+            @media print {
+                html, body { display: block !important; height: auto !important; overflow: visible !important; background: white !important; }
+                #stage-summary { display: block !important; max-width: 100% !important; width: 100% !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; }
+                footer, #stage-auth, #stage-engine, button, .bg-gradient-to-r button { display: none !important; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // PDF buttons open the print dialog (Save as PDF)
+    document.querySelectorAll('button').forEach(button => {
+        if (button.textContent.includes('Save as PDF') || button.textContent.includes('Download as PDF')) {
+            button.removeAttribute('onclick');
+            button.addEventListener('click', (e) => { e.preventDefault(); window.print(); });
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function graph reading - Grade 11</title>
+    <!-- Tailwind CSS Styling Framework CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX Mathematical Typography Notation Engine Setup CDN -->                  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+ <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });">
+        </script>
+
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #0284c7; --primary-hover: #0369a1; --bg-main: #f8fafc;
+            --bg-surface: #ffffff; --border-color: #cbd5e1; --text-main: #0f172a;
+            --text-muted: #475569; --success: #16a34a; --error: #dc2626;
+        }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; }
+        .hidden { display: none !important; }
+        .opt-btn {
+            background-color: var(--bg-surface); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 1.05rem;
+        }
+        .opt-btn:hover { border-color: var(--primary); background-color: #f0f9ff; }
+        .opt-btn.active { border-color: var(--primary); background-color: #e0f2fe; font-weight: 600; box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+        .report-item { background: var(--bg-surface); border-radius: 10px; padding: 14px; margin-bottom: 12px; border-left: 5px solid #cbd5e1; }
+        .report-item.pass { border-left-color: var(--success); }
+        .report-item.fail { border-left-color: var(--error); }
+            .katex { font-size: 1.12em; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Credentials Authentication Entry Stage -->
+    <div id="stage-auth" class="max-w-md mx-auto my-auto p-8 bg-white rounded-2xl shadow-xl mt-12 border border-slate-200">
+        <h2 class="text-2xl font-extrabold text-slate-800 text-center tracking-tight mb-2">Function graph reading</h2>
+        <p class="text-sm text-slate-500 text-center mb-8">Grade 11 &middot; 20 questions &middot; 25 minutes</p>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Student Full Name</label>
+                <input type="text" id="student-name" placeholder="John Doe" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Assigned Class Section</label>
+                <input type="text" id="student-section" placeholder="Grade 11-A" class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white text-sm transition">
+            </div>
+            <button id="action-start" class="w-full bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm tracking-wider uppercase mt-4">Start Quiz</button>
+        </div>
+    </div>
+
+    <!-- FIXED: Active Test Core Engine Integrated Inside One Single Unified Main Box Header Layout -->
+    <div id="stage-engine" class="hidden max-w-4xl mx-auto w-full px-4 py-6 flex-grow">
+        <div class="w-full bg-white rounded-2xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between min-h-[550px]">
+
+            <!-- HEADER INFO BAR: Time tracking and Question counts grouped inside the single main container block -->
+            <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-5 flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-xs font-bold text-sky-600 uppercase tracking-widest">Question Tracker &middot; <span id="idx-current">0</span> / <span id="idx-total">0</span></span>
+                    <span id="txt-tier-badge" class="px-2.5 py-1 rounded-md text-xs font-extrabold uppercase bg-slate-100 text-slate-600">Tier</span>
+                </div>
+
+                <!-- TIMER COMPONENT: Grouped tightly inside the primary top header control area -->
+                <div id="meter-container" class="hidden flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-xl text-white shadow-inner">
+                    <span class="text-[10px] uppercase font-black tracking-wider text-slate-400">Remaining:</span>
+                    <span id="clock-countdown" class="text-lg font-black tracking-tight font-mono text-sky-400">25:00</span>
+                    <div class="w-16 bg-slate-800 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                        <div id="meter-progress" class="bg-sky-400 h-full transition-all duration-1000" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Content Presentation Window -->
+            <div class="flex-grow flex flex-col justify-center">
+                <div id="math-prompt-container" class="mb-6"></div>
+
+                <div id="interactive-zone" class="w-full flex flex-col items-center justify-center mb-6">
+                    <div id="box-mcq" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"></div>
+                    <div id="box-num" class="hidden w-full flex flex-col items-center gap-2">
+                        <input id="num-input" type="text" inputmode="decimal" autocomplete="off" placeholder="Your answer" class="w-48 text-center text-xl font-bold px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white">
+                        <p class="text-xs text-slate-400">Write a number (integer, decimal or fraction such as 1/2)</p>
+                    </div>
+                    <div id="box-tf" class="hidden flex gap-4 w-full justify-center">
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="TRUE">TRUE</button>
+                        <button class="flag-tf opt-btn px-8 py-3.5 text-center font-bold text-lg min-w-[140px]" data-core="FALSE">FALSE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Layout Shortcut Matrix Navigation Row -->
+            <div class="border-t border-slate-100 pt-4 mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <!-- Grid Shortcuts inline at the bottom left -->
+                <div class="flex flex-wrap gap-1.5 items-center">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden md:block">Overview:</span>
+                    <div id="navigation-shortcut-grid" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="flex gap-3 justify-end w-full sm:w-auto">
+                    <button id="action-back" class="px-5 py-2 border border-slate-300 rounded-xl font-medium text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 text-sm transition cursor-pointer">&larr; Back</button>
+                    <button id="action-forward" class="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 text-sm shadow transition cursor-pointer">Next &rarr;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Final Diagnostic Summary Sheet Layout -->
+    <div id="stage-summary" class="hidden max-w-3xl mx-auto w-full px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-sky-600 to-indigo-700 p-6 text-white flex justify-between items-center flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">Performance Summary Report</h1>
+                    <p class="text-sky-100 text-xs mt-1">Function graph reading &middot; Grade 11</p>
+                </div>
+                <button onclick="triggerDirectPdfDownload()" class="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold hover:bg-white/20 transition cursor-pointer shadow-sm border border-white/10 text-white">Download as PDF</button>
+            </div>
+
+            <div class="grid grid-cols-3 text-center border-b border-slate-100 bg-slate-50 py-4">
+                <div>
+                    <div id="m-correct" class="text-2xl font-extrabold text-emerald-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Correct</div>
+                </div>
+                <div class="border-x border-slate-200">
+                    <div id="m-incorrect" class="text-2xl font-extrabold text-rose-600">0</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Incorrect</div>
+                </div>
+                <div>
+                    <div id="m-percent" class="text-2xl font-extrabold text-sky-600">0%</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score Rate</div>
+                </div>
+            </div>
+
+                    <!-- Dynamic Question Injections -->
+                        <div id="report-injection-zone" class="p-6 space-y-4 bg-slate-50/50"></div>
+                </div>
+
+                <!-- FIXED: Repositioned standalone PDF action handler bar to the absolute bottom of the page structure -->
+                <div class="flex flex-col sm:flex-row gap-3 w-full mt-4">
+                        <button id="action-pdf-bottom" onclick="triggerDirectPdfDownload()" class="flex-grow bg-sky-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:bg-sky-700 transition cursor-pointer text-sm text-center uppercase tracking-wider">Save as PDF</button>
+                        <button id="action-retry" class="w-full sm:w-1/3 bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow hover:bg-slate-900 transition cursor-pointer text-sm text-center uppercase tracking-wider">Retake Quiz</button>
+                </div>
+        </div>
+
+    <footer class="w-full py-4 text-center text-xs text-slate-400 border-t border-slate-200 mt-12 bg-white">
+        &copy; 2026 Function Graph Reading Assessment Suite &bull; Academic Diagnostic Engine
+    </footer>
+
+<script>
+    const APP_LIMITS = {
+        totalItems: 20,
+        allocatedDurationSeconds: 1500, // 25 minutes
+        tiers: { easy: 7, medium: 7, hard: 6 }
+    };
+
+    let generatedSuite = [];
+    let traversalIndex = 0;
+    let storedResponses = {};
+    let timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+    let schedulerHandle = null;
+    let formattedQuizStartTimeStamp = "";
+
+    // ---------- helpers (write LaTeX with @ instead of a backslash) ----------
+    const BS = String.fromCharCode(92);
+    function tx(s) { return s.split('@').join(BS); }
+    function shuffleArray(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+        return a;
+    }
+    const ri = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+    const pick = arr => arr[ri(0, arr.length - 1)];
+    const sg = () => Math.random() < 0.5 ? 1 : -1;
+    const nz = (a, b) => { let v = 0; while (!v) v = ri(a, b); return v; };
+    const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+    const PI = tx('+@infty'), MI = tx('-@infty');
+    const LE = tx('@le'), GE = tx('@ge'), NE = tx('@ne'), IN = tx('@in'), LT = tx('@lt'), GT = tx('@gt');
+    const CUP = tx(' @cup ');
+    const ALLR = ']' + MI + ';' + PI + '[';
+
+    // reduced fraction / integer as LaTeX
+    function frac(n, d) {
+        const g = gcd(n, d) || 1; n /= g; d /= g;
+        if (d < 0) { n = -n; d = -d; }
+        return d === 1 ? String(n) : (n < 0 ? '-' : '') + tx('@frac{' + Math.abs(n) + '}{' + d + '}');
+    }
+    // terms: [[coef, body], ...] -> "3x^2 - x + 5"
+    function T(ts) {
+        let s = '';
+        ts.forEach(([a, b]) => {
+            if (!a) return;
+            const m = Math.abs(a), c = (m === 1 && b) ? '' : m;
+            s += (s === '' ? (a < 0 ? '-' : '') : (a < 0 ? ' - ' : ' + ')) + c + b;
+        });
+        return s || '0';
+    }
+    // polynomial in x, coefficients from the highest degree down
+    function P(c) { const n = c.length - 1; return T(c.map((a, i) => { const d = n - i; return [a, d > 1 ? 'x^' + d : d === 1 ? 'x' : '']; })); }
+    const F = (n, d) => tx('@frac{' + n + '}{' + d + '}');
+    const SQ = body => tx('@sqrt{') + body + '}';
+    // set "R minus {a ; b}" and interval helpers
+    const setR = v => tx('@mathbb{R} @setminus @{') + [...new Set(v)].sort((a, b) => a - b).join(' ; ') + tx('@}');
+    // piecewise function  f(x) = { ... }   rows = [[expression, condition], ...]
+    const CASE = rows => tx('f(x)=@begin{cases} ') +
+        rows.map(r => tx('@displaystyle ') + r[0] + tx(' & @text{if } ') + r[1]).join(tx(' @@[6pt] ')) + tx(' @end{cases}');
+    const DEF = 'Let $f$ be the function defined by:';
+    const TFQ = s => 'True or False: ' + tx(s);
+    const Q = s => tx(s);
+
+    // numeric answer + plausible wrong options
+    const NUM = (n, d = 1) => ({ ans: frac(n, d),
+        fakes: [frac(-n, d), frac(2 * n, d), frac(n, 2 * d), frac(n + 1, d), frac(n - 1, d), n ? frac(d, n) : '1', '0', '1', frac(n + 2, d)] });
+
+    function buildChoices(correct, fakes) {
+        const o = [correct];
+        shuffleArray(fakes).forEach(f => { if (o.length < 4 && f != null && !o.includes(f)) o.push(f); });
+        let g = 0;
+        while (o.length < 4 && g++ < 80) { const t = String(ri(-12, 12)); if (!o.includes(t)) o.push(t); }
+        return shuffleArray(o);
+    }
+
+
+    const TXT = s => tx('@text{') + s + '}';
+    // ==========================================================
+    // GRAPH MODEL: every curve is a list of pieces with exact formulas,
+    // so limits, asymptotes, equations and inequalities are computed exactly.
+    // ==========================================================
+    const INF = Infinity, EPS = 1e-9;
+    const V = v => ({ t: 'v', v }), IV = s => ({ t: 'inf', s });
+    const fr = v => frac(Math.round(v * 4), 4);
+    const LTX = L => L.t === 'inf' ? (L.s > 0 ? PI : MI) : fr(L.v);
+    const RTEX = tx('@mathbb{R}');
+    const VEC = (c) => '{' + c + '}';
+    const uniqSort = arr => { const a = arr.slice().sort((x, y) => x - y), r = []; a.forEach(x => { if (!r.length || Math.abs(x - r[r.length - 1]) > 1e-7) r.push(x); }); return r; };
+    const inPiece = (p, x) => (x > p.a + EPS || (Math.abs(x - p.a) <= EPS && p.ca)) && (x < p.b - EPS || (Math.abs(x - p.b) <= EPS && p.cb));
+    const isNice = x => Math.abs(x * 2 - Math.round(x * 2)) < 1e-7;
+
+    function buildModel(o) {
+        const M = Object.assign({ pieces: [], points: [], dots: [], vas: [], ha: [], breaks: [], side: [], endpts: [], lim: { neg: null, pos: null } }, o);
+        M.f = x => {
+            for (const p of M.pieces) if (inPiece(p, x)) return p.g(x);
+            for (const q of M.points) if (Math.abs(q.x - x) <= EPS) return q.y;
+            return NaN;
+        };
+        M.solveEq = y => {
+            const r = [];
+            for (const p of M.pieces) {
+                if (!p.inv) return null;
+                const c = p.inv(y); if (c === null) return null;
+                c.forEach(x => { if (inPiece(p, x)) r.push(x); });
+            }
+            M.points.forEach(q => { if (Math.abs(q.y - y) <= EPS) r.push(q.x); });
+            return uniqSort(r);
+        };
+        M.sideAt = c => M.side.find(s => Math.abs(s.x - c) < EPS);
+        M.classify = c => {
+            const s = M.sideAt(c); if (!s) return 'continuous';
+            if (s.l.t === 'inf' || s.r.t === 'inf') return 'infinite';
+            if (Math.abs(s.l.v - s.r.v) > EPS) return 'jump';
+            const fc = M.f(c);
+            return (isFinite(fc) && Math.abs(fc - s.l.v) <= EPS) ? 'continuous' : 'hole';
+        };
+        M.solveIneq = (op, y0) => {
+            const roots = M.solveEq(y0); if (roots === null) return null;
+            const crit = uniqSort([...roots, ...M.breaks, ...M.endpts]);
+            const sat = v => {
+                if (!isFinite(v)) return false;
+                if (op === '>=') return v >= y0 - EPS; if (op === '>') return v > y0 + EPS;
+                if (op === '<=') return v <= y0 + EPS; return v < y0 - EPS;
+            };
+            const n = crit.length, cells = [];
+            for (let i = 0; i <= n; i++) {
+                const lo = i === 0 ? -INF : crit[i - 1], hi = i === n ? INF : crit[i];
+                const t = lo === -INF ? (hi === INF ? 0 : hi - 1) : (hi === INF ? lo + 1 : (lo + hi) / 2);
+                cells.push({ ok: sat(M.f(t)) });
+                if (i < n) cells.push({ ok: sat(M.f(crit[i])) });
+            }
+            const comps = []; let i = 0;
+            while (i < cells.length) {
+                if (!cells[i].ok) { i++; continue; }
+                let j = i; while (j + 1 < cells.length && cells[j + 1].ok) j++;
+                const kl = i >> 1, kr = j >> 1, c = {};
+                if (i % 2 === 0) { c.l = kl === 0 ? -INF : crit[kl - 1]; c.lc = false; } else { c.l = crit[kl]; c.lc = true; }
+                if (j % 2 === 0) { c.r = kr === n ? INF : crit[kr]; c.rc = false; } else { c.r = crit[kr]; c.rc = true; }
+                comps.push(c); i = j + 1;
+            }
+            return comps;
+        };
+        return M;
+    }
+
+    function compsTex(comps) {
+        if (!comps.length) return tx('@varnothing');
+        return comps.map(c => {
+            if (c.l === c.r) return tx('@{') + fr(c.l) + tx('@}');
+            return (c.lc ? '[' : ']') + (c.l === -INF ? MI : fr(c.l)) + ';' + (c.r === INF ? PI : fr(c.r)) + (c.rc ? ']' : '[');
+        }).join(CUP);
+    }
+    function compVariants(comps) {
+        const cl = () => comps.map(c => ({ ...c })), out = [];
+        let a = cl();
+        a.forEach(c => { if (c.l !== c.r) { if (c.l > -INF) c.lc = !c.lc; if (c.r < INF) c.rc = !c.rc; } }); out.push(a);
+        a = cl();
+        for (const c of a) { if (c.l === c.r) continue; if (c.l > -INF) { c.lc = !c.lc; break; } if (c.r < INF) { c.rc = !c.rc; break; } }
+        out.push(a);
+        [1, -1].forEach(d => { a = cl(); a.forEach(c => { if (c.l > -INF) c.l += d; if (c.r < INF) c.r += d; }); out.push(a); });
+        a = cl().map(c => ({ l: -c.r, lc: c.rc, r: -c.l, rc: c.lc })).reverse(); out.push(a);
+        a = cl(); for (const c of a) { if (c.l > -INF && c.l !== c.r) { c.l += 1; break; } if (c.r < INF && c.l !== c.r) { c.r -= 1; break; } } out.push(a);
+        return out;
+    }
+
+    // ---------- curve families ----------
+    const parabInv = (p, q, a) => y => { const t = (y - q) / a; if (t < -EPS) return []; const d = Math.sqrt(Math.max(t, 0)); return d < EPS ? [p] : [p - d, p + d]; };
+
+    function genHyper() {
+        const c = ri(-5, 5), h = ri(-3, 3), k = pick([1, -1, 2, -2, 3, -3, 4, -4]);
+        const g = x => h + k / (x - c), inv = y => Math.abs(y - h) < EPS ? [] : [c + k / (y - h)];
+        return buildModel({ kind: 'hyper', c, h, k,
+            pieces: [{ a: -INF, b: c, g, inv, ca: false, cb: false, bAsym: true }, { a: c, b: INF, g, inv, ca: false, cb: false, aAsym: true }],
+            vas: [c], ha: [h], lim: { neg: V(h), pos: V(h) }, side: [{ x: c, l: IV(-Math.sign(k)), r: IV(Math.sign(k)) }],
+            breaks: [c], excl: [c], domTex: setR([c]) });
+    }
+    function genParab() {
+        const a = pick([1, -1, 0.5, -0.5]), p = ri(-4, 4), q = a > 0 ? ri(-3, 1) : ri(-1, 3);
+        const g = x => a * (x - p) * (x - p) + q, s = a > 0 ? 1 : -1;
+        return buildModel({ kind: 'parab', p, q, pieces: [{ a: -INF, b: INF, g, inv: parabInv(p, q, a), ca: false, cb: false }],
+            lim: { neg: IV(s), pos: IV(s) }, excl: [], domTex: RTEX });
+    }
+    function genLines() {
+        const type = pick(['jumpL', 'jumpR', 'kink', 'jumpL', 'jumpR']), ms = [-2, -1, -0.5, 0.5, 1, 2];
+        const c = ri(-3, 3), m1 = pick(ms); let m2 = pick(ms), yL = ri(-3, 3), yR;
+        if (type === 'kink') { yR = yL; while (m2 === m1) m2 = pick(ms); } else { do { yR = ri(-3, 3); } while (Math.abs(yR - yL) < 2); }
+        const g1 = x => yL + m1 * (x - c), g2 = x => yR + m2 * (x - c);
+        const leftClosed = type !== 'jumpR';
+        const dots = type === 'kink' ? [] : [{ x: c, y: yL, filled: leftClosed }, { x: c, y: yR, filled: !leftClosed }];
+        return buildModel({ kind: 'lines', type, c, yL, yR, m1, m2,
+            pieces: [{ a: -INF, b: c, g: g1, inv: y => [c + (y - yL) / m1], ca: false, cb: leftClosed },
+                     { a: c, b: INF, g: g2, inv: y => [c + (y - yR) / m2], ca: !leftClosed, cb: false }],
+            dots, side: [{ x: c, l: V(yL), r: V(yR) }], breaks: [c], excl: [], domTex: RTEX,
+            lim: { neg: IV(m1 > 0 ? -1 : 1), pos: IV(m2 > 0 ? 1 : -1) } });
+    }
+    function genHole() {
+        const c = ri(-4, 4); let g, inv, yh, lim;
+        if (Math.random() < 0.6) {
+            const m = pick([-2, -1, -0.5, 0.5, 1, 2]); yh = ri(-3, 3);
+            g = x => yh + m * (x - c); inv = y => [c + (y - yh) / m];
+            lim = { neg: IV(m > 0 ? -1 : 1), pos: IV(m > 0 ? 1 : -1) };
+        } else {
+            let a, p, q; do { a = pick([1, -1, 0.5, -0.5]); p = ri(-4, 4); q = a > 0 ? ri(-3, 1) : ri(-1, 3); yh = a * (c - p) * (c - p) + q; } while (p === c || !Number.isInteger(yh) || Math.abs(yh) > 4);
+            g = x => a * (x - p) * (x - p) + q; inv = parabInv(p, q, a); const s = a > 0 ? 1 : -1; lim = { neg: IV(s), pos: IV(s) };
+        }
+        let y1 = null; if (Math.random() < 0.5) { do { y1 = ri(-4, 4); } while (Math.abs(y1 - yh) < 1); }
+        const dots = [{ x: c, y: yh, filled: false }]; if (y1 !== null) dots.push({ x: c, y: y1, filled: true });
+        return buildModel({ kind: 'hole', c, yh, y1,
+            pieces: [{ a: -INF, b: c, g, inv, ca: false, cb: false }, { a: c, b: INF, g, inv, ca: false, cb: false }],
+            points: y1 !== null ? [{ x: c, y: y1 }] : [], dots, side: [{ x: c, l: V(yh), r: V(yh) }], breaks: [c],
+            excl: y1 !== null ? [] : [c], domTex: y1 !== null ? RTEX : setR([c]), lim });
+    }
+    function genSqrt() {
+        const a = pick([1, -1, 2, -2]), s = pick([1, -1]), c = ri(-4, 4), h = a > 0 ? ri(-3, 1) : ri(-1, 3);
+        const g = x => a * Math.sqrt(Math.max(s * (x - c), 0)) + h;
+        const inv = y => { const t = (y - h) / a; return t < -EPS ? [] : [c + s * t * t]; };
+        const piece = s > 0 ? { a: c, b: INF, ca: true, cb: false } : { a: -INF, b: c, ca: false, cb: true };
+        const L = IV(a > 0 ? 1 : -1);
+        return buildModel({ kind: 'sqrt', c, s, a, h, pieces: [{ ...piece, g, inv }], dots: [{ x: c, y: h, filled: true }], endpts: [c], avoid: [c],
+            lim: s > 0 ? { neg: null, pos: L } : { neg: L, pos: null }, excl: [], domTex: s > 0 ? '[' + c + ';' + PI + '[' : ']' + MI + ';' + c + ']' });
+    }
+    function genRatio2() {
+        const p = ri(-4, 2), q = p + 2, h = ri(-2, 2), k = pick([3, -3]), sk = Math.sign(k);
+        const g = x => h + k / ((x - p) * (x - q));
+        const inv = y => { if (Math.abs(y - h) < EPS) return []; const w = k / (y - h), disc = (q - p) * (q - p) + 4 * w; if (disc < -EPS) return []; const m = (p + q) / 2, r = Math.sqrt(Math.max(disc, 0)) / 2; return r < EPS ? [m] : [m - r, m + r]; };
+        return buildModel({ kind: 'ratio2', p, q, h, k,
+            pieces: [{ a: -INF, b: p, g, inv, ca: false, cb: false, bAsym: true }, { a: p, b: q, g, inv, ca: false, cb: false, aAsym: true, bAsym: true }, { a: q, b: INF, g, inv, ca: false, cb: false, aAsym: true }],
+            vas: [p, q], ha: [h], lim: { neg: V(h), pos: V(h) },
+            side: [{ x: p, l: IV(sk), r: IV(-sk) }, { x: q, l: IV(-sk), r: IV(sk) }], breaks: [p, q], excl: [p, q], domTex: setR([p, q]) });
+    }
+    function genCubic() {
+        let r1, r2, r3, a = pick([1, -1]);
+        do { r1 = ri(-4, 2); r2 = r1 + ri(1, 3); r3 = r2 + ri(1, 3); } while (r3 > 4 || r3 - r1 > 4);
+        const g = x => a * (x - r1) * (x - r2) * (x - r3);
+        return buildModel({ kind: 'cubic', r1, r2, r3, a, pieces: [{ a: -INF, b: INF, g, inv: y => Math.abs(y) < EPS ? [r1, r2, r3] : null, ca: false, cb: false }],
+            lim: { neg: IV(-a), pos: IV(a) }, excl: [], domTex: RTEX });
+    }
+    const FAMS = { hyper: genHyper, parab: genParab, lines: genLines, hole: genHole, sqrt: genSqrt, ratio2: genRatio2, cubic: genCubic };
+    const ALLFAM = Object.keys(FAMS);
+    function pickModel(names, ok) {
+        for (let i = 0; i < 600; i++) { const M = FAMS[pick(names)](); if (!ok || ok(M)) return M; }
+        throw new Error('no model for ' + names.join(','));
+    }
+
+    // ---------- SVG rendering ----------
+    let SVG_ID = 0;
+    function renderGraph(M, opt = {}) {
+        const id = ++SVG_ID, X0 = -8, X1 = 8, Y0 = -5, Y1 = 5, U = 40, ML = 24, MT = 22;
+        const W = ML + (X1 - X0) * U + 22, H = MT + (Y1 - Y0) * U + 30;
+        const px = x => ML + (x - X0) * U, py = y => MT + (Y1 - y) * U, f1 = v => v.toFixed(1);
+        const G = '#15803d';
+        let s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;max-width:' + W + 'px;display:block;margin:10px auto;background:#fff;border:1px solid #cbd5e1;border-radius:10px" font-family="system-ui,sans-serif">';
+        s += '<defs><clipPath id="gc' + id + '"><rect x="' + px(X0) + '" y="' + py(Y1) + '" width="' + (X1 - X0) * U + '" height="' + (Y1 - Y0) * U + '"/></clipPath></defs>';
+        for (let x = X0; x <= X1; x++) s += '<line x1="' + px(x) + '" y1="' + py(Y1) + '" x2="' + px(x) + '" y2="' + py(Y0) + '" stroke="' + (x % 5 === 0 ? '#cbd5e1' : '#e2e8f0') + '" stroke-width="1"/>';
+        for (let y = Y0; y <= Y1; y++) s += '<line x1="' + px(X0) + '" y1="' + py(y) + '" x2="' + px(X1) + '" y2="' + py(y) + '" stroke="' + (y % 5 === 0 ? '#cbd5e1' : '#e2e8f0') + '" stroke-width="1"/>';
+        // axes + arrows
+        s += '<line x1="' + px(X0) + '" y1="' + py(0) + '" x2="' + (px(X1) + 10) + '" y2="' + py(0) + '" stroke="#0f172a" stroke-width="1.8"/>';
+        s += '<line x1="' + px(0) + '" y1="' + py(Y0) + '" x2="' + px(0) + '" y2="' + (py(Y1) - 10) + '" stroke="#0f172a" stroke-width="1.8"/>';
+        s += '<polygon points="' + (px(X1) + 12) + ',' + py(0) + ' ' + (px(X1) + 4) + ',' + (py(0) - 4) + ' ' + (px(X1) + 4) + ',' + (py(0) + 4) + '" fill="#0f172a"/>';
+        s += '<polygon points="' + px(0) + ',' + (py(Y1) - 12) + ' ' + (px(0) - 4) + ',' + (py(Y1) - 4) + ' ' + (px(0) + 4) + ',' + (py(Y1) - 4) + '" fill="#0f172a"/>';
+        s += '<text x="' + (px(X1) + 8) + '" y="' + (py(0) + 20) + '" font-size="15" font-style="italic" fill="#0f172a">x</text>';
+        s += '<text x="' + (px(0) + 10) + '" y="' + (py(Y1) - 6) + '" font-size="15" font-style="italic" fill="#0f172a">y</text>';
+        // tick numbers
+        const halo = 'paint-order:stroke;stroke:#fff;stroke-width:3.5px;stroke-linejoin:round';
+        for (let x = X0; x <= X1; x++) if (x !== 0) s += '<text x="' + px(x) + '" y="' + (py(0) + 17) + '" font-size="13" text-anchor="middle" fill="#334155" style="' + halo + '">' + x + '</text>';
+        for (let y = Y0; y <= Y1; y++) if (y !== 0) s += '<text x="' + (px(0) - 7) + '" y="' + (py(y) + 4.5) + '" font-size="13" text-anchor="end" fill="#334155" style="' + halo + '">' + y + '</text>';
+        s += '<text x="' + (px(0) - 7) + '" y="' + (py(0) + 17) + '" font-size="13" text-anchor="end" fill="#334155" style="' + halo + '">0</text>';
+        // asymptotes
+        if (opt.showAsym !== false) {
+            const dash = 'stroke="#475569" stroke-width="1.8" stroke-dasharray="8 6"';
+            M.vas.forEach(v => { s += '<line x1="' + px(v) + '" y1="' + py(Y1) + '" x2="' + px(v) + '" y2="' + py(Y0) + '" ' + dash + '/>'; });
+            M.ha.forEach(h => { s += '<line x1="' + px(X0) + '" y1="' + py(h) + '" x2="' + px(X1) + '" y2="' + py(h) + '" ' + dash + '/>'; });
+        }
+        // curve
+        s += '<g clip-path="url(#gc' + id + ')">';
+        M.pieces.forEach(p => {
+            const lo = Math.max(p.a, -9.5), hi = Math.min(p.b, 9.5); if (hi <= lo) return;
+            const xs = [], n = Math.ceil((hi - lo) / 0.02);
+            for (let i = 0; i <= n; i++) xs.push(lo + (hi - lo) * i / n);
+            [0.0004, 0.001, 0.0025, 0.006, 0.012].forEach(d => { if (p.a >= -9.5 && lo + d < hi) xs.push(lo + d); if (p.b <= 9.5 && hi - d > lo) xs.push(hi - d); });
+            xs.sort((u, v) => u - v);
+            let d = '';
+            xs.forEach(x => {
+                if (p.aAsym && Math.abs(x - p.a) < 1e-12) return; if (p.bAsym && Math.abs(x - p.b) < 1e-12) return;
+                let y = p.g(x); if (!isFinite(y)) return; y = Math.max(-60, Math.min(60, y));
+                d += (d ? 'L' : 'M') + f1(px(x)) + ' ' + f1(py(y));
+            });
+            if (d) s += '<path d="' + d + '" fill="none" stroke="' + G + '" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>';
+        });
+        s += '</g>';
+        M.dots.forEach(q => {
+            if (Math.abs(q.x) > 8 || Math.abs(q.y) > 5) return;
+            s += '<circle cx="' + f1(px(q.x)) + '" cy="' + f1(py(q.y)) + '" r="5.8" fill="' + (q.filled ? G : '#fff') + '" stroke="' + G + '" stroke-width="2.6"/>';
+        });
+        return s + '</svg>';
+    }
+
+    // ---------- question helpers ----------
+    const INTRO = 'The figure below shows the representative curve $(C)$ of a function $f$.';
+    const mk = (M, o) => Object.assign({ pre: INTRO, svg: renderGraph(M, { showAsym: o.hideAsym ? false : true }) }, o);
+    const intPts = M => { const r = []; for (let x = -7; x <= 7; x++) { const y = M.f(x); if (isFinite(y) && Math.abs(y - Math.round(y)) < EPS && Math.abs(y) <= 4) r.push({ x, y: Math.round(y) }); } return r; };
+    const visible = z => z !== null && z.every(x => Math.abs(x) <= 7.5);
+    const LIM = (tgt) => tx('@displaystyle @lim_{x @to ') + tgt + '} f(x)';
+    const sideTgt = (c, sgn) => VEC(c) + '^{' + (sgn > 0 ? '+' : '-') + '}';
+    const limFakes = (L, extra = []) => {
+        const out = L.t === 'v' ? [fr(-L.v), fr(L.v + 1), fr(L.v - 1), PI, MI, '0'] : [L.s > 0 ? MI : PI, '0', '1', '-1'];
+        extra.forEach(v => out.push(typeof v === 'number' ? fr(v) : LTX(v)));
+        return out;
+    };
+    const ALL = ALLFAM;
+    const OPS = { '>=': tx('@ge'), '>': '>', '<=': tx('@le'), '<': '<' };
+    const toSet = z => tx('@{') + z.map(fr).join(' ; ') + tx('@}');
+    const ineqFakes = (M, op, y0, comps) => {
+        const out = [];
+        ['>=', '>', '<=', '<'].filter(o => o !== op).forEach(o => { const c = M.solveIneq(o, y0); if (c) out.push(compsTex(c)); });
+        compVariants(comps).forEach(c => out.push(compsTex(c)));
+        return out;
+    };
+    // an inequality  f(x) op y0  with a clean, non-trivial solution set
+    function pickIneq(names, y0s) {
+        for (let i = 0; i < 600; i++) {
+            const M = FAMS[pick(names)](), y0 = pick(y0s), z = M.solveEq(y0);
+            if (z === null || !visible(z) || !z.every(isNice)) continue;
+            const op = pick(['>=', '>', '<=', '<']), comps = M.solveIneq(op, y0);
+            if (!comps || !comps.length) continue;
+            if (comps.length === 1 && comps[0].l === -INF && comps[0].r === INF) continue;
+            if (comps.some(c => (c.l > -INF && !isNice(c.l)) || (c.r < INF && !isNice(c.r)))) continue;
+            return { M, op, y0, comps };
+        }
+        throw new Error('no inequality');
+    }
+
+    // ==========================================================
+    // QUESTION GENERATORS  (22 engines: 8 easy, 8 medium, 6 hard)
+    // Every engine draws a NEW curve and NEW numbers each time.
+    // ==========================================================
+    const GENERATORS = [
+        // ===================== EASY =====================
+        { t: 'easy', c: 'IMAGE: READ f(a) FROM THE GRAPH', m: () => {
+            const M = pickModel(ALL, M => intPts(M).length >= 2), p = pick(intPts(M));
+            return mk(M, { num: true, val: p.y, post: Q('Write the value of $f(' + p.x + ')$.') });
+        } },
+        { t: 'easy', c: 'ANTECEDENT: SOLVE f(x) = k GRAPHICALLY', m: () => {
+            const ok = M => intPts(M).some(p => { const z = M.solveEq(p.y); return visible(z) && z.length === 1; });
+            const M = pickModel(['hyper', 'sqrt', 'lines', 'hole'], ok);
+            const p = pick(intPts(M).filter(p => { const z = M.solveEq(p.y); return visible(z) && z.length === 1; }));
+            return mk(M, { num: true, val: p.x, post: Q('Solve graphically $f(x)=' + p.y + '$. Write the value of $x$.') });
+        } },
+        { t: 'easy', c: 'IMAGE (TRUE / FALSE)', m: () => {
+            const M = pickModel(ALL, M => intPts(M).length >= 2), p = pick(intPts(M)), good = Math.random() < 0.5;
+            const q = pick(intPts(M).filter(r => r.x !== p.x));
+            const claim = good ? p.y : pick([q.y, p.y + nz(-2, 2), -p.y].filter(v => v !== p.y));
+            return mk(M, { tf: true, truth: good ? 'TRUE' : 'FALSE', post: TFQ('$f(' + p.x + ')=' + claim + '$.') });
+        } },
+        { t: 'easy', c: 'HORIZONTAL ASYMPTOTE (EQUATION)', m: () => {
+            const M = pickModel(['hyper', 'ratio2']), h = M.h;
+            return mk(M, { pre: INTRO, post: Q('A horizontal asymptote to $(C)$ has equation:'),
+                res: { ans: 'y=' + h, fakes: ['y=' + (-h), 'x=' + h, 'y=' + (h + 1), 'y=' + (h - 1), 'x=' + M.vas[0]] } });
+        } },
+        { t: 'easy', c: 'VERTICAL ASYMPTOTE (EQUATION)', m: () => {
+            const M = pickModel(['hyper', 'ratio2']);
+            if (M.kind === 'hyper') { const c = M.c;
+                return mk(M, { post: Q('The vertical asymptote to $(C)$ has equation:'),
+                    res: { ans: 'x=' + c, fakes: ['x=' + (-c), 'y=' + c, 'x=' + (c + 1), 'x=' + (c - 1), 'y=' + M.h] } }); }
+            const p = M.p, q = M.q, two = (a, b) => tx('x=' + a + '@text{ and }x=' + b);
+            return mk(M, { post: Q('The vertical asymptotes to $(C)$ have equations:'),
+                res: { ans: two(p, q), fakes: ['x=' + p, 'x=' + q, two(p + 1, q + 1), two(-q, -p), two(p - 1, q - 1)] } });
+        } },
+        { t: 'easy', c: 'LIMIT AT INFINITY', m: () => {
+            const M = pickModel(ALL), ends = []; if (M.lim.pos) ends.push(['pos', PI]); if (M.lim.neg) ends.push(['neg', MI]);
+            const [k, tgt] = pick(ends), L = M.lim[k];
+            return mk(M, { post: Q('$') + LIM(tgt) + '=$', res: { ans: LTX(L), fakes: limFakes(L, M.ha.length ? [M.ha[0] + 1] : []) } });
+        } },
+        { t: 'easy', c: 'DOMAIN OF DEFINITION', m: () => {
+            const M = pickModel(['hyper', 'hole', 'sqrt', 'ratio2', 'parab']);
+            let fakes = [RTEX, setR([0]), ']0;' + PI + '[', '[0;' + PI + '['];
+            if (M.excl.length) fakes = fakes.concat([setR(M.excl.map(x => -x)), setR(M.excl.map(x => x + 1)), setR(M.excl.map(x => x - 1))]);
+            else if (M.kind === 'sqrt') { const c = M.c; fakes = fakes.concat([']' + c + ';' + PI + '[', '[' + (-c) + ';' + PI + '[', ']' + MI + ';' + c + ']', '[' + c + ';' + PI + '[']); }
+            else if (M.kind === 'hole') fakes = fakes.concat([setR([M.c]), setR([M.c + 1]), setR([-M.c])]);
+            else fakes = fakes.concat([setR([M.p]), setR([M.q])]);
+            return mk(M, { post: Q('The domain of definition of $f$ is:'), res: { ans: M.domTex, fakes } });
+        } },
+        { t: 'easy', c: 'INTERSECTIONS WITH THE x-AXIS', m: () => {
+            const M = pickModel(ALL, M => { const z = M.solveEq(0); return visible(z); });
+            return mk(M, { num: true, val: M.solveEq(0).length, post: Q('How many points of intersection does $(C)$ have with the $x$-axis?') });
+        } },
+
+        // ===================== MEDIUM =====================
+        { t: 'medium', c: 'ONE-SIDED LIMIT AT AN ASYMPTOTE', m: () => {
+            const M = pickModel(['hyper', 'ratio2']), s = pick(M.side), sgn = pick([1, -1]), L = sgn > 0 ? s.r : s.l;
+            return mk(M, { post: Q('$') + LIM(sideTgt(s.x, sgn)) + '=$', res: { ans: LTX(L), fakes: limFakes(L, [M.h]) } });
+        } },
+        { t: 'medium', c: 'ONE-SIDED LIMIT AT A JUMP OR A HOLE', m: () => {
+            const M = pickModel(['lines', 'hole'], M => M.kind === 'hole' || M.type !== 'kink'), s = M.side[0], sgn = pick([1, -1]), L = sgn > 0 ? s.r : s.l;
+            const other = sgn > 0 ? s.l : s.r, fc = M.f(s.x), extra = [other]; if (isFinite(fc)) extra.push(fc);
+            return mk(M, { post: Q('$') + LIM(sideTgt(s.x, sgn)) + '=$', res: { ans: LTX(L), fakes: limFakes(L, extra) } });
+        } },
+        { t: 'medium', c: 'LIMIT AT A POINT (WRITE A NUMBER)', m: () => {
+            const M = pickModel(['hole', 'lines', 'parab', 'cubic', 'hyper'], M => (M.kind === 'hole' || (M.kind === 'lines' && M.type === 'kink')) || intPts(M).length > 0);
+            if (M.kind === 'hole' || (M.kind === 'lines' && M.type === 'kink')) { const s = M.side[0];
+                return mk(M, { num: true, val: s.l.v, post: Q('Write $') + LIM(String(s.x)) + '$.' }); }
+            const p = pick(intPts(M));
+            return mk(M, { num: true, val: p.y, post: Q('Write $') + LIM(String(p.x)) + '$.' });
+        } },
+        { t: 'medium', c: 'CONTINUITY AT A POINT (TRUE / FALSE)', m: () => {
+            const want = Math.random() < 0.5;
+            const cands = M => { const r = []; for (let x = -6; x <= 6; x++) {
+                if ((M.avoid || []).includes(x)) continue;
+                const isBreak = M.breaks.includes(x);
+                if (!isBreak && !isFinite(M.f(x))) continue;
+                const isC = isBreak ? (M.classify(x) === 'continuous' && isFinite(M.f(x))) : true;
+                if (isC === want) r.push(x); } return r; };
+            const M = pickModel(['hyper', 'lines', 'hole', 'ratio2', 'sqrt', 'parab', 'cubic'], M => cands(M).length > 0);
+            return mk(M, { tf: true, truth: want ? 'TRUE' : 'FALSE', post: TFQ('$f$ is continuous at $x=' + pick(cands(M)) + '$.') });
+        } },
+        { t: 'medium', c: 'NUMBER OF SOLUTIONS OF f(x) = k', m: () => {
+            let M, y0;
+            for (let i = 0; i < 800; i++) { M = FAMS[pick(ALL)](); y0 = ri(-4, 4); const z = M.solveEq(y0); if (visible(z)) break; if (i === 799) throw new Error('count'); }
+            return mk(M, { num: true, val: M.solveEq(y0).length, post: Q('How many solutions does the equation $f(x)=' + y0 + '$ have?') });
+        } },
+        { t: 'medium', c: 'NUMBER OF ASYMPTOTES', m: () => {
+            const M = pickModel(['hyper', 'ratio2', 'hyper', 'ratio2', 'parab', 'lines', 'hole', 'cubic', 'sqrt']);
+            return mk(M, { hideAsym: true, num: true, val: M.vas.length + M.ha.length, post: Q('How many asymptotes (vertical or horizontal) does $(C)$ have?') });
+        } },
+        { t: 'medium', c: 'LIMIT STATEMENT (TRUE / FALSE)', m: () => {
+            const M = pickModel(ALL), facts = [];
+            if (M.lim.pos) facts.push({ tgt: PI, L: M.lim.pos }); if (M.lim.neg) facts.push({ tgt: MI, L: M.lim.neg });
+            M.side.forEach(s => { facts.push({ tgt: sideTgt(s.x, 1), L: s.r }); facts.push({ tgt: sideTgt(s.x, -1), L: s.l });
+                if (s.l.t === 'v' && s.r.t === 'v' && Math.abs(s.l.v - s.r.v) < EPS) facts.push({ tgt: String(s.x), L: s.l }); });
+            const f = pick(facts), good = Math.random() < 0.5; let L = f.L;
+            if (!good) { const alts = L.t === 'v' ? [V(L.v + nz(-2, 2)), IV(1), IV(-1), V(-L.v)] : [IV(-L.s), V(0), V(M.ha[0] !== undefined ? M.ha[0] : 1), V(ri(1, 3))]; L = pick(alts.filter(a => LTX(a) !== LTX(f.L))); }
+            return mk(M, { tf: true, truth: good ? 'TRUE' : 'FALSE', post: TFQ('$') + LIM(f.tgt) + '=' + LTX(L) + '$.' });
+        } },
+        { t: 'medium', c: 'SOLVE f(x) = k (TWO SOLUTIONS)', m: () => {
+            let M, y0, z;
+            for (let i = 0; i < 1000; i++) { M = FAMS[pick(['parab', 'lines', 'ratio2', 'hole'])](); y0 = ri(-4, 4); z = M.solveEq(y0); if (z && z.length === 2 && visible(z) && z.every(isNice)) break; if (i === 999) throw new Error('two'); }
+            const [a, b] = z;
+            return mk(M, { post: Q('The solution set of $f(x)=' + y0 + '$ is:'),
+                res: { ans: 'S=' + toSet(z), fakes: ['S=' + toSet([a + 1, b + 1]), 'S=' + toSet([-a, -b]), 'S=' + toSet([a, b + 1]), 'S=' + toSet([a - 1, b]), 'S=' + toSet([a])] } });
+        } },
+
+        // ===================== HARD =====================
+        { t: 'hard', c: 'INEQUALITY f(x) ? k', m: () => {
+            const { M, op, y0, comps } = pickIneq(ALL, [-3, -2, -1, 0, 1, 2, 3]);
+            return mk(M, { post: Q('The solution set of $f(x)' + OPS[op] + y0 + '$ is:'), res: { ans: compsTex(comps), fakes: ineqFakes(M, op, y0, comps) } });
+        } },
+        { t: 'hard', c: 'SET OF CONTINUITY', m: () => {
+            const M = pickModel(['hyper', 'lines', 'hole', 'ratio2', 'parab', 'cubic']);
+            const bad = M.breaks.filter(b => M.classify(b) !== 'continuous' || !isFinite(M.f(b)));
+            const ans = bad.length ? setR(bad) : RTEX, base = bad.length ? bad : [0];
+            return mk(M, { post: Q('The function $f$ is continuous on:'), res: { ans, fakes: [RTEX, setR(base.map(x => x + 1)), setR(base.map(x => x - 1)), setR(base.map(x => -x)), setR(base.concat([base[0] + 2]))] } });
+        } },
+        { t: 'hard', c: 'INEQUALITY f(x) + m ? 0', m: () => {
+            const { M, op, y0, comps } = pickIneq(ALL, [-3, -2, -1, 1, 2, 3]);
+            const m = -y0, lhs = 'f(x)' + (m > 0 ? '+' : '-') + Math.abs(m);
+            return mk(M, { post: Q('The solution set of $' + lhs + OPS[op] + '0$ is:'), res: { ans: compsTex(comps), fakes: ineqFakes(M, op, y0, comps) } });
+        } },
+        { t: 'hard', c: 'BEHAVIOUR OF f AT A POINT', m: () => {
+            const M = pickModel(['hyper', 'lines', 'hole', 'ratio2']);
+            let x0; if (Math.random() < 0.8) x0 = pick(M.breaks); else { const c = []; for (let x = -6; x <= 6; x++) if (isFinite(M.f(x)) && !M.breaks.includes(x)) c.push(x); x0 = pick(c); }
+            const O = { continuous: TXT('Continuous at this point'), hole: TXT('Not continuous: the limit exists'), jump: TXT('Not continuous: a jump'), infinite: TXT('Not continuous: infinite limit') };
+            const cl = M.classify(x0);
+            return mk(M, { post: Q('At $x=' + x0 + '$, the function $f$ is:'), res: { ans: O[cl], fakes: Object.keys(O).filter(k => k !== cl).map(k => O[k]) } });
+        } },
+        { t: 'hard', c: 'INEQUALITY (TRUE / FALSE)', m: () => {
+            const { M, op, y0, comps } = pickIneq(ALL, [-3, -2, -1, 0, 1, 2, 3]), good = Math.random() < 0.5;
+            const fk = ineqFakes(M, op, y0, comps).filter(t => t !== compsTex(comps)), S = good ? compsTex(comps) : pick(fk);
+            return mk(M, { tf: true, truth: good ? 'TRUE' : 'FALSE', post: TFQ('The solution set of $f(x)' + OPS[op] + y0 + '$ is $' + S + '$.') });
+        } },
+        { t: 'hard', c: 'COMPOSITION: f(f(a))', m: () => {
+            const ok = M => intPts(M).some(p => p.x !== p.y && isFinite(M.f(p.y)) && Math.abs(M.f(p.y) - Math.round(M.f(p.y))) < EPS && Math.abs(M.f(p.y)) <= 4);
+            const M = pickModel(ALL, ok);
+            const p = pick(intPts(M).filter(p => p.x !== p.y && isFinite(M.f(p.y)) && Math.abs(M.f(p.y) - Math.round(M.f(p.y))) < EPS && Math.abs(M.f(p.y)) <= 4));
+            return mk(M, { num: true, val: Math.round(M.f(p.y)), post: Q('Write the value of $f(f(' + p.x + '))$.') });
+        } }
+    ];
+
+    function buildProblem(g) {
+        const o = g.m();
+        return {
+            tier: g.t, categoryType: g.c, type: o.tf ? 'TF' : o.num ? 'NUM' : 'MCQ',
+            prompt: o.pre || '', svg: o.svg || '', equation: '', post: o.post || '',
+            pool: (o.tf || o.num) ? [] : buildChoices(o.res.ans, o.res.fakes),
+            val: o.num ? o.val : null,
+            solution: o.tf ? o.truth : o.num ? String(o.val) : o.res.ans
+        };
+    }
+
+    function generateEntireQuizSuite() {
+        generatedSuite = [];
+        ['easy', 'medium', 'hard'].forEach(tier => {
+            const gens = shuffleArray(GENERATORS.filter(g => g.t === tier)).slice(0, APP_LIMITS.tiers[tier]);
+            gens.forEach(g => generatedSuite.push(buildProblem(g)));
+        });
+    }
+
+    // ========================================== -->
+    // INTERFACE VIEW SYNCHRONIZER                -->
+    // ========================================== -->
+
+
+    function parseNumber(s) {
+        s = String(s).trim().replace(/\u2212/g, '-').replace(',', '.');
+        const m = s.match(/^(-?\d+(?:\.\d+)?)\s*\/\s*(-?\d+(?:\.\d+)?)$/);
+        if (m) return parseFloat(m[1]) / parseFloat(m[2]);
+        return /^-?(\d+\.?\d*|\.\d+)$/.test(s) ? parseFloat(s) : NaN;
+    }
+    function isAnswerCorrect(problem, raw) {
+        if (raw === undefined || raw === null || raw === '') return false;
+        if (problem.type === 'NUM') return Math.abs(parseNumber(raw) - problem.val) < 1e-6;
+        return String(raw).trim().toUpperCase() === String(problem.solution).trim().toUpperCase();
+    }
+    const escapeHtml = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+    // KaTeX re-render with every delimiter (inline $...$ included)
+    const KATEX_OPTS = {
+        delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false },
+            { left: '\\[', right: '\\]', display: true }
+        ],
+        throwOnError: false
+    };
+    function renderMath(el) { window.renderMathInElement(el, KATEX_OPTS); }
+
+    function synchroniseQuestionIndex() {
+        const activeProblem = generatedSuite[traversalIndex];
+
+        document.getElementById('idx-current').innerText = traversalIndex + 1;
+        document.getElementById('idx-total').innerText = APP_LIMITS.totalItems;
+        document.getElementById('txt-tier-badge').innerText = activeProblem.tier + " tier";
+
+        const postBlock = activeProblem.post ? `<div style="font-size:1.1rem; font-weight:600; margin-top:6px;">${activeProblem.post}</div>` : "";
+        document.getElementById('math-prompt-container').innerHTML = `
+            <div style="font-size:1.05rem; line-height:1.5; color: var(--text-main);">
+                ${activeProblem.prompt}
+                ${activeProblem.svg || ''}
+                ${postBlock}
+            </div>
+        `;
+
+        document.getElementById('box-mcq').classList.add('hidden');
+        document.getElementById('box-tf').classList.add('hidden');
+        document.getElementById('box-num').classList.add('hidden');
+
+        if (activeProblem.type === 'MCQ') {
+            const mcqContainer = document.getElementById('box-mcq');
+            mcqContainer.innerHTML = "";
+            mcqContainer.classList.remove('hidden');
+
+            activeProblem.pool.forEach(choice => {
+                const buttonElement = document.createElement('button');
+                buttonElement.className = `opt-btn p-3 text-center transition flex justify-center items-center ${storedResponses[traversalIndex] === choice ? 'active' : ''}`;
+                buttonElement.style.minHeight = "48px";
+                buttonElement.style.fontSize = "1.2rem";
+                buttonElement.innerHTML = BS + "(" + choice + BS + ")";      // choices are stored as LaTeX
+                buttonElement.onclick = () => {
+                    document.querySelectorAll('#box-mcq .opt-btn').forEach(el => el.classList.remove('active'));
+                    buttonElement.classList.add('active');
+                    recordInput(choice);
+                };
+                mcqContainer.appendChild(buttonElement);
+            });
+            if (window.katex && typeof window.renderMathInElement === 'function') {
+                renderMath(mcqContainer);
+            }
+        } else if (activeProblem.type === 'NUM') {
+            document.getElementById('box-num').classList.remove('hidden');
+            const numInput = document.getElementById('num-input');
+            numInput.value = storedResponses[traversalIndex] || '';
+            numInput.oninput = () => {
+                const v = numInput.value.trim();
+                if (v) storedResponses[traversalIndex] = v; else delete storedResponses[traversalIndex];
+                buildShortcutsGridMatrix();
+            };
+        } else if (activeProblem.type === 'TF') {
+            document.getElementById('box-tf').classList.remove('hidden');
+            document.querySelectorAll('#box-tf .flag-tf').forEach(btn => {
+                btn.classList.remove('active');
+                if (storedResponses[traversalIndex] === btn.getAttribute('data-core')) btn.classList.add('active');
+                btn.onclick = () => {
+                    document.querySelectorAll('#box-tf .flag-tf').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                    recordInput(btn.getAttribute('data-core'));
+                };
+            });
+        }
+
+        buildShortcutsGridMatrix();
+        document.getElementById('action-back').disabled = traversalIndex === 0;
+        document.getElementById('action-forward').innerText = traversalIndex === APP_LIMITS.totalItems - 1 ? "Finish Quiz" : "Next →";
+
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            renderMath(document.getElementById('math-prompt-container'));
+        }
+    }
+
+    function recordInput(value) { storedResponses[traversalIndex] = value; buildShortcutsGridMatrix(); }
+
+    function buildShortcutsGridMatrix() {
+        const grid = document.getElementById('navigation-shortcut-grid');
+        grid.innerHTML = "";
+        for (let i = 0; i < APP_LIMITS.totalItems; i++) {
+            const b = document.createElement('button');
+            b.innerText = i + 1;
+            let bgStyle = "bg-slate-100 text-slate-600 border border-slate-300";
+            if (traversalIndex === i) bgStyle = "bg-sky-600 text-white font-bold ring-2 ring-sky-300";
+            else if (storedResponses[i]) bgStyle = "bg-emerald-100 text-emerald-700 border border-emerald-400 font-semibold";
+
+            b.className = `p-2 text-xs text-center rounded-lg transition cursor-pointer min-w-[32px] ${bgStyle}`;
+            b.onclick = () => { traversalIndex = i; synchroniseQuestionIndex(); };
+            grid.appendChild(b);
+        }
+    }
+
+    // ========================================== -->
+    // TIMERS, REPORT, PDF EXPORT & EVENT LISTENERS-->
+    // ========================================== -->
+
+    function beginTimelineScheduler() {
+        document.getElementById('meter-container').classList.remove('hidden');
+        function pulse() {
+            let m = Math.floor(timeTrackingRemaining / 60);
+            let s = timeTrackingRemaining % 60;
+            document.getElementById('clock-countdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            let dynamicPercentage = (timeTrackingRemaining / APP_LIMITS.allocatedDurationSeconds) * 100;
+            const progress = document.getElementById('meter-progress');
+            progress.style.width = `${dynamicPercentage}%`;
+
+            if (dynamicPercentage < 25) progress.style.backgroundColor = 'var(--error)';
+            else if (dynamicPercentage < 50) progress.style.backgroundColor = '#d97706';
+            else progress.style.backgroundColor = '';
+        }
+        pulse();
+        clearInterval(schedulerHandle);
+        schedulerHandle = setInterval(() => {
+            timeTrackingRemaining--;
+            pulse();
+            if (timeTrackingRemaining <= 0) {
+                clearInterval(schedulerHandle);
+                compileFinalPerformanceReport(true);
+            }
+        }, 1000);
+    }
+
+    function sendGradesToTeacher(name, classroom, score, duration, quizTitle) {
+        const url = "https://script.google.com/macros/s/AKfycbzpYkVVYTJ0VvPNVVCj9pIBrzXznUdB9XTPEMJPAQ8AF8qu-x_T-PhrYA7x_wCaZyWs/exec";
+        fetch(url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name,
+                classroom: classroom,
+                score: score,
+                duration: duration, // start time string, logged into Column E of the sheet
+                quizTitle: quizTitle,
+                date: new Date().toLocaleString()
+            })
+        }).catch(err => console.log("Network trace: Client sync fallback triggered."));
+    }
+
+    function compileFinalPerformanceReport(isTimeout = false) {
+        clearInterval(schedulerHandle);
+        document.getElementById('stage-engine').classList.add('hidden');
+        document.getElementById('meter-container').classList.add('hidden');
+        document.getElementById('stage-summary').classList.remove('hidden');
+
+        if (isTimeout) alert("Time limit reached. Compiling final performance report now.");
+
+        let tallyCorrect = 0;
+        let compilationHtml = "";
+
+        // plain words are shown as text, everything else is LaTeX rendered by KaTeX
+        const isPlain = s => /^(TRUE|FALSE|UNANSWERED)$/i.test(s);
+        const showAns = s => isPlain(String(s)) ? String(s) : (BS + "(" + s + BS + ")");
+        const showUser = (p, s) => p.type === 'NUM' ? escapeHtml(s) : showAns(s);
+        const showKey = p => p.type === 'NUM' ? (BS + "(" + frac(Math.round(p.val * 4), 4) + BS + ")") : showAns(p.solution);
+
+        generatedSuite.forEach((problem, index) => {
+            const userRaw = storedResponses[index];
+            const outcomeState = isAnswerCorrect(problem, userRaw);
+            if (outcomeState) tallyCorrect++;
+
+            const answerColor = outcomeState ? 'var(--success)' : 'var(--error)';
+            const answerBlock =
+                '<p style="margin:0;"><strong>Your Submitted Answer:</strong> <span style="font-weight:600; color:' + answerColor + '; font-size:1.05rem;">' + (userRaw ? showUser(problem, userRaw) : 'Unanswered') + '</span></p>' +
+                '<p style="margin:0; color: var(--text-muted);"><strong>Correct Verification Key:</strong> <span style="font-weight:600; color: var(--text-main); font-size:1.05rem;">' + showKey(problem) + '</span></p>';
+
+            const itemScoreBadge = outcomeState ?
+                `<span style="float: right; font-weight: 700; color: var(--success); background: #f0fdf4; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--success); font-size: 0.85rem;">Score: 1 / 1</span>` :
+                `<span style="float: right; font-weight: 700; color: var(--error); background: #fef2f2; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--error); font-size: 0.85rem;">Score: 0 / 1</span>`;
+
+            compilationHtml += `
+            <div class="report-item" style="position: relative; overflow: auto; background:#ffffff; padding:16px; margin-bottom:12px; border-radius:12px; border-left: 5px solid ${outcomeState ? 'var(--success)' : 'var(--error)'};">
+                ${itemScoreBadge}
+                <div style="font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+                    Question ${index + 1} &middot; Type: <span style="color: var(--primary);">${problem.categoryType.replace(/_/g, ' ')}</span>
+                </div>
+                <div style="font-size: 0.95rem; line-height: 1.5; color: var(--text-main); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+                    ${problem.prompt}
+                    <div style="max-width:520px; margin:0 auto;">${problem.svg || ''}</div>
+                    ${problem.post ? '<div style="font-weight:600;">' + problem.post + '</div>' : ''}
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; padding-left: 4px;">
+                    ${answerBlock}
+                </div>
+            </div>
+            `;
+        });
+
+        document.getElementById('m-correct').innerText = tallyCorrect;
+        document.getElementById('m-incorrect').innerText = APP_LIMITS.totalItems - tallyCorrect;
+        document.getElementById('m-percent').innerText = `${Math.round((tallyCorrect / APP_LIMITS.totalItems) * 100)}%`;
+
+        const userTitle = document.getElementById('student-name').value.trim();
+        const sectionTitle = document.getElementById('student-section').value.trim();
+
+        const headerMetaHtml = `
+        <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 0.95rem; line-height:1.4;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                <div><strong>Student Name:</strong> <span style="color: var(--primary); font-weight: 600;">${userTitle}</span></div>
+                <div><strong>Class Section:</strong> <span style="color: var(--primary); font-weight: 600;">${sectionTitle}</span></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.9rem;">
+                <div><strong>Quiz Assessment:</strong> <span style="color: #475569; font-weight: 700;">Function graph reading (Grade 11)</span></div>
+                <div><strong>Quiz Start Timestamp:</strong> <span style="font-family: monospace; font-weight: 600;">${formattedQuizStartTimeStamp}</span></div>
+            </div>
+        </div>
+        `;
+
+        document.getElementById('report-injection-zone').innerHTML = headerMetaHtml + compilationHtml;
+        if (window.katex && typeof window.renderMathInElement === 'function') {
+            renderMath(document.getElementById('report-injection-zone'));
+        }
+
+        sendGradesToTeacher(
+            userTitle,
+            sectionTitle,
+            `${tallyCorrect} / ${APP_LIMITS.totalItems}`,
+            formattedQuizStartTimeStamp,
+            "Function graph reading"
+        );
+    }
+
+    document.getElementById('action-start').onclick = () => {
+        if (!document.getElementById('student-name').value.trim() || !document.getElementById('student-section').value.trim()) {
+            alert("Please complete credential parameters to unlock.");
+            return;
+        }
+        const now = new Date();
+        formattedQuizStartTimeStamp = now.toLocaleDateString() + " @ " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        document.getElementById('stage-auth').classList.add('hidden');
+        document.getElementById('stage-engine').classList.remove('hidden');
+        generateEntireQuizSuite();
+        beginTimelineScheduler();
+        synchroniseQuestionIndex();
+    };
+
+    document.getElementById('action-forward').onclick = () => {
+        if (traversalIndex < APP_LIMITS.totalItems - 1) {
+            traversalIndex++;
+            synchroniseQuestionIndex();
+        } else {
+            if (confirm("Finalize and compile report sheets?")) compileFinalPerformanceReport();
+        }
+    };
+
+    document.getElementById('action-back').onclick = () => {
+        if (traversalIndex > 0) {
+            traversalIndex--;
+            synchroniseQuestionIndex();
+        }
+    };
+
+    document.getElementById('action-retry').onclick = () => {
+        storedResponses = {}; traversalIndex = 0;
+        timeTrackingRemaining = APP_LIMITS.allocatedDurationSeconds;
+        document.getElementById('stage-summary').classList.add('hidden');
+        document.getElementById('stage-auth').classList.remove('hidden');
+    };
+
+    // Print-optimised styles (fixes the flexbox page-clipping bug when saving the report as PDF)
+    if (!document.getElementById('print-fix-styles')) {
+        const style = document.createElement('style');
+        style.id = 'print-fix-styles';
+        style.innerHTML = `
+            @media print {
+                html, body { display: block !important; height: auto !important; overflow: visible !important; background: white !important; }
+                #stage-summary { display: block !important; max-width: 100% !important; width: 100% !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border: none !important; }
+                footer, #stage-auth, #stage-engine, button, .bg-gradient-to-r button { display: none !important; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // PDF buttons open the print dialog (Save as PDF)
+    document.querySelectorAll('button').forEach(button => {
+        if (button.textContent.includes('Save as PDF') || button.textContent.includes('Download as PDF')) {
+            button.removeAttribute('onclick');
+            button.addEventListener('click', (e) => { e.preventDefault(); window.print(); });
+        }
+    });
+</script>
+</body>
+</html>
